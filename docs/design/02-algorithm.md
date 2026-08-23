@@ -8,7 +8,9 @@ Digest each reference with the 16-enzyme panel, record for every anchor its
 coordinate, enzyme, strand, ±250 bp GC and uniqueness flags, and store the result
 as TGT v2 plus a binary anchor table.
 
-Uniqueness is resolved once, into two independent bits:
+Uniqueness is resolved once, into two independent bits — counted over distinct
+**loci**, not anchor rows, since several enzymes can legitimately claim one
+window:
 
 * `UNIQUE_IN_GENOME` — the tag occurs once in its own genome. Multi-copy anchors
   contaminate coverage estimates (Pilea masks multi-copy k-mers for the same
@@ -20,10 +22,11 @@ Budget: ~28 000 anchors × ~44 B ≈ 1.2 MB per E. coli-scale genome.
 
 ## 2. Count (online)
 
-Scan reads for the 16 recognition motifs; at each hit extract the implied tag and
-match it against the anchor table with a ≤2 mismatch budget (pigeonhole seeding,
-then Hamming verification). Both tag orientations are probed — see
-[`../enzymes.md`](../enzymes.md) for why that is not redundant.
+Scan reads exactly as references are scanned: slide a window of each enzyme's
+tag length and test it against that enzyme's patterns. Matches are looked up with
+a ≤2 mismatch budget (pigeonhole seeding, then Hamming verification). Comparison
+is strand-canonical, because a read may be sequenced from either strand and its
+window can be the reverse complement of the reference window.
 
 Tags matching anchors in several genomes are recorded on **all** of them, and
 `em.rs` then splits the mass in proportion to current abundance, iterating until
@@ -186,10 +189,12 @@ DerSimonian-Laird random-effects weights, which add the between-enzyme variance
 component. Reporting a tight interval around a value the enzymes visibly disagree
 about would be the worst of both worlds.
 
-Caveat, from [`../enzymes.md`](../enzymes.md): HaeIV's recognition site is a
-strict subset of Hin4I's, so those two strata are not fully independent and their
-agreement is partly structural. With 16 enzymes this is minor; with a two-enzyme
-subset of exactly those two it would be meaningless.
+Caveat, from [`../enzymes.md`](../enzymes.md): **every Bsp24I tag is a
+byte-identical CjePI tag**, so those two strata are not independent and their
+agreement is structural rather than evidential. With 16 enzymes the effect on Q
+is modest; a run restricted to `--enzymes Bsp24I,CjePI` would produce a
+consistency p-value that means nothing. `enzyme::CONTAINED_PAIRS` records the
+relation.
 
 > **Addresses D4.**
 

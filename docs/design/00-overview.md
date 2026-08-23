@@ -53,32 +53,43 @@ route B.
 
 ## What implementation changed
 
-Three things the design documents did not anticipate, all found by tests:
+The enzyme definitions here are transcribed from
+[Fast2bRAD-M](https://github.com/HuangShiLab/Fast2bRAD-M) (`src/enzymes.rs`),
+which is the authoritative implementation, and verified against E. coli K-12
+MG1655. Details and measured densities: [`../enzymes.md`](../enzymes.md).
 
-* **Palindromic enzymes need two-orientation matching.** AlfI, BplI, FalI and
-  HaeIV would otherwise lose ~half their reads silently.
-  ([`../enzymes.md`](../enzymes.md))
-* **HaeIV's recognition site is a strict subset of Hin4I's**, so those two strata
-  are not independent. Handled in counting; noted as a caveat for the χ² test.
+Findings that survived that check:
+
+* **Bsp24I ⊂ CjePI** — every Bsp24I tag is a byte-identical CjePI tag (1 636 /
+  1 636 on E. coli), because both Bsp24I patterns are strict refinements of a
+  CjePI pattern. The panel is therefore not 16 independent strata.
+* **Uniqueness must be counted over loci, not anchor rows.** Two enzymes claiming
+  one window is a locus seen twice; counting rows masked 100 % of Bsp24I out of
+  coverage modelling.
 * **Shared anchors must keep their counts** through the counting layer, or the EM
-  reassignment step has nothing to reassign. Discarding multimappers at count
-  time silently zeroed the entire shared fraction.
-
-And four statistical adjustments, each found by running the pipeline end to end
-rather than by reasoning about it:
-
-* **Window size must adapt per enzyme.** A flat 100 anchors/window drops the three
-  sparsest enzymes (PpiI, BplI, PsrI) from a 16-enzyme design even on E. coli.
+  reassignment step has nothing to reassign.
+* **Window size must adapt per enzyme.** A flat 100 anchors/window drops the
+  three sparsest enzymes (PpiI, BplI, PsrI) even on E. coli.
 * **The origin belongs to the genome, not the enzyme.** Searching it per enzyme
   turns search divergence into apparent enzyme disagreement.
 * **Fitted-to-noise corrections must shrink.** Both the GC loess and the
-  segmented V-shape will fit scatter given the chance, and because each enzyme is
-  corrected separately, that noise becomes cross-enzyme discordance.
-* **A failed enzyme fit is evidence.** Cochran's Q only sees enzymes that
-  produced a number, so a separate gate is needed for those that produced none.
+  segmented V-shape will fit scatter given the chance.
 
-The pattern is worth naming: in a stratified design, *anything fitted per stratum
-adds between-stratum variance when it fits noise* — and the cross-enzyme
-consistency test, the project's headline QC signal, is exactly what picks that up.
-It is a sensitive instrument, and it was sensitive to the pipeline's own
-over-fitting first.
+The last three share a root worth naming: in a stratified design, *anything
+fitted per stratum adds between-stratum variance when it fits noise* — and the
+cross-enzyme consistency test, this project's headline QC signal, is exactly what
+picks that up. It was sensitive to the pipeline's own over-fitting first.
+
+## A note on method
+
+Two earlier findings were withdrawn after checking against the reference
+implementation (see the README). Both came from the same mistake: measuring on
+*synthetic random-sequence genomes* against a *locally-invented* enzyme table,
+rather than on a real genome against the published one. Synthetic data will
+happily confirm a wrong model — it has no independent structure to contradict it.
+The rule this codebase now follows:
+
+* enzyme definitions come from Fast2bRAD-M, and are checked by a
+  reverse-complement closure test plus measured densities on a real genome;
+* any claim about the panel's structure is stated with the genome and accession
+  it was measured on.

@@ -54,6 +54,8 @@ pub struct Anchor {
     pub contig_id: u16,
     pub position: u64,
     pub enzyme_idx: u8,
+    /// Which enzyme pattern matched: 0 as written, 1 its reverse-complement
+    /// reading. Not a genomic strand — the tag is always stored forward.
     pub strand: u8,
     pub flags: u8,
     /// Quantised ±[`GC_FLANK`] bp GC, 255 = undefined.
@@ -187,19 +189,29 @@ impl AnchorDb {
         }
         // Count per-genome occurrences separately: a tag can be unique across the
         // database yet repeated inside its own genome (a tandem duplication).
-        let mut per_genome: HashMap<(u32, u64), u32> = HashMap::with_capacity(self.anchors.len());
+        //
+        // Counted over distinct **loci**, not anchor rows. Several enzymes can
+        // claim the same window — every Bsp24I tag is byte-identical to a CjePI
+        // tag, and Bsp24I/CjeI/CjePI share 759 windows on E. coli K-12 — and
+        // that is one locus observed through two enzymes, not a repeat. Counting
+        // rows masked 100% of Bsp24I and 24% of CjePI out of coverage modelling.
+        let mut per_genome: HashMap<(u32, u64), std::collections::HashSet<(u16, u64)>> =
+            HashMap::with_capacity(self.anchors.len());
         for a in &self.anchors {
-            *per_genome.entry((a.genome_id, a.seq_hash)).or_insert(0) += 1;
+            per_genome
+                .entry((a.genome_id, a.seq_hash))
+                .or_default()
+                .insert((a.contig_id, a.position));
         }
 
         for a in self.anchors.iter_mut() {
             let (_, _, multi_genome) = seen[&a.seq_hash];
-            let in_genome = per_genome[&(a.genome_id, a.seq_hash)];
+            let in_genome = per_genome[&(a.genome_id, a.seq_hash)].len();
             a.flags &= !(flags::UNIQUE_IN_GENOME
                 | flags::UNIQUE_ACROSS_DB
                 | flags::MASKED_MULTICOPY
                 | flags::MASKED_SHARED);
-            if in_genome == 1 {
+            if in_genome <= 1 {
                 a.flags |= flags::UNIQUE_IN_GENOME;
             } else {
                 a.flags |= flags::MASKED_MULTICOPY;
@@ -415,7 +427,7 @@ fn anchor_from_site(
     gc_flank: usize,
     kind: ContigKind,
 ) -> (Anchor, [u8; 12]) {
-    let centre = site.site_start as usize;
+    let centre = site.position as usize;
     let lo = centre.saturating_sub(gc_flank);
     let hi = (centre + gc_flank).min(contig_seq.len());
     let gcq = quantize_gc(gc_fraction(&contig_seq[lo..hi]));
@@ -431,9 +443,9 @@ fn anchor_from_site(
             seq_hash: site.tag_hash(),
             genome_id,
             contig_id: site.contig_id,
-            position: site.site_start,
+            position: site.position,
             enzyme_idx: site.enzyme_idx,
-            strand: site.strand.as_u8(),
+            strand: site.pattern,
             flags: f,
             local_gc: gcq,
         },
@@ -594,6 +606,46 @@ mod tests {
         assert!(a[shared] & flags::UNIQUE_IN_GENOME != 0);
         assert!(a[shared] & flags::MASKED_SHARED != 0);
         assert!(!db.anchors[shared].is_usable());
+    }
+
+    #[test]
+    fn co_located_enzymes_are_not_a_multicopy_repeat() {
+        // Two enzymes claiming the same window is one locus seen twice, not a
+        // duplicated locus. Counting anchor rows instead of loci masked all of
+        // Bsp24I (every Bsp24I tag is also a CjePI tag) out of coverage.
+        let mut db = db_of(vec![
+            Anchor {
+                enzyme_idx: 7,
+                ..anchor(1, 0, 100)
+            }, // Bsp24I
+            Anchor {
+                enzyme_idx: 9,
+                ..anchor(1, 0, 100)
+            }, // CjePI, same window
+            Anchor {
+                enzyme_idx: 0,
+                ..anchor(2, 0, 200)
+            }, // a genuine repeat
+            Anchor {
+                enzyme_idx: 0,
+                ..anchor(2, 0, 900)
+            },
+        ]);
+        db.recompute_uniqueness();
+        for a in db.anchors.iter().filter(|a| a.seq_hash == 1) {
+            assert!(
+                a.is_usable(),
+                "enzyme {} at a co-located window was masked as multi-copy",
+                a.enzyme_idx
+            );
+            assert!(a.flags & flags::UNIQUE_IN_GENOME != 0);
+        }
+        for a in db.anchors.iter().filter(|a| a.seq_hash == 2) {
+            assert!(
+                a.flags & flags::MASKED_MULTICOPY != 0,
+                "a real repeat went unmasked"
+            );
+        }
     }
 
     #[test]

@@ -26,7 +26,7 @@ Record layout (little-endian):
 | 16 | 4 | `gap` | bp since the previous tag on this contig; 0 for the first |
 | 20 | 2 | `contig_id` | |
 | 22 | 1 | `enzyme_idx` | index into `enzyme::PANEL` |
-| 23 | 1 | `strand` | 0 = +, 1 = − |
+| 23 | 1 | `pattern` | which enzyme pattern matched: 0 as written, 1 its rc reading |
 | 24 | 1 | `tag_len` | bp |
 | 25 | 1 | `flags` | see below |
 | 26 | 1 | `local_gc` | quantised ±250 bp GC; 255 = undefined |
@@ -34,9 +34,10 @@ Record layout (little-endian):
 | 28 | 12 | `tag_2bit` | packed tag, 4 bases/byte, up to 48 bp |
 | 40 | 8 | — | reserved |
 
-The stored coordinate is the **recognition site**, not the tag start. Flank
-conventions can differ between implementations without moving any statistic; the
-site cannot.
+The stored coordinate is the **tag window start**, matching Fast2bRAD-M, and the
+tag is the forward-strand window at that position — nothing is
+reverse-complemented at extraction. `pattern` records which strand reading
+matched; it is not a genomic strand.
 
 `gap` restarts at each contig boundary. A gap spanning a boundary is not a
 genomic distance, and treating it as one inflates the blind-spot statistics that
@@ -79,7 +80,7 @@ genome_id:  u32
 contig_id:  u16
 position:   u64   // recognition site start
 enzyme_idx: u8    // index into PANEL
-strand:     u8
+strand:     u8    // pattern index (0 as written, 1 rc reading)
 flags:      u8
 local_gc:   u8    // quantised, 255 = undefined
 ```

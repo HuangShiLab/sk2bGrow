@@ -53,9 +53,9 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub mod prelude {
     pub use crate::anchor_db::{Anchor, AnchorDb, BuildParams, GenomeMeta};
     pub use crate::count::{AnchorIndex, CountMode, CountStats, MatchConfig};
-    pub use crate::digest::{DigestConfig, Strand};
+    pub use crate::digest::DigestConfig;
     pub use crate::em::{EmConfig, EmResult};
-    pub use crate::enzyme::{Enzyme, EnzymeSet, PANEL};
+    pub use crate::enzyme::{Enzyme, EnzymeSet, Motif, Pattern, PANEL};
     pub use crate::error::{Result, Sk2bError};
     pub use crate::ori::{OriFit, OriPrior};
     pub use crate::tgt::{ContigKind, ContigMeta, Tgt, TgtRecord};

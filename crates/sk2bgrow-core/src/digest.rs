@@ -1,85 +1,57 @@
-//! In silico Type IIB digestion: reference sequence -> anchor sites.
+//! In silico Type IIB digestion: reference sequence -> tags.
 //!
-//! Reuse target: `bsyn::digest`. Semantics follow the design report §4.1 —
-//! double-stranded search with IUPAC degeneracy, palindromic enzymes
-//! deduplicated at the locus level, and the cross-enzyme union merged within
-//! [`DEFAULT_MERGE_WINDOW`] bp so overlapping tags count as one effective site.
+//! Follows `Fast2bRAD-M/src/enzymes.rs::find_all_tags`. A tag is a fixed-length
+//! **window of the forward strand** that satisfies one of the enzyme's patterns.
+//! Both strand orientations are covered by the enzyme having two patterns (see
+//! [`crate::enzyme`]), so nothing is reverse-complemented here: the tag is the
+//! window, verbatim.
+//!
+//! Every occurrence is reported, including overlapping ones — the scan advances
+//! one base at a time rather than skipping past a match. That mirrors
+//! `2bRADExtraction.pl`, which rewinds its regex cursor to `match_start + 1`.
 
 use serde::{Deserialize, Serialize};
 
 use crate::enzyme::Enzyme;
-use crate::seq::{hash_tag, revcomp};
+use crate::seq::canonical_hash;
 
-/// Strand of an anchor. Stored in [`crate::anchor_db::Anchor::strand`].
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
-#[repr(u8)]
-pub enum Strand {
-    Fwd = 0,
-    Rev = 1,
-}
-
-impl Strand {
-    #[inline]
-    pub fn as_u8(self) -> u8 {
-        self as u8
-    }
-    #[inline]
-    pub fn from_u8(v: u8) -> Self {
-        if v == 0 {
-            Strand::Fwd
-        } else {
-            Strand::Rev
-        }
-    }
-    #[inline]
-    pub fn symbol(self) -> char {
-        match self {
-            Strand::Fwd => '+',
-            Strand::Rev => '-',
-        }
-    }
-}
-
-/// One digested locus.
+/// One digested tag.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Site {
     pub enzyme_idx: u8,
     pub contig_id: u16,
-    /// 0-based coordinate of the first base of the recognition site.
-    pub site_start: u64,
-    pub strand: Strand,
-    /// Half-open tag span in contig coordinates.
-    pub tag_start: u64,
-    pub tag_end: u64,
-    /// The excised tag, already oriented 5'->3' along its own strand.
+    /// 0-based start of the tag window on the forward strand.
+    pub position: u64,
+    /// Which of the enzyme's patterns matched: 0 is the motif as written,
+    /// 1 its reverse-complement reading. Recorded as `strand` downstream.
+    pub pattern: u8,
+    /// The tag: `contig[position .. position + tag_len]`, forward strand.
     pub tag: Vec<u8>,
 }
 
 impl Site {
-    /// Canonical (strand-independent) hash of the tag sequence.
+    /// Strand-canonical hash — a read off the opposite strand yields the reverse
+    /// complement of this window, and must hash to the same value.
     pub fn tag_hash(&self) -> u64 {
-        // The tag is already strand-oriented, so hashing it directly makes the
-        // forward and reverse copy of a palindromic locus agree.
-        let f = hash_tag(&self.tag);
-        let r = hash_tag(&revcomp(&self.tag));
-        f.min(r)
+        canonical_hash(&self.tag)
+    }
+    #[inline]
+    pub fn end(&self) -> u64 {
+        self.position + self.tag.len() as u64
     }
 }
 
-/// Cross-enzyme union merge radius, in bp. Two sites from different enzymes
-/// whose recognition starts fall within this distance are one effective locus
-/// (report §4.1: "跨酶并集按 33 bp 内合并为同一有效位点"); 33 bp is the longest
-/// tag in the panel (CspCI).
+/// Cross-enzyme union merge radius, in bp: two tags whose windows start within
+/// this distance are treated as one effective locus for spacing statistics
+/// (report §4.1). 33 bp is the longest tag in the panel (CspCI).
 pub const DEFAULT_MERGE_WINDOW: u64 = 33;
 
-/// Digestion options.
 #[derive(Debug, Clone)]
 pub struct DigestConfig {
-    /// Skip tags containing an ambiguous base. Reference `N` runs would
-    /// otherwise produce anchors that no read can ever match.
+    /// Skip windows containing a non-ACGT base. Reference `N` runs would
+    /// otherwise produce tags no read can match.
     pub reject_ambiguous_tags: bool,
-    /// Skip contigs shorter than this (bp). Short contigs contribute anchors
-    /// whose position carries no ori-ter information.
+    /// Skip contigs shorter than this (bp).
     pub min_contig_len: usize,
 }
 
@@ -92,12 +64,14 @@ impl Default for DigestConfig {
     }
 }
 
-/// Digest one contig with one enzyme.
-///
-/// Both strands are searched. For a palindromic recognition pattern the reverse
-/// hit is at the same locus as the forward hit, so only the forward strand is
-/// scanned — this is the deduplication the report requires for AlfI, BplI, FalI,
-/// HaeIV and friends.
+#[inline]
+fn is_pure_acgt(window: &[u8]) -> bool {
+    window
+        .iter()
+        .all(|b| matches!(b, b'A' | b'C' | b'G' | b'T'))
+}
+
+/// Digest one contig with one enzyme, appending to `out`.
 pub fn digest_contig_with(
     seq: &[u8],
     contig_id: u16,
@@ -105,70 +79,30 @@ pub fn digest_contig_with(
     cfg: &DigestConfig,
     out: &mut Vec<Site>,
 ) {
-    if seq.len() < cfg.min_contig_len || seq.len() < enzyme.tag_len as usize {
+    let len = enzyme.tag_len as usize;
+    if seq.len() < cfg.min_contig_len || seq.len() < len {
         return;
     }
-    let fwd_pat = enzyme.pattern_bytes();
-    let rc_pat = revcomp(fwd_pat);
-    let palindromic = enzyme.is_palindromic();
-    let plen = fwd_pat.len();
-
-    for pos in 0..=(seq.len() - plen) {
-        // Forward-strand hit.
-        if enzyme.matches_at(seq, pos) {
-            push_site(seq, contig_id, enzyme, cfg, pos, Strand::Fwd, out);
+    for start in 0..=(seq.len() - len) {
+        let window = &seq[start..start + len];
+        if cfg.reject_ambiguous_tags && !is_pure_acgt(window) {
+            continue;
         }
-        // Reverse-strand hit: the reverse complement of the pattern occurring on
-        // the forward strand. Skipped for palindromes, which would double-count.
-        if !palindromic && matches_pattern(&rc_pat, seq, pos) {
-            push_site(seq, contig_id, enzyme, cfg, pos, Strand::Rev, out);
+        // One entry per window: a window matching several of an enzyme's own
+        // patterns is still one tag, credited to the first that matched.
+        if let Some(p) = enzyme.match_window(window) {
+            out.push(Site {
+                enzyme_idx: enzyme.idx,
+                contig_id,
+                position: start as u64,
+                pattern: p as u8,
+                tag: window.to_vec(),
+            });
         }
     }
 }
 
-#[inline]
-fn matches_pattern(pat: &[u8], seq: &[u8], pos: usize) -> bool {
-    if pos + pat.len() > seq.len() {
-        return false;
-    }
-    pat.iter()
-        .zip(&seq[pos..pos + pat.len()])
-        .all(|(&code, &base)| crate::seq::iupac_matches(code, base))
-}
-
-fn push_site(
-    seq: &[u8],
-    contig_id: u16,
-    enzyme: &Enzyme,
-    cfg: &DigestConfig,
-    site_start: usize,
-    strand: Strand,
-    out: &mut Vec<Site>,
-) {
-    let Some((ts, te)) = enzyme.tag_span(site_start, seq.len(), strand == Strand::Fwd) else {
-        return; // tag would run off the contig end
-    };
-    let raw = &seq[ts..te];
-    if cfg.reject_ambiguous_tags && raw.iter().any(|b| !matches!(b, b'A' | b'C' | b'G' | b'T')) {
-        return;
-    }
-    let tag = match strand {
-        Strand::Fwd => raw.to_vec(),
-        Strand::Rev => revcomp(raw),
-    };
-    out.push(Site {
-        enzyme_idx: enzyme.idx,
-        contig_id,
-        site_start: site_start as u64,
-        strand,
-        tag_start: ts as u64,
-        tag_end: te as u64,
-        tag,
-    });
-}
-
-/// Digest one contig with a whole enzyme selection. Sites come back sorted by
-/// `(site_start, enzyme_idx, strand)` so downstream windowing can stream them.
+/// Digest one contig with a whole enzyme selection, sorted by `(position, enzyme)`.
 pub fn digest_contig(
     seq: &[u8],
     contig_id: u16,
@@ -179,30 +113,30 @@ pub fn digest_contig(
     for e in enzymes {
         digest_contig_with(seq, contig_id, e, cfg, &mut sites);
     }
-    sites.sort_by_key(|s| (s.site_start, s.enzyme_idx, s.strand));
+    sites.sort_by_key(|s| (s.position, s.enzyme_idx, s.pattern));
     sites
 }
 
-/// Per-enzyme site counts and the merged union count for one contig set.
+/// Per-enzyme counts and union spacing statistics.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DensityReport {
-    /// Total sequence length considered, in bp.
     pub genome_len: u64,
-    /// Site count per panel index.
+    /// Tag windows per enzyme.
     pub per_enzyme: Vec<(String, u64)>,
+    /// Distinct tag windows across all enzymes (a window shared by two enzymes
+    /// counts once).
+    pub union_windows: u64,
     /// Independent loci after merging within [`DEFAULT_MERGE_WINDOW`].
     pub union_sites: u64,
-    /// Mean spacing between consecutive union loci, in bp.
     pub mean_spacing: f64,
-    /// Largest gap between consecutive union loci, in bp — the "blind spot"
-    /// statistic the report uses to justify the 16-enzyme overlay.
+    /// Largest gap between consecutive union loci — the "blind spot" statistic.
     pub max_gap: u64,
     /// Union loci per 25 kb, comparable to Pilea's ~100 k-mers per window.
     pub per_25kb: f64,
 }
 
 impl DensityReport {
-    /// Sites per Mb for one enzyme, matching the units of report table §4.1.
+    /// Tags per Mb for one enzyme, in the units of report table §4.1.
     pub fn density_per_mb(&self, enzyme_name: &str) -> Option<f64> {
         if self.genome_len == 0 {
             return None;
@@ -214,14 +148,12 @@ impl DensityReport {
     }
 }
 
-/// Collapse sites into independent loci: sorted by position, merging any two
-/// whose recognition starts are within `merge_window` bp *on the same contig*.
-///
-/// Returns the merged locus start coordinates per contig, which is what the
-/// spacing/gap statistics are computed over.
+/// Collapse tags into independent loci: sorted by position, merging any two
+/// whose windows start within `merge_window` bp *on the same contig*.
 pub fn merge_union(sites: &[Site], merge_window: u64) -> Vec<(u16, u64)> {
-    let mut keys: Vec<(u16, u64)> = sites.iter().map(|s| (s.contig_id, s.site_start)).collect();
+    let mut keys: Vec<(u16, u64)> = sites.iter().map(|s| (s.contig_id, s.position)).collect();
     keys.sort_unstable();
+    keys.dedup();
     let mut merged: Vec<(u16, u64)> = Vec::with_capacity(keys.len());
     for (contig, pos) in keys {
         match merged.last() {
@@ -234,9 +166,8 @@ pub fn merge_union(sites: &[Site], merge_window: u64) -> Vec<(u16, u64)> {
 
 /// Build the density audit for a digested genome.
 ///
-/// `contig_lens` must be parallel to contig ids. Spacing statistics are computed
-/// within each contig; the gap across a contig boundary is not a real genomic
-/// gap and would inflate `max_gap` on fragmented MAGs.
+/// Spacing is computed within each contig; a gap across a contig boundary is not
+/// a genomic gap and would inflate `max_gap` on fragmented MAGs.
 pub fn density_report(
     sites: &[Site],
     contig_lens: &[u64],
@@ -255,6 +186,10 @@ pub fn density_report(
         .collect();
     per_enzyme.sort_by(|a, b| a.0.cmp(&b.0));
 
+    let mut windows: Vec<(u16, u64)> = sites.iter().map(|s| (s.contig_id, s.position)).collect();
+    windows.sort_unstable();
+    windows.dedup();
+
     let merged = merge_union(sites, merge_window);
     let mut max_gap = 0u64;
     let mut gap_sum = 0u64;
@@ -262,7 +197,7 @@ pub fn density_report(
     for w in merged.windows(2) {
         let ((c0, p0), (c1, p1)) = (w[0], w[1]);
         if c0 != c1 {
-            continue; // contig boundary is not a genomic gap
+            continue;
         }
         let g = p1 - p0;
         max_gap = max_gap.max(g);
@@ -272,6 +207,7 @@ pub fn density_report(
     DensityReport {
         genome_len,
         per_enzyme,
+        union_windows: windows.len() as u64,
         union_sites: merged.len() as u64,
         mean_spacing: if gap_n > 0 {
             gap_sum as f64 / gap_n as f64
@@ -291,6 +227,7 @@ pub fn density_report(
 mod tests {
     use super::*;
     use crate::enzyme::by_name;
+    use crate::seq::revcomp;
 
     fn cfg() -> DigestConfig {
         DigestConfig {
@@ -300,48 +237,73 @@ mod tests {
     }
 
     #[test]
-    fn finds_a_planted_bcgi_site() {
+    fn finds_a_planted_bcgi_tag() {
         let bcgi = by_name("BcgI").unwrap();
-        // 20 bp lead-in, then CGA-N6-TGC, then 20 bp tail.
-        let seq = b"AAAAAAAAAAAAAAAAAAAACGAACGTACTGCTTTTTTTTTTTTTTTTTTTT".to_vec();
+        let mut seq = vec![b'A'; 20];
+        seq.extend_from_slice(b"AAAAAAAAAACGAACGTACTGCTTTTTTTTTT"); // 32 bp tag at offset 20
+        seq.extend_from_slice(&[b'A'; 20]);
         let sites = digest_contig(&seq, 0, &[bcgi], &cfg());
         assert_eq!(sites.len(), 1);
-        let s = &sites[0];
-        assert_eq!(s.site_start, 20);
-        assert_eq!(s.strand, Strand::Fwd);
-        assert_eq!(s.tag.len(), 32);
-        // 10 bp up-flank + 12 bp site + 10 bp down-flank
-        assert_eq!((s.tag_start, s.tag_end), (10, 42));
+        assert_eq!(sites[0].position, 20);
+        assert_eq!(sites[0].pattern, 0);
+        assert_eq!(sites[0].tag.len(), 32);
+        // The tag is the forward-strand window, verbatim.
+        assert_eq!(sites[0].tag, seq[20..52].to_vec());
     }
 
     #[test]
-    fn finds_the_reverse_strand_copy() {
+    fn the_reverse_reading_is_found_by_the_second_pattern() {
         let bcgi = by_name("BcgI").unwrap();
-        // revcomp(CGA-N6-TGC) = GCA-N6-TCG planted on the forward strand.
-        let seq = b"AAAAAAAAAAAAAAAAAAAAGCAACGTACTCGTTTTTTTTTTTTTTTTTTTT".to_vec();
+        let fwd = b"AAAAAAAAAACGAACGTACTGCTTTTTTTTTT";
+        let mut seq = vec![b'A'; 20];
+        seq.extend_from_slice(&revcomp(fwd));
+        seq.extend_from_slice(&[b'A'; 20]);
         let sites = digest_contig(&seq, 0, &[bcgi], &cfg());
         assert_eq!(sites.len(), 1);
-        assert_eq!(sites[0].strand, Strand::Rev);
-        // The stored tag is oriented along its own strand, so it reads as a
-        // forward BcgI tag.
-        let t = &sites[0].tag;
-        assert!(by_name("BcgI").unwrap().matches_at(t, 10));
+        assert_eq!(
+            sites[0].pattern, 1,
+            "reverse reading should match pattern 1"
+        );
+        // Still stored forward-strand; canonical hashing is what links the two.
+        assert_eq!(sites[0].tag, revcomp(fwd));
+        assert_eq!(sites[0].tag_hash(), canonical_hash(fwd));
     }
 
     #[test]
-    fn palindromic_enzyme_is_not_double_counted() {
-        let plai = by_name("BplI").unwrap(); // GAG-N5-CTC is its own revcomp
-        assert!(plai.is_palindromic());
-        let seq = b"AAAAAAAAAAAAAAAAAAAAGAGACGTACTCTTTTTTTTTTTTTTTTTTTTT".to_vec();
-        let sites = digest_contig(&seq, 0, &[plai], &cfg());
-        assert_eq!(sites.len(), 1, "palindromic hit reported twice");
+    fn self_complementary_enzyme_yields_one_tag_per_window() {
+        let bpli = by_name("BplI").unwrap();
+        assert!(bpli.is_self_complementary());
+        let mut seq = vec![b'A'; 20];
+        seq.extend_from_slice(b"AAAAAAAAGAGACGTACTCAAAAAAAA"); // 27 bp
+        seq.extend_from_slice(&[b'A'; 20]);
+        let sites = digest_contig(&seq, 0, &[bpli], &cfg());
+        assert_eq!(sites.len(), 1, "one window, one tag");
     }
 
     #[test]
-    fn tags_with_n_are_rejected() {
+    fn haeiv_yields_two_windows_per_palindromic_locus() {
+        // HaeIV's core GAY-N5-RTC is its own reverse complement but its flanks
+        // are 7/9, so the two readings occupy windows offset by 2 bp. Both are
+        // real tags. (The design report deduplicates these to a locus count,
+        // which is why its HaeIV density is exactly half the window count.)
+        let hae = by_name("HaeIV").unwrap();
+        let mut seq = vec![b'C'; 40];
+        // Put GAT-N5-ATC (a valid GAY-N5-RTC) at position 40.
+        seq.extend_from_slice(b"GATCCCCCATC");
+        seq.extend_from_slice(&[b'C'; 40]);
+        let sites = digest_contig(&seq, 0, &[hae], &cfg());
+        assert_eq!(sites.len(), 2, "expected both readings of the locus");
+        assert_eq!(sites[1].position - sites[0].position, 2);
+        assert_eq!(sites[0].pattern, 1);
+        assert_eq!(sites[1].pattern, 0);
+    }
+
+    #[test]
+    fn windows_with_n_are_rejected() {
         let bcgi = by_name("BcgI").unwrap();
-        // N run at 10..15, i.e. inside the 10..42 tag span but outside the site.
-        let seq = b"AAAAAAAAAANNNNNAAAAACGAACGTACTGCTTTTTTTTTTTTTTTTTTTT".to_vec();
+        let mut seq = vec![b'A'; 20];
+        seq.extend_from_slice(b"AAAAANNNNNCGAACGTACTGCTTTTTTTTTT");
+        seq.extend_from_slice(&[b'A'; 20]);
         assert!(digest_contig(&seq, 0, &[bcgi], &cfg()).is_empty());
         let lax = DigestConfig {
             reject_ambiguous_tags: false,
@@ -351,45 +313,36 @@ mod tests {
     }
 
     #[test]
-    fn sites_near_contig_ends_are_dropped() {
-        let bcgi = by_name("BcgI").unwrap();
-        // Site at position 2: no room for the 10 bp upstream flank.
-        let seq = b"AACGAACGTACTGCTTTTTTTTTTTTTTTTTTTT".to_vec();
-        assert!(digest_contig(&seq, 0, &[bcgi], &cfg()).is_empty());
+    fn overlapping_occurrences_are_all_reported() {
+        // BslFI: N6 GGGAC N14. Two GGGAC 1 bp apart would give two windows;
+        // use a run that produces several overlapping hits.
+        let bslfi = by_name("BslFI").unwrap();
+        let mut seq = vec![b'A'; 10];
+        seq.extend_from_slice(b"GGGACGGGAC");
+        seq.extend_from_slice(&[b'A'; 30]);
+        let sites = digest_contig(&seq, 0, &[bslfi], &cfg());
+        assert_eq!(sites.len(), 2, "the scan must not skip past a match");
+        assert_eq!(sites[1].position - sites[0].position, 5);
     }
 
     #[test]
-    fn union_merges_overlapping_loci() {
-        let sites = vec![
-            mk_site(0, 0, 100),
-            mk_site(1, 0, 110), // within 33 bp of the previous -> same locus
-            mk_site(2, 0, 400),
-            mk_site(3, 1, 105), // different contig -> never merged
-        ];
-        let merged = merge_union(&sites, DEFAULT_MERGE_WINDOW);
-        assert_eq!(merged, vec![(0, 100), (0, 400), (1, 105)]);
-    }
-
-    #[test]
-    fn density_report_ignores_contig_boundaries_in_gaps() {
-        let sites = vec![mk_site(0, 0, 100), mk_site(0, 0, 600), mk_site(0, 1, 50)];
+    fn union_merges_nearby_windows_and_skips_contig_joins() {
+        let mk = |e: u8, c: u16, p: u64| Site {
+            enzyme_idx: e,
+            contig_id: c,
+            position: p,
+            pattern: 0,
+            tag: vec![b'A'; 27],
+        };
+        let sites = vec![mk(0, 0, 100), mk(1, 0, 110), mk(2, 0, 600), mk(3, 1, 105)];
+        assert_eq!(
+            merge_union(&sites, DEFAULT_MERGE_WINDOW),
+            vec![(0, 100), (0, 600), (1, 105)]
+        );
         let e = vec![by_name("BcgI").unwrap()];
         let rep = density_report(&sites, &[1_000, 1_000], &e, DEFAULT_MERGE_WINDOW);
         assert_eq!(rep.union_sites, 3);
-        assert_eq!(rep.max_gap, 500, "cross-contig gap leaked into max_gap");
+        assert_eq!(rep.max_gap, 500, "a contig boundary leaked into max_gap");
         assert_eq!(rep.genome_len, 2_000);
-        assert_eq!(rep.density_per_mb("BcgI"), Some(1_500.0));
-    }
-
-    fn mk_site(enzyme_idx: u8, contig_id: u16, site_start: u64) -> Site {
-        Site {
-            enzyme_idx,
-            contig_id,
-            site_start,
-            strand: Strand::Fwd,
-            tag_start: site_start,
-            tag_end: site_start + 27,
-            tag: b"ACGTACGTACGTACGTACGTACGTACG".to_vec(),
-        }
     }
 }

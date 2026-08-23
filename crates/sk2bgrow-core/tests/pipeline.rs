@@ -322,13 +322,13 @@ fn two_brad_mode_counts_one_tag_per_read() {
         .iter()
         .take(50)
         .filter_map(|a| {
+            // The tag *is* the window, so a route-B read is just that slice.
             let e = sk2bgrow_core::enzyme::by_idx(a.enzyme_idx)?;
-            let (s, t) = e.tag_span(a.position as usize, g.len(), a.strand == 0)?;
-            Some(if a.strand == 0 {
-                g[s..t].to_vec()
-            } else {
-                revcomp(&g[s..t])
-            })
+            let (s, t) = (
+                a.position as usize,
+                a.position as usize + e.tag_len as usize,
+            );
+            (t <= g.len()).then(|| g[s..t].to_vec())
         })
         .collect();
     assert_eq!(reads.len(), 50);

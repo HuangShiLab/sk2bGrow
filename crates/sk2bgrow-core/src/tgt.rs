@@ -21,7 +21,7 @@
 //! 16..20  gap         u32   bp since the previous tag on this contig (0 for the first)
 //! 20..22  contig_id   u16
 //! 22..23  enzyme_idx  u8    index into enzyme::PANEL
-//! 23..24  strand      u8    0 = +, 1 = -
+//! 23..24  pattern     u8    which enzyme pattern matched (0 = as written, 1 = rc)
 //! 24..25  tag_len     u8    bp
 //! 25..26  flags       u8    see anchor_db::flags
 //! 26..27  local_gc    u8    quantised ±250 bp GC, 255 = undefined
@@ -35,7 +35,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::digest::{Site, Strand};
+use crate::digest::Site;
 use crate::enzyme::{by_idx, by_name};
 use crate::error::{Result, Sk2bError};
 use crate::seq::{canonical_hash, two_bit, GC_UNDEFINED};
@@ -80,7 +80,9 @@ pub struct TgtRecord {
     pub gap: u32,
     pub contig_id: u16,
     pub enzyme_idx: u8,
-    pub strand: Strand,
+    /// Which of the enzyme's patterns matched: 0 as written, 1 its
+    /// reverse-complement reading.
+    pub pattern: u8,
     pub tag_len: u8,
     pub flags: u8,
     pub local_gc: u8,
@@ -101,11 +103,11 @@ impl TgtRecord {
         }
         Ok(TgtRecord {
             tag_hash: site.tag_hash(),
-            position: site.site_start,
+            position: site.position,
             gap: 0,
             contig_id: site.contig_id,
             enzyme_idx: site.enzyme_idx,
-            strand: site.strand,
+            pattern: site.pattern,
             tag_len: site.tag.len() as u8,
             flags: 0,
             local_gc: GC_UNDEFINED,
@@ -129,7 +131,7 @@ impl TgtRecord {
         buf[16..20].copy_from_slice(&self.gap.to_le_bytes());
         buf[20..22].copy_from_slice(&self.contig_id.to_le_bytes());
         buf[22] = self.enzyme_idx;
-        buf[23] = self.strand.as_u8();
+        buf[23] = self.pattern;
         buf[24] = self.tag_len;
         buf[25] = self.flags;
         buf[26] = self.local_gc;
@@ -146,7 +148,7 @@ impl TgtRecord {
             gap: u32::from_le_bytes(buf[16..20].try_into().unwrap()),
             contig_id: u16::from_le_bytes(buf[20..22].try_into().unwrap()),
             enzyme_idx: buf[22],
-            strand: Strand::from_u8(buf[23]),
+            pattern: buf[23],
             tag_len: buf[24],
             flags: buf[25],
             local_gc: buf[26],
@@ -182,7 +184,7 @@ impl Tgt {
     /// boundary is not a genomic distance.
     pub fn recompute_gaps(&mut self) {
         self.records
-            .sort_by_key(|r| (r.contig_id, r.position, r.enzyme_idx, r.strand));
+            .sort_by_key(|r| (r.contig_id, r.position, r.enzyme_idx, r.pattern));
         let mut prev: Option<(u16, u64)> = None;
         for r in self.records.iter_mut() {
             r.gap = match prev {
@@ -309,7 +311,7 @@ impl Tgt {
         }
         writeln!(
             w,
-            "#columns\ttag\tcontig_id\tposition\tstrand\tgap\tflags\tlocal_gc"
+            "#columns\ttag\tcontig_id\tposition\tpattern\tgap\tflags\tlocal_gc"
         )
         .map_err(io)?;
         let mut idxs: Vec<usize> = (0..self.records.len()).collect();
@@ -326,7 +328,7 @@ impl Tgt {
                 String::from_utf8_lossy(&r.tag_bases()),
                 r.contig_id,
                 r.position,
-                r.strand.symbol(),
+                if r.pattern == 0 { '+' } else { '-' },
                 r.gap,
                 r.flags,
                 r.local_gc
@@ -398,11 +400,7 @@ impl Tgt {
                 gap: f[4].parse().map_err(|_| bad(path, line))?,
                 contig_id: f[1].parse().map_err(|_| bad(path, line))?,
                 enzyme_idx: enzyme.idx,
-                strand: if f[3] == "-" {
-                    Strand::Rev
-                } else {
-                    Strand::Fwd
-                },
+                pattern: u8::from(f[3] == "-"),
                 tag_len: tag_b.len() as u8,
                 flags: f.get(5).and_then(|s| s.parse().ok()).unwrap_or(0),
                 local_gc: f

@@ -125,30 +125,48 @@ gate, and the honest one: if sk2bGrow does not beat the Pilea baseline at 1×
 subsampling, the premise needs rethinking rather than more engineering. See
 [`benches/README.md`](benches/README.md).
 
-### Things the design documents did not anticipate
+### Findings, and corrections to earlier ones
 
-Found by running the pipeline, not by reasoning about it. Each is documented
-where it lives; collected in [`docs/design/00-overview.md`](docs/design/00-overview.md).
+The enzyme table is transcribed from
+[Fast2bRAD-M](https://github.com/HuangShiLab/Fast2bRAD-M) and verified against
+real E. coli K-12 MG1655 (NC_000913.3): 14 of 16 densities reproduce the design
+report's Table §4.1 to within 3 %, and the union's worst-case gap matches to 1 bp
+(1 446 vs 1 447). See [`docs/enzymes.md`](docs/enzymes.md) for the full table and
+the two understood discrepancies.
 
-* **Palindromic enzymes need two-orientation matching.** AlfI, BplI, FalI and
-  HaeIV read identically on either strand, so a reverse-complemented read yields
-  the reverse complement of the stored tag and the motif scan cannot tell.
-  Without probing both, four of sixteen strata silently lose half their reads.
-* **HaeIV's recognition site is a strict subset of Hin4I's** (`R = A/G ⊂ V = A/C/G`,
-  identical flanks), so every HaeIV site is a byte-identical Hin4I tag. Those two
-  strata are not independent — a caveat for the χ² test, and ~18 % of all tags
-  were being discarded as "ambiguous" before it was handled.
+**Real, and confirmed on real data:**
+
+* **Bsp24I ⊂ CjePI.** Both Bsp24I patterns are strict refinements of a CjePI
+  pattern at the same tag length and offsets, so every Bsp24I tag is a
+  byte-identical CjePI tag — 1 636 / 1 636 on E. coli. Bsp24I therefore carries
+  no information independent of CjePI, and the panel is not 16 independent
+  strata.
+* **Uniqueness must be counted over loci, not anchor rows.** Two enzymes claiming
+  one window is a locus seen twice, not a duplicated locus. Counting rows masked
+  *100 % of Bsp24I* and 24 % of CjePI out of coverage modelling — 12.4 % of all
+  anchors instead of the correct 3.4 %.
 * **Shared anchors must keep their counts** through the counter, or the EM
   reassignment has nothing to reassign.
 * **A fixed window size drops the sparse enzymes.** At 100 anchors/window, PpiI,
-  BplI and PsrI get 3–4 windows even on E. coli, which defeats a 16-enzyme design.
+  BplI and PsrI get 3–4 windows even on E. coli.
 * **The origin belongs to the genome, not the enzyme.** Searching it per enzyme
   turns search divergence into apparent enzyme disagreement.
 
-The last three share a root: in a stratified design, anything fitted *per
-stratum* adds between-stratum variance when it fits noise — and the cross-enzyme
-consistency test, this project's headline QC signal, is exactly what detects
-that. It flagged the pipeline's own over-fitting before it ever saw real data.
+**Withdrawn.** Two earlier claims did not survive checking against the reference
+implementation, and both traced to the same root cause — five of my sixteen flank
+definitions (CjeI, PpiI, HaeIV, CjePI, BslFI) were wrong, and all measurements
+had been taken on synthetic random-sequence genomes rather than a real one:
+
+* *"HaeIV's tags are byte-identical to Hin4I's."* The recognition sites do
+  overlap — HaeIV's site is exactly the intersection of Hin4I's two patterns —
+  but with correct flanks (HaeIV 7/9, Hin4I 8/8) the tag *windows* differ, so the
+  tags are distinct sequences. The real containment is Bsp24I ⊂ CjePI.
+* *"Palindromic enzymes silently lose half their reads."* This described a bug in
+  an extraction model that reverse-complemented tags and compared them
+  byte-exactly. The reference model never reverse-complements during extraction —
+  the tag is the forward-strand window, and both orientations are covered by the
+  enzyme having two patterns — so the situation does not arise. Matching is
+  strand-canonical, as in Fast2bRAD-M.
 
 ## License
 

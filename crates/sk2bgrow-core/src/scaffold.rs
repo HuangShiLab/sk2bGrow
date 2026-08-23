@@ -241,7 +241,6 @@ pub fn ordered_contigs(draft: &Tgt) -> Vec<&ContigMeta> {
 mod tests {
     use super::*;
     use crate::anchor_db::{Anchor, BuildParams, GenomeMeta};
-    use crate::digest::Strand;
     use crate::tgt::{ContigKind, TgtRecord};
 
     fn ref_db(tags: &[(u64, u64)]) -> AnchorDb {
@@ -306,7 +305,7 @@ mod tests {
                 gap: 0,
                 contig_id,
                 enzyme_idx: 0,
-                strand: Strand::Fwd,
+                pattern: 0,
                 tag_len: 32,
                 flags: 0,
                 local_gc: 100,

@@ -4,15 +4,20 @@
 //! budget) and, on the Pilea side, `kmc.pyx`/`io.pyx` — except the counted unit
 //! is an enzyme tag rather than a k-mer.
 //!
-//! ## Why the read is scanned for recognition motifs rather than k-merised
+//! ## The scan model
 //!
-//! A 2bRAD tag is not an arbitrary k-mer: it always contains its enzyme's
-//! recognition site at a known offset. Scanning a read for the 16 motifs and
-//! extracting the implied tag span turns matching into O(read_len × n_enzymes)
-//! motif tests plus one hash lookup per hit, instead of one lookup per read
-//! position per tag length. It also means route A (WMS reads) and route B (real
-//! 2bRAD reads) share a single code path — in route B the read simply *is* the
-//! tag, motif and all.
+//! Reads are scanned exactly as reference genomes are ([`crate::digest`]): slide
+//! a window of each enzyme's tag length and test it against that enzyme's
+//! patterns. A 2bRAD tag is not an arbitrary k-mer — it is a fixed-length window
+//! satisfying a motif constraint — so this is both the correct model and cheaper
+//! than hashing every k-mer of every read. It also makes route A (WMS reads) and
+//! route B (real 2bRAD reads) one code path: in route B the read simply *is* the
+//! tag.
+//!
+//! Reads may be sequenced from either strand, so a read window can be the
+//! reverse complement of the reference window. Matching is therefore
+//! strand-canonical throughout — the same `canonical_hash` convention
+//! Fast2bRAD-M uses.
 //!
 //! A tag is only counted when it lies wholly inside the read. For 150 bp reads
 //! and a 32 bp tag that retains (150−32+1)/150 ≈ 0.79 of the local depth — the
@@ -34,7 +39,7 @@ use serde::{Deserialize, Serialize};
 use crate::anchor_db::AnchorDb;
 use crate::enzyme::{Enzyme, PANEL};
 use crate::error::Result;
-use crate::seq::{canonical_hash, hamming_within, hash_tag, iupac_matches, revcomp};
+use crate::seq::{canonical_hash, hamming_within, hash_tag, revcomp};
 
 /// How reads are interpreted.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -85,9 +90,6 @@ pub struct AnchorIndex<'a> {
     /// (seed slot, seed hash) -> anchor indices (mismatch-tolerant matching).
     seeds: HashMap<(u8, u64), Vec<u32>>,
     n_seeds: u8,
-    /// Precomputed reverse-complement of every enzyme pattern, so the motif scan
-    /// does not reallocate per read.
-    rc_patterns: Vec<Vec<u8>>,
     /// Panel entries actually present in this database.
     active: Vec<&'static Enzyme>,
 }
@@ -117,13 +119,11 @@ impl<'a> AnchorIndex<'a> {
             .iter()
             .filter(|e| db.params.enzymes.contains(e.idx))
             .collect();
-        let rc_patterns = active.iter().map(|e| revcomp(e.pattern_bytes())).collect();
         AnchorIndex {
             db,
             exact,
             seeds,
             n_seeds,
-            rc_patterns,
             active,
         }
     }
@@ -135,13 +135,11 @@ impl<'a> AnchorIndex<'a> {
     /// Anchors whose tag is within `budget` mismatches of `query`, together with
     /// the distance.
     ///
-    /// Both orientations of `query` are tried. That is not redundant: for a
-    /// **palindromic** recognition site (AlfI, BplI, FalI, HaeIV) the motif reads
-    /// the same on either strand, so a read that arrives reverse-complemented
-    /// yields the tag's reverse complement and the motif scan cannot tell. The
-    /// stored tag is one of the two readings; without probing both, roughly half
-    /// of every palindromic enzyme's reads would silently fail to match, quietly
-    /// halving four of the sixteen strata.
+    /// Both orientations of `query` are tried, because a read may be sequenced
+    /// from either strand: a read window can be the reverse complement of the
+    /// reference window that produced the anchor. This is the same
+    /// strand-canonical convention Fast2bRAD-M uses (`canonical_hash` takes the
+    /// lexicographically smaller of a sequence and its reverse complement).
     pub fn lookup(&self, query: &[u8], budget: u32, out: &mut Vec<(u32, u32)>) {
         out.clear();
         // The exact hash is strand-canonical, so one bucket lookup serves both
@@ -197,95 +195,70 @@ impl<'a> AnchorIndex<'a> {
     ) -> u32 {
         let mut recorded = 0u32;
         let mut hits: Vec<(u32, u32)> = Vec::new();
-        for (ei, enzyme) in self.active.iter().enumerate() {
-            let plen = enzyme.pattern_len();
-            if read.len() < enzyme.tag_len as usize {
+        for enzyme in self.active.iter() {
+            let len = enzyme.tag_len as usize;
+            if read.len() < len {
                 continue;
             }
-            let palindromic = enzyme.is_palindromic();
-            for pos in 0..=(read.len() - plen) {
-                for fwd in [true, false] {
-                    if !fwd && palindromic {
-                        continue; // same locus, already handled on the forward pass
-                    }
-                    let pat: &[u8] = if fwd {
-                        enzyme.pattern_bytes()
-                    } else {
-                        &self.rc_patterns[ei]
-                    };
-                    if !motif_at(pat, read, pos) {
-                        continue;
-                    }
-                    stats.motif_hits += 1;
-                    let Some((ts, te)) = enzyme.tag_span(pos, read.len(), fwd) else {
-                        stats.tag_truncated += 1;
-                        continue;
-                    };
-                    let raw = &read[ts..te];
-                    if raw.iter().any(|b| !matches!(b, b'A' | b'C' | b'G' | b'T')) {
-                        stats.tag_ambiguous += 1;
-                        continue;
-                    }
-                    let oriented: Vec<u8> = if fwd { raw.to_vec() } else { revcomp(raw) };
-                    self.lookup(&oriented, cfg.max_mismatch, &mut hits);
-                    if hits.is_empty() {
-                        stats.tag_unmatched += 1;
-                        continue;
-                    }
-                    let best = hits.iter().map(|&(_, d)| d).min().unwrap();
-                    let best_hits: Vec<u32> = hits
-                        .iter()
-                        .filter(|&&(_, d)| d == best)
-                        .map(|&(i, _)| i)
-                        .collect();
+            for start in 0..=(read.len() - len) {
+                let window = &read[start..start + len];
+                if enzyme.match_window(window).is_none() {
+                    continue;
+                }
+                stats.motif_hits += 1;
+                if window
+                    .iter()
+                    .any(|b| !matches!(b, b'A' | b'C' | b'G' | b'T'))
+                {
+                    stats.tag_ambiguous += 1;
+                    continue;
+                }
+                self.lookup(window, cfg.max_mismatch, &mut hits);
+                if hits.is_empty() {
+                    stats.tag_unmatched += 1;
+                    continue;
+                }
+                let best = hits.iter().map(|&(_, d)| d).min().unwrap();
+                let best_hits: Vec<u32> = hits
+                    .iter()
+                    .filter(|&&(_, d)| d == best)
+                    .map(|&(i, _)| i)
+                    .collect();
 
-                    // Classify the ambiguity before acting on it. Several anchors
-                    // at one genomic locus is not the same thing as several loci:
-                    // the panel contains overlapping recognition sites (HaeIV's
-                    // GAY-N5-RTC is a strict subset of Hin4I's GAY-N5-VTC, with
-                    // identical flanks), so a single physical tag legitimately
-                    // belongs to two enzyme strata at once.
-                    let mut loci: Vec<(u32, u16, u64)> = best_hits
-                        .iter()
-                        .map(|&i| {
-                            let a = &self.db.anchors[i as usize];
-                            (a.genome_id, a.contig_id, a.position)
-                        })
-                        .collect();
-                    loci.sort_unstable();
-                    loci.dedup();
-                    if loci.len() > 1 {
-                        stats.tag_multi_locus += 1;
-                        if !cfg.keep_multimappers {
-                            continue;
-                        }
-                    } else if best_hits.len() > 1 {
-                        stats.tag_multi_enzyme += 1;
+                // Several anchors at one genomic locus is not the same thing as
+                // several loci. The panel contains a containment relation —
+                // every Bsp24I tag is byte-identical to a CjePI tag — so one
+                // physical tag legitimately belongs to two enzyme strata.
+                let mut loci: Vec<(u32, u16, u64)> = best_hits
+                    .iter()
+                    .map(|&i| {
+                        let a = &self.db.anchors[i as usize];
+                        (a.genome_id, a.contig_id, a.position)
+                    })
+                    .collect();
+                loci.sort_unstable();
+                loci.dedup();
+                if loci.len() > 1 {
+                    stats.tag_multi_locus += 1;
+                    if !cfg.keep_multimappers {
+                        continue;
                     }
-                    for i in &best_hits {
-                        counts[*i as usize] += 1;
-                    }
-                    stats.tag_matched += 1;
-                    stats.mismatch_hist[best.min(3) as usize] += 1;
-                    recorded += 1;
-                    if cfg.mode == CountMode::TwoBrad {
-                        return recorded;
-                    }
+                } else if best_hits.len() > 1 {
+                    stats.tag_multi_enzyme += 1;
+                }
+                for i in &best_hits {
+                    counts[*i as usize] += 1;
+                }
+                stats.tag_matched += 1;
+                stats.mismatch_hist[best.min(3) as usize] += 1;
+                recorded += 1;
+                if cfg.mode == CountMode::TwoBrad {
+                    return recorded;
                 }
             }
         }
         recorded
     }
-}
-
-#[inline]
-fn motif_at(pat: &[u8], seq: &[u8], pos: usize) -> bool {
-    if pos + pat.len() > seq.len() {
-        return false;
-    }
-    pat.iter()
-        .zip(&seq[pos..pos + pat.len()])
-        .all(|(&c, &b)| iupac_matches(c, b))
 }
 
 /// Split a tag of `len` bp into `n` contiguous seeds. Remainder bases go to the
@@ -311,7 +284,8 @@ pub struct CountStats {
     pub reads_total: u64,
     pub reads_with_anchor: u64,
     pub motif_hits: u64,
-    /// Motif found but the tag ran off the read end.
+    /// Retained for format stability. The window scan cannot produce a
+    /// truncated tag: a window shorter than `tag_len` never matches a pattern.
     pub tag_truncated: u64,
     /// Tag contained an ambiguous base.
     pub tag_ambiguous: u64,
@@ -563,11 +537,11 @@ mod tests {
     }
 
     #[test]
-    fn palindromic_enzymes_match_on_both_read_orientations() {
-        // AlfI's GCA-N6-TGC is its own reverse complement, so the motif scan
-        // cannot tell which strand a read came off. The flanks are *not*
-        // palindromic, so the two readings of the tag are different byte
-        // strings and a naive forward-only comparison loses one of them.
+    fn reads_match_regardless_of_sequencing_strand() {
+        // A read may be sequenced from either strand, so its window can be the
+        // reverse complement of the reference window. AlfI is the sharpest case:
+        // its window pattern is its own reverse complement, so the scan matches
+        // either way and only canonical comparison links the two readings.
         let mut p = std::env::temp_dir();
         p.push(format!("sk2bgrow-{}-pal.fna", std::process::id()));
         let mut seq = String::new();
@@ -585,7 +559,7 @@ mod tests {
             ..BuildParams::default()
         };
         let db = assemble(params, vec![(meta, anchors, tags)]);
-        assert!(by_name("AlfI").unwrap().is_palindromic());
+        assert!(by_name("AlfI").unwrap().is_self_complementary());
 
         let genome = seq.as_bytes();
         let idx = AnchorIndex::build(&db, 2);
@@ -700,11 +674,13 @@ mod tests {
     }
 
     #[test]
-    fn truncated_tags_are_reported_not_counted() {
+    fn a_partial_tag_at_a_read_edge_simply_does_not_match() {
+        // In the window model there is no "truncated tag" to report: a window
+        // shorter than tag_len can never satisfy a pattern, so a read carrying
+        // only part of a tag produces no hit at all rather than a near-miss.
         let (db, genome) = tiny_db();
         let idx = AnchorIndex::build(&db, 2);
-        // Read starts inside the tag: the motif is present but the upstream
-        // flank is missing.
+        // Anchor 0's window is genome[50..82]; start the read inside it.
         let read = &genome[58..120];
         let mut counts = vec![0u32; db.n_anchors()];
         let mut stats = CountStats::default();
@@ -712,8 +688,12 @@ mod tests {
             idx.count_read(read, &MatchConfig::default(), &mut counts, &mut stats),
             0
         );
-        assert_eq!(stats.motif_hits, 1);
-        assert_eq!(stats.tag_truncated, 1);
+        assert_eq!(stats.motif_hits, 0);
+        assert_eq!(stats.tag_unmatched, 0);
+        assert_eq!(
+            stats.tag_truncated, 0,
+            "the field is vestigial in this model"
+        );
     }
 
     #[test]

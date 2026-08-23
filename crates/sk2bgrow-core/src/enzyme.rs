@@ -1,280 +1,278 @@
-//! The 16 Type IIB enzyme panel used by 2bRAD-M / Syn2b.
+//! The 16 Type IIB enzyme panel used by 2bRAD-M / Syn2b / Fast2bRAD-M.
 //!
-//! Reuse target: `bsyn::enzyme`. The table below is the vendored copy so this
-//! workspace builds standalone; recognition patterns, tag lengths and per-genome
-//! densities are the ones tabulated in the design report §4.1.
+//! Transcribed from `Fast2bRAD-M/src/enzymes.rs`, which in turn derives its
+//! patterns from the `@site` regexes in `2bRADExtraction.pl`. That is the
+//! authoritative definition; this table is verified against it by the tests
+//! below and by measured densities on E. coli K-12 MG1655 (see
+//! `docs/enzymes.md`).
 //!
-//! Anatomy of a tag. A Type IIB enzyme excises a fragment spanning its own
-//! recognition site plus a fixed flank on each side:
+//! ## The window model
+//!
+//! A tag is **a fixed-length window of the forward strand** that satisfies one of
+//! the enzyme's patterns. A pattern is a set of `(offset, motif)` anchors
+//! positioned inside that window:
 //!
 //! ```text
-//!        up_flank            recognition (pattern)            down_flank
-//!   |<--------------->|<--------------------------->|<--------------------->|
-//!   ^ tag_start                                                   tag_end ^
-//!                     ^ site_start (anchor coordinate)
+//!   BcgI, tag_len 32, pattern 0:   [ACGT]{10} CGA [ACGT]{6} TGC [ACGT]{10}
+//!                                   ^offset 10 ─┘         ^offset 19 ─┘
 //! ```
 //!
-//! `tag_len == up_flank + pattern.len() + down_flank` holds for every entry and
-//! is asserted in the tests. The anchor coordinate reported downstream is
-//! `site_start` — the recognition site, not the tag start — because that is the
-//! quantity invariant to flank conventions and therefore comparable against
-//! `bsyn`.
+//! Most enzymes have **two** patterns — the recognition motif as it reads on
+//! each strand. Both are matched against the forward strand, and the extracted
+//! tag is the forward-strand window either way; nothing is reverse-complemented
+//! during extraction. Enzymes whose *whole window pattern* is its own reverse
+//! complement (AlfI, BplI, FalI) need only one.
+//!
+//! This is why tag comparison is strand-canonical (see
+//! [`crate::seq::canonical_hash`]): a read sequenced from the opposite strand
+//! yields the reverse complement of the reference window.
 
 use serde::{Deserialize, Serialize};
 
-use crate::seq::{is_palindromic, iupac_matches};
+use crate::seq::iupac_matches;
 
 /// Number of enzymes in the panel. `enzyme_idx` in [`crate::anchor_db::Anchor`]
 /// is an index into [`PANEL`] and fits in `u8` precisely because this is 16.
 pub const N_ENZYMES: usize = 16;
 
-/// One Type IIB enzyme.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+/// One anchor inside a tag window: a motif (IUPAC) at a fixed offset.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Motif {
+    pub offset: u8,
+    pub bases: &'static str,
+}
+
+impl Motif {
+    #[inline]
+    fn matches(&self, window: &[u8]) -> bool {
+        let o = self.offset as usize;
+        let b = self.bases.as_bytes();
+        if o + b.len() > window.len() {
+            return false;
+        }
+        b.iter()
+            .zip(&window[o..o + b.len()])
+            .all(|(&c, &x)| iupac_matches(c, x))
+    }
+}
+
+/// One way an enzyme's recognition site can sit inside a tag window.
+pub type Pattern = &'static [Motif];
+
+/// One Type IIB enzyme. Not serialised: databases persist `enzyme_idx` into
+/// [`PANEL`], never the definition itself, so the table can be corrected
+/// without invalidating stored anchors.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Enzyme {
     /// Index into [`PANEL`]; stored in anchors as `enzyme_idx`.
     pub idx: u8,
     pub name: &'static str,
-    /// Recognition pattern in IUPAC, N-runs expanded (e.g. `CGANNNNNNTGC`).
-    pub pattern: &'static str,
-    /// Human-readable form used in reports (e.g. `CGA-N6-TGC`).
-    pub display: &'static str,
-    /// Excised tag length in bp, as tabulated in the report.
+    /// Excised tag length in bp.
     pub tag_len: u8,
-    /// Bases 5' of the recognition site that belong to the tag.
-    pub up_flank: u8,
-    /// Bases 3' of the recognition site that belong to the tag.
-    pub down_flank: u8,
-    /// REBASE cut-site notation, retained for provenance when reconciling this
-    /// table against `bsyn::enzyme`.
-    pub rebase: &'static str,
+    /// One entry per strand orientation. A single entry means the whole window
+    /// pattern is its own reverse complement.
+    pub patterns: &'static [Pattern],
+    /// Human-readable recognition site, for reports.
+    pub display: &'static str,
 }
 
 impl Enzyme {
-    /// Recognition pattern as bytes.
+    /// Does `window` (of length [`Self::tag_len`]) match pattern `p`?
     #[inline]
-    pub fn pattern_bytes(&self) -> &'static [u8] {
-        self.pattern.as_bytes()
+    pub fn pattern_matches(&self, window: &[u8], p: usize) -> bool {
+        window.len() == self.tag_len as usize && self.patterns[p].iter().all(|m| m.matches(window))
     }
 
-    /// Length of the recognition site in bp.
+    /// Index of the first pattern `window` matches, if any.
     #[inline]
-    pub fn pattern_len(&self) -> usize {
-        self.pattern.len()
+    pub fn match_window(&self, window: &[u8]) -> Option<usize> {
+        (0..self.patterns.len()).find(|&p| self.pattern_matches(window, p))
     }
 
-    /// A palindromic pattern hits the same physical locus from both strands;
-    /// [`crate::digest`] deduplicates those so a locus is not double-counted.
-    pub fn is_palindromic(&self) -> bool {
-        is_palindromic(self.pattern_bytes())
-    }
-
-    /// Does the recognition site occur at `seq[pos..]` on the forward strand?
-    pub fn matches_at(&self, seq: &[u8], pos: usize) -> bool {
-        let pat = self.pattern_bytes();
-        if pos + pat.len() > seq.len() {
-            return false;
-        }
-        pat.iter()
-            .zip(&seq[pos..pos + pat.len()])
-            .all(|(&code, &base)| iupac_matches(code, base))
-    }
-
-    /// Half-open tag span `[start, end)` for a site starting at `site_start` on
-    /// strand `fwd`. Returns `None` when the tag would run off the contig — a
-    /// site within one tag length of a contig end yields no anchor.
-    pub fn tag_span(
-        &self,
-        site_start: usize,
-        contig_len: usize,
-        fwd: bool,
-    ) -> Option<(usize, usize)> {
-        let (up, down) = if fwd {
-            (self.up_flank as usize, self.down_flank as usize)
-        } else {
-            // On the reverse strand the flanks swap: what is "upstream of the
-            // site" in enzyme coordinates lies downstream in contig coordinates.
-            (self.down_flank as usize, self.up_flank as usize)
-        };
-        let start = site_start.checked_sub(up)?;
-        let end = site_start + self.pattern_len() + down;
-        if end > contig_len {
-            return None;
-        }
-        Some((start, end))
+    /// True when one pattern suffices because the window pattern is its own
+    /// reverse complement.
+    pub fn is_self_complementary(&self) -> bool {
+        self.patterns.len() == 1
     }
 }
 
+macro_rules! motifs {
+    ($(($off:expr, $bases:expr)),+ $(,)?) => {
+        &[$(Motif { offset: $off, bases: $bases }),+]
+    };
+}
+
+// Patterns, transcribed from Fast2bRAD-M `src/enzymes.rs`. The second pattern of
+// each pair is the reverse complement of the first *as a window pattern*; a test
+// below asserts that closure holds for every entry, which is what catches a
+// mis-transcribed offset.
+static BCGI_P: [Pattern; 2] = [
+    motifs![(10, "CGA"), (19, "TGC")],
+    motifs![(10, "GCA"), (19, "TCG")],
+];
+static ALFI_P: [Pattern; 1] = [motifs![(10, "GCA"), (19, "TGC")]];
+static ALOI_P: [Pattern; 2] = [
+    motifs![(7, "GAAC"), (17, "TCC")],
+    motifs![(7, "GGA"), (16, "GTTC")],
+];
+static BAEI_P: [Pattern; 2] = [
+    motifs![(10, "AC"), (16, "GTAYC")],
+    motifs![(7, "GRTAC"), (16, "GT")],
+];
+static BPLI_P: [Pattern; 1] = [motifs![(8, "GAG"), (16, "CTC")]];
+static BSAXI_P: [Pattern; 2] = [
+    motifs![(9, "AC"), (16, "CTCC")],
+    motifs![(7, "GGAG"), (16, "GT")],
+];
+static BSLFI_P: [Pattern; 2] = [motifs![(6, "GGGAC")], motifs![(14, "GTCCC")]];
+static BSP24I_P: [Pattern; 2] = [
+    motifs![(8, "GAC"), (17, "TGG")],
+    motifs![(7, "CCA"), (16, "GTC")],
+];
+static CJEI_P: [Pattern; 2] = [
+    motifs![(8, "CCA"), (17, "GT")],
+    motifs![(9, "AC"), (17, "TGG")],
+];
+static CJEPI_P: [Pattern; 2] = [
+    motifs![(7, "CCA"), (17, "TC")],
+    motifs![(8, "GA"), (17, "TGG")],
+];
+static CSPCI_P: [Pattern; 2] = [
+    motifs![(11, "CAA"), (19, "GTGG")],
+    motifs![(10, "CCAC"), (19, "TTG")],
+];
+static FALI_P: [Pattern; 1] = [motifs![(8, "AAG"), (16, "CTT")]];
+static HAEIV_P: [Pattern; 2] = [
+    motifs![(7, "GAY"), (15, "RTC")],
+    motifs![(9, "GAY"), (17, "RTC")],
+];
+static HIN4I_P: [Pattern; 2] = [
+    motifs![(8, "GAY"), (16, "VTC")],
+    motifs![(8, "GAB"), (16, "RTC")],
+];
+static PPII_P: [Pattern; 2] = [
+    motifs![(7, "GAAC"), (16, "CTC")],
+    motifs![(8, "GAG"), (16, "GTTC")],
+];
+static PSRI_P: [Pattern; 2] = [
+    motifs![(7, "GAAC"), (17, "TAC")],
+    motifs![(7, "GTA"), (16, "GTTC")],
+];
+
 /// The panel, in the order used by `enzyme_idx`. Do not reorder: `enzyme_idx`
 /// is persisted inside anchor databases and count tables.
-///
-/// `up_flank`/`down_flank` follow REBASE cut coordinates where those are
-/// unambiguous, and split the remaining flank evenly otherwise. Because every
-/// downstream statistic keys on `site_start`, a flank convention that differs
-/// from `bsyn` by a base or two shifts tag sequences but not anchor positions or
-/// densities. See `docs/enzymes.md` for the reconciliation checklist.
 pub static PANEL: [Enzyme; N_ENZYMES] = [
     Enzyme {
         idx: 0,
         name: "BcgI",
-        pattern: "CGANNNNNNTGC",
-        display: "CGA-N6-TGC",
         tag_len: 32,
-        up_flank: 10,
-        down_flank: 10,
-        rebase: "(10/12)CGA N6 TGC(12/10)",
+        patterns: &BCGI_P,
+        display: "CGA-N6-TGC",
     },
     Enzyme {
         idx: 1,
         name: "AlfI",
-        pattern: "GCANNNNNNTGC",
-        display: "GCA-N6-TGC",
         tag_len: 32,
-        up_flank: 10,
-        down_flank: 10,
-        rebase: "(10/12)GCA N6 TGC(12/10)",
+        patterns: &ALFI_P,
+        display: "GCA-N6-TGC",
     },
     Enzyme {
         idx: 2,
         name: "AloI",
-        pattern: "GAACNNNNNNTCC",
-        display: "GAAC-N6-TCC",
         tag_len: 27,
-        up_flank: 7,
-        down_flank: 7,
-        rebase: "(7/12)GAAC N6 TCC(12/7)",
+        patterns: &ALOI_P,
+        display: "GAAC-N6-TCC",
     },
     Enzyme {
         idx: 3,
         name: "BaeI",
-        pattern: "ACNNNNGTAYC",
-        display: "AC-N4-GTAYC",
         tag_len: 28,
-        up_flank: 10,
-        down_flank: 7,
-        rebase: "(10/15)AC N4 GTAYC(12/7)",
+        patterns: &BAEI_P,
+        display: "AC-N4-GTAYC",
     },
     Enzyme {
         idx: 4,
         name: "BplI",
-        pattern: "GAGNNNNNCTC",
-        display: "GAG-N5-CTC",
         tag_len: 27,
-        up_flank: 8,
-        down_flank: 8,
-        rebase: "(8/13)GAG N5 CTC(13/8)",
+        patterns: &BPLI_P,
+        display: "GAG-N5-CTC",
     },
     Enzyme {
         idx: 5,
         name: "BsaXI",
-        pattern: "ACNNNNNCTCC",
-        display: "AC-N5-CTCC",
         tag_len: 27,
-        up_flank: 9,
-        down_flank: 7,
-        rebase: "(9/12)AC N5 CTCC(10/7)",
+        patterns: &BSAXI_P,
+        display: "AC-N5-CTCC",
     },
     Enzyme {
         idx: 6,
         name: "BslFI",
-        pattern: "GGGAC",
-        display: "GGGAC",
         tag_len: 25,
-        up_flank: 0,
-        down_flank: 20,
-        rebase: "GGGAC(10/14)",
+        patterns: &BSLFI_P,
+        display: "GGGAC",
     },
     Enzyme {
         idx: 7,
         name: "Bsp24I",
-        pattern: "GACNNNNNNTGG",
-        display: "GAC-N6-TGG",
         tag_len: 27,
-        up_flank: 8,
-        down_flank: 7,
-        rebase: "(8/13)GAC N6 TGG(12/7)",
+        patterns: &BSP24I_P,
+        display: "GAC-N6-TGG",
     },
     Enzyme {
         idx: 8,
         name: "CjeI",
-        pattern: "CCANNNNNNGT",
-        display: "CCA-N6-GT",
         tag_len: 28,
-        up_flank: 9,
-        down_flank: 8,
-        rebase: "(8/14)CCA N6 GT(9/8)",
+        patterns: &CJEI_P,
+        display: "CCA-N6-GT",
     },
     Enzyme {
         idx: 9,
         name: "CjePI",
-        pattern: "CCANNNNNNNTC",
-        display: "CCA-N7-TC",
         tag_len: 27,
-        up_flank: 8,
-        down_flank: 7,
-        rebase: "(8/13)CCA N7 TC(13/8)",
+        patterns: &CJEPI_P,
+        display: "CCA-N7-TC",
     },
     Enzyme {
         idx: 10,
         name: "CspCI",
-        pattern: "CAANNNNNGTGG",
-        display: "CAA-N5-GTGG",
         tag_len: 33,
-        up_flank: 11,
-        down_flank: 10,
-        rebase: "(11/13)CAA N5 GTGG(12/10)",
+        patterns: &CSPCI_P,
+        display: "CAA-N5-GTGG",
     },
     Enzyme {
         idx: 11,
         name: "FalI",
-        pattern: "AAGNNNNNCTT",
-        display: "AAG-N5-CTT",
         tag_len: 27,
-        up_flank: 8,
-        down_flank: 8,
-        rebase: "(8/13)AAG N5 CTT(13/8)",
+        patterns: &FALI_P,
+        display: "AAG-N5-CTT",
     },
-    // HaeIV's recognition pattern is its own reverse complement, so the excised
-    // duplex must be strand-symmetric: the flanks are split evenly rather than
-    // following the asymmetric REBASE overhang coordinates.
     Enzyme {
         idx: 12,
         name: "HaeIV",
-        pattern: "GAYNNNNNRTC",
-        display: "GAY-N5-RTC",
         tag_len: 27,
-        up_flank: 8,
-        down_flank: 8,
-        rebase: "(7/13)GAY N5 RTC(14/9)",
+        patterns: &HAEIV_P,
+        display: "GAY-N5-RTC",
     },
     Enzyme {
         idx: 13,
         name: "Hin4I",
-        pattern: "GAYNNNNNVTC",
-        display: "GAY-N5-VTC",
         tag_len: 27,
-        up_flank: 8,
-        down_flank: 8,
-        rebase: "(8/13)GAY N5 VTC(13/8)",
+        patterns: &HIN4I_P,
+        display: "GAY-N5-VTC",
     },
     Enzyme {
         idx: 14,
         name: "PpiI",
-        pattern: "GAACNNNNNCTC",
+        tag_len: 27,
+        patterns: &PPII_P,
         display: "GAAC-N5-CTC",
-        tag_len: 28,
-        up_flank: 8,
-        down_flank: 8,
-        rebase: "(7/12)GAAC N5 CTC(13/8)",
     },
     Enzyme {
         idx: 15,
         name: "PsrI",
-        pattern: "GAACNNNNNNTAC",
-        display: "GAAC-N6-TAC",
         tag_len: 27,
-        up_flank: 7,
-        down_flank: 7,
-        rebase: "(7/12)GAAC N6 TAC(12/7)",
+        patterns: &PSRI_P,
+        display: "GAAC-N6-TAC",
     },
 ];
 
@@ -290,8 +288,8 @@ pub fn by_idx(idx: u8) -> Option<&'static Enzyme> {
 
 /// Parse a `--enzymes` selection: `all`, or a comma-separated list of names.
 ///
-/// The returned vector is deduplicated and sorted by panel index, so the enzyme
-/// order in an anchor database never depends on how the user typed the flag.
+/// The result is deduplicated and sorted by panel index, so enzyme order in a
+/// database never depends on how the user typed the flag.
 pub fn parse_selection(spec: &str) -> Result<Vec<&'static Enzyme>, EnzymeError> {
     let spec = spec.trim();
     if spec.eq_ignore_ascii_case("all") {
@@ -315,7 +313,7 @@ pub fn parse_selection(spec: &str) -> Result<Vec<&'static Enzyme>, EnzymeError> 
     Ok(picked)
 }
 
-/// Bitset over the panel; used to record which enzymes an anchor database holds.
+/// Bitset over the panel; records which enzymes an anchor database holds.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EnzymeSet(pub u16);
 
@@ -338,6 +336,25 @@ impl EnzymeSet {
     }
 }
 
+/// Enzyme pairs where one enzyme's tags are a subset of another's.
+///
+/// **Bsp24I is entirely contained in CjePI.** Both Bsp24I patterns are strict
+/// refinements of a CjePI pattern at the same tag length and offsets
+/// (`GAC` at 8 implies `GA` at 8; `TGG` at 17 is shared), so *every* Bsp24I tag
+/// is a byte-identical CjePI tag — measured at 1 636 / 1 636 on E. coli K-12.
+///
+/// This matters for the cross-enzyme design: Bsp24I carries no information
+/// independent of CjePI, so treating them as two independent strata overstates
+/// the panel's replication. See `docs/enzymes.md`.
+pub static CONTAINED_PAIRS: &[(&str, &str)] = &[("Bsp24I", "CjePI")];
+
+/// True when `a`'s tags are a subset of `b`'s.
+pub fn is_contained_in(a: &str, b: &str) -> bool {
+    CONTAINED_PAIRS
+        .iter()
+        .any(|&(x, y)| x.eq_ignore_ascii_case(a) && y.eq_ignore_ascii_case(b))
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum EnzymeError {
     #[error("unknown enzyme '{0}'; the 16-enzyme panel is: {}", PANEL.iter().map(|e| e.name).collect::<Vec<_>>().join(", "))]
@@ -349,40 +366,63 @@ pub enum EnzymeError {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::seq::{iupac_mask, revcomp};
+
+    /// Expand a pattern into a per-position set of allowed bases.
+    fn constraints(e: &Enzyme, p: usize) -> Vec<u8> {
+        let mut c = vec![0b1111u8; e.tag_len as usize];
+        for m in e.patterns[p] {
+            for (i, &b) in m.bases.as_bytes().iter().enumerate() {
+                c[m.offset as usize + i] = iupac_mask(b);
+            }
+        }
+        c
+    }
 
     #[test]
-    fn tag_length_is_consistent_with_flanks() {
+    fn every_pattern_set_is_reverse_complement_closed() {
+        // The reverse complement of a tag window is itself a valid tag of the
+        // same enzyme, read from the other strand. So reverse-complementing a
+        // pattern must yield another pattern of the same enzyme. This is the
+        // check that catches a mis-transcribed offset or motif.
         for e in PANEL.iter() {
-            assert_eq!(
-                e.up_flank as usize + e.pattern_len() + e.down_flank as usize,
-                e.tag_len as usize,
-                "{} flank/tag_len mismatch",
-                e.name
-            );
+            let all: Vec<Vec<u8>> = (0..e.patterns.len()).map(|p| constraints(e, p)).collect();
+            for c in &all {
+                let rc: Vec<u8> = c
+                    .iter()
+                    .rev()
+                    .map(|&mask| {
+                        // complement a 4-bit ACGT mask: A<->T (bit0<->bit3), C<->G (bit1<->bit2)
+                        ((mask & 0b0001) << 3)
+                            | ((mask & 0b0010) << 1)
+                            | ((mask & 0b0100) >> 1)
+                            | ((mask & 0b1000) >> 3)
+                    })
+                    .collect();
+                assert!(
+                    all.contains(&rc),
+                    "{}: reverse complement of a pattern is not in the panel",
+                    e.name
+                );
+            }
         }
     }
 
     #[test]
-    fn palindromic_enzymes_have_symmetric_flanks() {
-        // A palindromic recognition site is cut symmetrically on the duplex, so
-        // the forward and reverse copies of a locus must excise the same span.
-        // Without this the two strands would disagree on the tag sequence.
-        let pal: Vec<&str> = PANEL
-            .iter()
-            .filter(|e| e.is_palindromic())
-            .map(|e| e.name)
-            .collect();
-        assert_eq!(
-            pal,
-            vec!["AlfI", "BplI", "FalI", "HaeIV"],
-            "palindrome set drifted"
-        );
-        for e in PANEL.iter().filter(|e| e.is_palindromic()) {
-            assert_eq!(
-                e.up_flank, e.down_flank,
-                "{} palindrome with asymmetric flanks",
-                e.name
-            );
+    fn motif_offsets_fit_inside_the_tag() {
+        for e in PANEL.iter() {
+            for p in e.patterns {
+                for m in *p {
+                    assert!(
+                        m.offset as usize + m.bases.len() <= e.tag_len as usize,
+                        "{} motif {} at {} overruns the {} bp tag",
+                        e.name,
+                        m.bases,
+                        m.offset,
+                        e.tag_len
+                    );
+                }
+            }
         }
     }
 
@@ -395,44 +435,65 @@ mod tests {
     }
 
     #[test]
-    fn display_expands_to_pattern() {
-        // `CGA-N6-TGC` must expand to exactly the stored pattern.
-        for e in PANEL.iter() {
-            let expanded: String = e
-                .display
-                .split('-')
-                .map(|part| {
-                    if let Some(n) = part.strip_prefix('N') {
-                        if let Ok(k) = n.parse::<usize>() {
-                            return "N".repeat(k);
-                        }
-                    }
-                    part.to_string()
-                })
-                .collect();
-            assert_eq!(expanded, e.pattern, "{} display/pattern mismatch", e.name);
-        }
+    fn self_complementary_enzymes_are_exactly_these_three() {
+        // AlfI, BplI and FalI have symmetric flanks around a palindromic core,
+        // so one pattern covers both strands. HaeIV's core is palindromic too,
+        // but its flanks are 7/9, so its two readings occupy different windows
+        // and it needs two patterns.
+        let one: Vec<&str> = PANEL
+            .iter()
+            .filter(|e| e.is_self_complementary())
+            .map(|e| e.name)
+            .collect();
+        assert_eq!(one, vec!["AlfI", "BplI", "FalI"]);
+        assert_eq!(by_name("HaeIV").unwrap().patterns.len(), 2);
     }
 
     #[test]
-    fn recognises_sites_with_degenerate_bases() {
-        let haeiv = by_name("HaeIV").unwrap();
-        // GAY-N5-RTC with Y=T, R=A
-        assert!(haeiv.matches_at(b"GATCCCCCATC", 0));
-        // Y=C, R=G
-        assert!(haeiv.matches_at(b"GACGGGGGGTC", 0));
-        // Y=A is not allowed
-        assert!(!haeiv.matches_at(b"GAACCCCCATC", 0));
-    }
-
-    #[test]
-    fn tag_span_rejects_contig_edges() {
+    fn matches_a_planted_bcgi_window() {
         let bcgi = by_name("BcgI").unwrap();
-        // 10 bp of upstream flank required.
-        assert!(bcgi.tag_span(5, 1_000, true).is_none());
-        assert_eq!(bcgi.tag_span(10, 1_000, true), Some((0, 32)));
-        // and 10 bp downstream of the 12 bp site.
-        assert!(bcgi.tag_span(980, 1_000, true).is_none());
+        // 10 filler, CGA, 6 filler, TGC, 10 filler = 32
+        let w = b"AAAAAAAAAACGAACGTACTGCTTTTTTTTTT";
+        assert_eq!(w.len(), 32);
+        assert_eq!(bcgi.match_window(w), Some(0));
+        // The reverse complement must match the other pattern.
+        assert_eq!(bcgi.match_window(&revcomp(w)), Some(1));
+        // A window of the wrong length never matches.
+        assert_eq!(bcgi.match_window(&w[..31]), None);
+    }
+
+    #[test]
+    fn degenerate_motifs_are_honoured() {
+        let hae = by_name("HaeIV").unwrap();
+        // pattern 0: N7 GAY N5 RTC N9
+        let mut w = vec![b'A'; 27];
+        w[7..10].copy_from_slice(b"GAT"); // Y = T
+        w[15..18].copy_from_slice(b"ATC"); // R = A
+        assert_eq!(hae.match_window(&w), Some(0));
+        w[9] = b'A'; // Y cannot be A
+        assert_eq!(hae.match_window(&w), None);
+    }
+
+    #[test]
+    fn bsp24i_tags_are_all_cjepi_tags() {
+        // A structural property of the panel, not an accident of one genome:
+        // Bsp24I's patterns are strict refinements of CjePI's.
+        let bsp = by_name("Bsp24I").unwrap();
+        let cje = by_name("CjePI").unwrap();
+        assert_eq!(bsp.tag_len, cje.tag_len);
+        for p in 0..bsp.patterns.len() {
+            let c_bsp = constraints(bsp, p);
+            let ok = (0..cje.patterns.len()).any(|q| {
+                let c_cje = constraints(cje, q);
+                c_bsp.iter().zip(&c_cje).all(|(&a, &b)| a & b == a)
+            });
+            assert!(
+                ok,
+                "Bsp24I pattern {p} is not contained in any CjePI pattern"
+            );
+        }
+        assert!(is_contained_in("Bsp24I", "CjePI"));
+        assert!(!is_contained_in("CjePI", "Bsp24I"));
     }
 
     #[test]
@@ -450,8 +511,7 @@ mod tests {
         let sel = parse_selection("BcgI,AlfI,PsrI").unwrap();
         let set = EnzymeSet::from_slice(&sel);
         assert_eq!(set.len(), 3);
-        assert!(set.contains(0));
-        assert!(!set.contains(2));
+        assert!(set.contains(0) && !set.contains(2));
         assert_eq!(set.iter().count(), 3);
     }
 }
