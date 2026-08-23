@@ -1,0 +1,24 @@
+[package]
+name = "sk2bgrow-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "sk2bgrow command line interface"
+
+[[bin]]
+name = "sk2bgrow"
+path = "src/main.rs"
+
+[dependencies]
+sk2bgrow-core = { path = "../sk2bgrow-core" }
+anyhow.workspace = true
+clap.workspace = true
+rayon.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+sk2bgrow-core = { path = "../sk2bgrow-core" }
+serde_json.workspace = true

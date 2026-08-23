@@ -1,0 +1,38 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock.orig
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Data / outputs (never commit genomes or reads)
+*.fna
+*.fa
+*.fasta
+*.fastq
+*.fq
+*.fastq.gz
+*.fq.gz
+*.fna.gz
+/data/
+/out/
+/db/
+benches/work/
+!tests/data/*.fna
+!tests/data/*.fa
+
+# OS / editor
+.DS_Store
+# Word lock files, created while a .docx is open
+~$*
