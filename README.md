@@ -129,18 +129,29 @@ subsampling, the premise needs rethinking rather than more engineering. See
 
 The enzyme table is transcribed from
 [Fast2bRAD-M](https://github.com/HuangShiLab/Fast2bRAD-M) and verified against
-real E. coli K-12 MG1655 (NC_000913.3): 14 of 16 densities reproduce the design
-report's Table §4.1 to within 3 %, and the union's worst-case gap matches to 1 bp
-(1 446 vs 1 447). See [`docs/enzymes.md`](docs/enzymes.md) for the full table and
-the two understood discrepancies.
+three real genomes spanning 43.5–61.5 % GC (E. coli K-12, B. subtilis 168,
+P. putida KT2440): **46 of 48 enzyme × genome cells reproduce the design report's
+Table §4.1 within 3 %**, and the union's worst-case gap matches to 1 bp (1 446 vs
+1 447). A position-by-position diff of all 16 enzymes, 30 patterns and 442
+constrained positions against both the Perl and Fast2bRAD-M found **zero**
+discrepancies. See [`docs/enzymes.md`](docs/enzymes.md).
 
 **Real, and confirmed on real data:**
 
 * **Bsp24I ⊂ CjePI.** Both Bsp24I patterns are strict refinements of a CjePI
   pattern at the same tag length and offsets, so every Bsp24I tag is a
-  byte-identical CjePI tag — 1 636 / 1 636 on E. coli. Bsp24I therefore carries
-  no information independent of CjePI, and the panel is not 16 independent
-  strata.
+  byte-identical CjePI tag — 100 % on all three genomes (1 636/1 636, 891/891,
+  2 910/2 910). A second partial relation, Bsp24I pattern 0 ⊂ CjeI pattern 1,
+  covers a further ~48–51 %. The panel offers at most ~15 independent strata,
+  not 16.
+* **BslFI is Type IIS, not Type IIB** — `GGGAC(10/14)`, cut on one side only, so
+  it excises nothing. Fine as an in-silico marker stratum; not executable as a
+  bench 2bRAD protocol (a real digest gives 1.3–1.7 kb fragments, ~3 % under
+  40 bp). The original Perl flags it `??some question??`.
+* **The report's Hin4I density is not reproducible** from `2bRADExtraction.pl`
+  under any convention tested, while 46 of 48 enzyme × genome cells reproduce
+  within 3 %. Its ratio to the report is 0.741 / 0.687 / 0.794 — not even
+  constant, so no scale factor explains it.
 * **Uniqueness must be counted over loci, not anchor rows.** Two enzymes claiming
   one window is a locus seen twice, not a duplicated locus. Counting rows masked
   *100 % of Bsp24I* and 24 % of CjePI out of coverage modelling — 12.4 % of all

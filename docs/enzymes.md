@@ -62,49 +62,96 @@ Invariants enforced by tests:
   offset or motif, and it holds for all 16;
 * `idx` equals the position in `PANEL`.
 
-## Measured densities: E. coli K-12 MG1655
+## Measured densities, three genomes
 
-`sk2bgrow digest ecoli.fna --enzymes all`, against the design report's Table §4.1.
+`sk2bgrow digest`, against the design report's Table §4.1. Counting distinct tag
+**windows** (start positions), pure ACGT, all overlapping occurrences, union of
+both patterns — exactly the Perl's semantics.
 
-| enzyme | tags | per Mb | report | ratio |
+| enzyme | E. coli | rpt | B. subtilis | rpt | P. putida | rpt |
+|---|---:|---:|---:|---:|---:|---:|
+| CspCI | 132 | 132 | 66 | 65 | 142 | 142 |
+| AloI | 113 | 112 | 104 | 104 | 144 | 143 |
+| BsaXI | 212 | 212 | 337 | 336 | 273 | 272 |
+| BaeI | 172 | 171 | 116 | 116 | 177 | 175 |
+| BcgI | 632 | 632 | 421 | 421 | 1087 | 1085 |
+| CjeI | 1962 | 1910 | 996 | 983 | 2065 | 2012 |
+| PpiI | 74 | 73 | 74 | 74 | 138 | 137 |
+| PsrI | 92 | 92 | 84 | 84 | 93 | 93 |
+| BplI | 83 | 83 | 115 | 115 | 119 | 119 |
+| FalI | 158 | 158 | 458 | 457 | 209 | 209 |
+| Bsp24I | 352 | 351 | 211 | 211 | 471 | 469 |
+| **HaeIV** | **1492** | 745 | **1515** | 755 | **841** | 420 |
+| CjePI | 1712 | 1701 | 1470 | 1464 | 1665 | 1657 |
+| **Hin4I** | **1223** | 1650 | **1380** | 2010 | **839** | 1057 |
+| AlfI | 436 | 436 | 238 | 237 | 762 | 760 |
+| BslFI | 577 | 576 | 784 | 784 | 690 | 690 |
+
+**46 of 48 cells reproduce the report within 3 %**, most within 0.5 %. Genomes:
+`GCF_000005845.2` (4 641 652 bp, GC 50.8 %), `GCF_000009045.1` (4 215 606 bp,
+GC 43.5 %), `GCF_000007565.2` (6 181 873 bp, GC 61.5 %) — matching the report's
+stated sizes and GC exactly.
+
+Two rows differ, one explained and one not. A third row is worth noting: **CjeI
+runs consistently 1.4–2.7 % high** on all three genomes, the only enzyme outside
+±1 % besides these two.
+
+### HaeIV — resolved: locus versus window
+
+Ratio to the report is **2.002 / 2.006 / 2.003** — exactly 2.00 on all three
+genomes, which is a convention difference, not noise.
+
+HaeIV's core `GAY-N5-RTC` is its own reverse complement, so *both* its patterns
+match at every locus, at window offsets `p−7` and `p−9`. Counting **loci**
+instead of windows gives ratios of **1.001 / 1.003 / 1.001**. The report states
+it deduplicated palindromic double-strand hits and names HaeIV explicitly.
+
+An independent check: searching the 11 bp motif `GAY-N5-RTC` directly reproduces
+745 / 755 / 420 at **0.3 % max error**, and a sweep of all 225 IUPAC combinations
+at the two degenerate positions ranks `GAY-N5-RTC` first by a wide margin.
+
+HaeIV is the *only* enzyme where the two patterns can hit one locus: it is the
+only one whose recognition core is self-complementary while its flanks are not.
+AlfI, BplI and FalI have symmetric flanks and so carry a single pattern.
+
+### Hin4I — unresolved
+
+Ratio to the report is **0.741 / 0.687 / 0.794** — *not* constant, which rules
+out any single scale factor or dedup convention. Ruled out by direct measurement
+on all three genomes:
+
+| hypothesis | E. coli | B. sub | P. put | max err |
 |---|---:|---:|---:|---:|
-| BcgI | 2 935 | 632 | 632 | 1.00 |
-| AlfI | 2 023 | 436 | 436 | 1.00 |
-| AloI | 523 | 113 | 112 | 1.01 |
-| BaeI | 797 | 172 | 171 | 1.00 |
-| BplI | 386 | 83 | 83 | 1.00 |
-| BsaXI | 984 | 212 | 212 | 1.00 |
-| BslFI | 2 679 | 577 | 576 | 1.00 |
-| Bsp24I | 1 636 | 352 | 351 | 1.00 |
-| CjeI | 9 108 | 1 962 | 1 910 | 1.03 |
-| CjePI | 7 947 | 1 712 | 1 701 | 1.01 |
-| CspCI | 613 | 132 | 132 | 1.00 |
-| FalI | 735 | 158 | 158 | 1.00 |
-| **HaeIV** | 6 924 | **1 492** | 745 | **2.00** |
-| **Hin4I** | 5 675 | **1 223** | 1 650 | **0.74** |
-| PpiI | 341 | 73 | 73 | 1.01 |
-| PsrI | 429 | 92 | 92 | 1.00 |
+| union of both patterns (the Perl definition) | 1223 | 1380 | 839 | 31 % |
+| sum of both patterns, no dedup | 1968 | 2137 | 1259 | 19 % |
+| pattern 0 alone | 986 | 1072 | 631 | 47 % |
+| best of all 225 IUPAC variants (`GAV-N5-DTC`) | 1541 | 2175 | 1001 | 8.2 % |
+| best spacer-length variant | 1973 | 2114 | 1314 | 24 % |
+| report Hin4I misaligned from another row | — | — | — | ≥ 25 % |
+| **report target** | **1650** | **2010** | **1057** | |
 
-Union: 40 775 tag windows → **27 054 loci** merged within 33 bp = 146 per 25 kb,
-mean spacing 172 bp, **max gap 1 446 bp** (report: 28 381 / 153 / 1 447 bp).
+Nothing fits. The report's Hin4I row is **not reproducible** from
+`2bRADExtraction.pl` under any convention tested, while every other enzyme
+reproduces. Since the definition is confirmed identical across the Perl,
+Fast2bRAD-M and this codebase, the discrepancy is in the report's Hin4I figures
+rather than in the enzyme definition.
 
-Fourteen of sixteen match to within 3 %, and the worst-case gap matches to 1 bp.
-The two that differ do so for understood reasons:
+One structural fact worth recording: **Hin4I's two patterns intersect in exactly
+the HaeIV site set** — 3 462 / 3 193 / 2 600 loci, matching HaeIV's locus count
+on all three genomes. `GA[C/T]-N5-[A/C/G]TC ∩ GA[C/G/T]-N5-[A/G]TC =
+GA[C/T]-N5-[A/G]TC`. That is a real relation between the two enzymes, but it does
+*not* produce identical tags: HaeIV's windows sit at `p−7`/`p−9` and Hin4I's at
+`p−8`, so the extracted 27-mers differ.
 
-**HaeIV, ratio exactly 2.00.** Its core `GAY-N5-RTC` is palindromic, so *both*
-its patterns match at every locus, at window offsets `p−7` and `p−9`. Counting
-**windows** gives 1 492/Mb; counting **loci** gives 746/Mb, which is the report's
-745. The report states it deduplicated palindromic double-strand hits, naming
-HaeIV explicitly. Both conventions are self-consistent — they answer "how many
-distinct tag sequences" versus "how many cut sites". This codebase counts
-windows, since a window is what a read matches.
+### The union row
 
-**Hin4I, ratio 0.74.** Its two patterns share offsets 8/16, so a locus matching
-both collapses to one window; the union is 5 675. Their intersection is
-`GA[C/T]-N5-[A/G]TC` — **exactly the HaeIV recognition site**, verified
-computationally (3 462 loci, matching HaeIV's locus count). The report's
-1 650/Mb corresponds to neither the union nor the sum, and is the one number here
-not yet reconciled.
+The report's union (28 381 / 23 928 / 39 451 loci) does not correspond to the
+33 bp merge radius it states. Measured: 40 775 / 33 283 / 54 607 distinct
+windows, falling to 26 299 / 21 544 / 37 351 when merged at 33 bp. The report's
+numbers are best matched by a merge distance of about **17–26 bp**, not 33.
+
+Union max gap is reproduced closely: **1 446 bp** on E. coli against the
+report's 1 447.
 
 ## Enzyme containment: Bsp24I ⊂ CjePI
 
@@ -133,8 +180,75 @@ E. coli K-12. Two consequences the code has to handle:
   for structural rather than evidential reasons. `enzyme::CONTAINED_PAIRS`
   records the relation.
 
-Measured co-located window groups on E. coli: Bsp24I+CjePI 844,
-Bsp24I+CjeI+CjePI 759, BsaXI+Hin4I 229, BsaXI+CjePI 76, AloI+BsaXI+PpiI 55.
+Measured on all three genomes: **100.0 % of Bsp24I windows are CjePI windows** —
+1 636/1 636, 891/891, 2 910/2 910.
+
+A second, partial relation: **Bsp24I pattern 0 ⊂ CjeI pattern 1** over their
+shared 27-base prefix (CjeI's tag is one base longer, so this needs a
+shift-aware comparison that an equal-length test misses). Empirically 48.4 % /
+47.4 % / 50.9 % of Bsp24I windows are also CjeI windows — exactly its pattern-0
+share.
+
+Other measured co-located groups on E. coli: BsaXI+Hin4I 229, BsaXI+CjePI 76,
+AloI+BsaXI+PpiI 55 (a genuine three-way core).
+
+Both relations are recorded in `enzyme::CONTAINMENTS`, and
+`enzyme::redundant_enzymes()` returns the enzymes that carry no independent
+information. **The panel offers at most ~15 independent strata, not 16.**
+
+## BslFI is Type IIS, not Type IIB
+
+The Perl source comments this enzyme `??some question??`. Its density is not the
+problem — it reproduces the report at 577/784/690 vs 576/784/690. The issue is
+biological: BslFI is `GGGAC(10/14)`, a contiguous 5 bp site cut on **one side
+only**, so it excises nothing. The panel's `N6 GGGAC N14` window has a real
+(4-nt staggered) cut at its right edge and arbitrary padding at its left; every
+other enzyme's window has genuine cuts at both edges.
+
+* **In silico this is harmless.** The window is deterministic,
+  reverse-complement closed, and applied identically to reference and reads — a
+  perfectly good marker stratum.
+* **At the bench it is not executable as 2bRAD.** A real BslFI digest yields
+  kilobase fragments (mean 1.3–1.7 kb across the three genomes; only ~3 % below
+  40 bp), so there is no short band to size-select and each fragment has one
+  arbitrary end.
+
+Consequence for this project: BslFI's route-B stratum can never be validated
+against real 2bRAD data, and it should not appear in a density table a user reads
+as "pick the densest enzyme". Recorded as `enzyme::BSLFI_IS_TYPE_IIS`.
+
+Its density is also driven by taxon-specific motif avoidance rather than GC:
+observed/iid-expected is 0.28 / 0.62 / 0.20, and P. putida (61.5 % GC) has *fewer*
+BslFI sites per Mb (690) than B. subtilis (43.5 % GC, 784) despite a ~4× higher
+expectation — the opposite of BcgI, which tracks GC monotonically. That makes it
+a poor choice for cross-species normalisation independent of the Type IIS issue.
+
+## Transcription check
+
+A mechanical position-by-position comparison of `2bRADExtraction.pl`,
+`Fast2bRAD-M/src/enzymes.rs` and this codebase's `PANEL` — all three expanded to
+per-position allowed-base sets over the full tag window:
+
+| check | result |
+|---|---|
+| enzymes compared | 16 / 16 |
+| patterns compared | 30 |
+| constrained positions compared | 442 |
+| tag-length / pattern-count / offset / motif mismatches | 0 |
+| within-enzyme pattern-order mismatches | 0 |
+| IUPAC compressions (`[GAC]`→V, `[CTG]`→B, `[CT]`→Y, `[AG]`→R) | correct |
+
+**Zero discrepancies.** The panel ordering differs (this codebase pins BcgI at
+index 0, the rest alphabetical; the Perl numbers them 1–16) but that is
+intentional and carries no collision risk — `parse_selection` accepts only `all`
+or enzyme names, never a numeric index.
+
+One behavioural divergence outside the definition table: this codebase digests
+**soft-masked (lowercase) reference regions**, where Fast2bRAD-M silently skips
+them. Masking is a repeat annotation rather than a quality call, and a masked
+anchor is better handled by the multi-copy flag than by omission — but on a
+lowercase-masked reference the two tools will report different anchor sets. See
+`seq::normalize_in_place`.
 
 ## Reproducing this table
 

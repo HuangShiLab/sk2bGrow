@@ -72,8 +72,16 @@ pub fn is_palindromic(pattern: &[u8]) -> bool {
 }
 
 /// Uppercase a sequence in place, mapping every non-ACGT byte to `N`.
+///
 /// Soft-masked (lowercase) reference regions are therefore kept, not dropped —
-/// masking is a repeat annotation, not a sequence-quality statement.
+/// masking is a repeat annotation, not a sequence-quality statement, and a
+/// repeat-masked anchor is better handled by the multi-copy flag than by silent
+/// omission.
+///
+/// **This diverges from Fast2bRAD-M**, whose exact-pattern path compares raw
+/// bytes against uppercase motifs and so silently skips soft-masked regions. On
+/// a lowercase-masked reference the two tools report different anchor sets. Ours
+/// is the deliberate choice, but the difference matters when comparing outputs.
 pub fn normalize_in_place(seq: &mut [u8]) {
     for b in seq.iter_mut() {
         *b = match *b {
