@@ -155,13 +155,37 @@ report's 1 447.
 
 ## Enzyme containment: Bsp24I ⊂ CjePI
 
-Both Bsp24I patterns are strict refinements of a CjePI pattern, at the same tag
-length and the same offsets:
+The two enzymes' regexes look unrelated because they are written in **opposite
+strand orientations**. Bsp24I's first regex must be compared with CjePI's
+*second*, not its first. Laid out over the 27 bp window they differ at exactly
+one position:
 
 ```
-Bsp24I p0  (8,GAC)(17,TGG)   ⊂   CjePI p1  (8,GA )(17,TGG)     GAC at 8 implies GA at 8
-Bsp24I p1  (7,CCA)(16,GTC)   ⊂   CjePI p0  (7,CCA)(17,TC )
+window offset:              111111111122222222
+                  0123456789012345678901234567
+
+Bsp24I p0         ........GAC......TGG.......     N8 GAC N6 TGG N7
+CjePI  p1         ........GA.......TGG.......     N8 GA  N7 TGG N7
+                            ^
+                            position 10: Bsp24I fixes C, CjePI leaves it free
+
+Bsp24I p1         .......CCA......GTC........     N7 CCA N6 GTC N8
+CjePI  p0         .......CCA.......TC........     N7 CCA N7 TC  N8
+                                  ^
+                                  position 16: Bsp24I fixes G, CjePI leaves it free
 ```
+
+Or as recognition sites in one common orientation:
+
+```
+Bsp24I           GAC NNNNNN TGG     12 bp, 6 bases fixed
+CjePI (revcomp)  GA  NNNNNNN TGG    12 bp, 5 bases fixed   [revcomp of CCA-N7-TC]
+```
+
+**CjePI is the less specific enzyme.** Bsp24I fixes one base that CjePI leaves
+free, so CjePI's site set is strictly larger and contains Bsp24I's. This is an
+ordinary nested specificity between two genuinely different enzymes — not a claim
+that they are the same enzyme.
 
 So **every Bsp24I tag is a byte-identical CjePI tag** — measured 1 636 / 1 636 on
 E. coli K-12. Two consequences the code has to handle:
@@ -198,12 +222,46 @@ information. **The panel offers at most ~15 independent strata, not 16.**
 
 ## BslFI is Type IIS, not Type IIB
 
-The Perl source comments this enzyme `??some question??`. Its density is not the
-problem — it reproduces the report at 577/784/690 vs 576/784/690. The issue is
-biological: BslFI is `GGGAC(10/14)`, a contiguous 5 bp site cut on **one side
-only**, so it excises nothing. The panel's `N6 GGGAC N14` window has a real
-(4-nt staggered) cut at its right edge and arbitrary padding at its left; every
-other enzyme's window has genuine cuts at both edges.
+The Perl source comments this enzyme `??some question?? single enzyme`. Its
+density is not the problem — it reproduces the report at 577/784/690 vs
+576/784/690. The issue is biological.
+
+REBASE gives **`GGGAC(10-11/14-15)`, "Type II restriction enzyme, subtype: S"**
+(prototype FinI). A contiguous 5 bp site, cut **downstream only**, at variable
+positions. It excises nothing.
+
+The two Perl regexes are **not two cuts**. `GTCCC` is the reverse complement of
+`GGGAC`, so `N14 GTCCC N6` is the *same window viewed from the other strand* as
+`N6 GGGAC N14` — one window shape (6 bp on the motif's 5' side, 14 bp on its 3'
+side), two strand views. That is exactly the same fwd/rev pattern-pair structure
+every other enzyme in the panel has.
+
+Where BslFI differs is whether the window's *edges* are cuts. Compare:
+
+```
+BcgI   (10/12) CGA N6 TGC (12/10)      panel window: N10 CGA N6 TGC N10 = 32 bp
+
+       cut                                          cut
+        v                                            v
+  5' ---|----------CGAnnnnnnTGC----------|---  3'
+  3' -----------|--GCTnnnnnnACG------------|-  5'
+        |<-------------- 32 bp ------------->|
+  Both edges are cuts; the enzyme excises this fragment (2 nt 3' overhangs).
+
+
+BslFI  GGGAC(10-11/14-15)               panel window: N6 GGGAC N14 = 25 bp
+
+       |<-- 6 bp -->|GGGAC|<------ 14 bp ------>|
+       ^                              ^         ^
+   NO CUT HERE                    top cut   bottom cut
+  (arbitrary padding)              (+10)      (+14)
+  Only the RIGHT edge is a cut. The 4 nt between the two cut positions is the
+  5' overhang. There is no upstream cut in the notation at all.
+```
+
+So for the fifteen Type IIB enzymes the panel's window *is* the excised
+fragment's core, both edges being real cuts. For BslFI the right edge is a real
+cut and the left 6 bp is padding chosen to round the window to 25 bp.
 
 * **In silico this is harmless.** The window is deterministic,
   reverse-complement closed, and applied identically to reference and reads — a

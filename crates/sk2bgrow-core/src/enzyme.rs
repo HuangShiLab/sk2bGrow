@@ -1,4 +1,7 @@
-//! The 16 Type IIB enzyme panel used by 2bRAD-M / Syn2b / Fast2bRAD-M.
+//! The 16-enzyme panel used by 2bRAD-M / Syn2b / Fast2bRAD-M.
+//!
+//! Fifteen are Type IIB: a bipartite site, cut on *both* flanks, excising a
+//! short fixed-length fragment. **BslFI is not** — see [`BSLFI_IS_TYPE_IIS`].
 //!
 //! Transcribed from `Fast2bRAD-M/src/enzymes.rs`, which in turn derives its
 //! patterns from the `@site` regexes in `2bRADExtraction.pl`. That is the
@@ -336,23 +339,88 @@ impl EnzymeSet {
     }
 }
 
-/// Enzyme pairs where one enzyme's tags are a subset of another's.
+/// BslFI is Type IIS, not Type IIB, unlike the other fifteen.
 ///
-/// **Bsp24I is entirely contained in CjePI.** Both Bsp24I patterns are strict
-/// refinements of a CjePI pattern at the same tag length and offsets
-/// (`GAC` at 8 implies `GA` at 8; `TGG` at 17 is shared), so *every* Bsp24I tag
-/// is a byte-identical CjePI tag — measured at 1 636 / 1 636 on E. coli K-12.
+/// REBASE gives `GGGAC(10-11/14-15)`, "Type II restriction enzyme, subtype: S"
+/// (prototype FinI): a contiguous 5 bp motif, cut downstream only and at
+/// *variable* positions, excising nothing. The panel's `N6 GGGAC N14` window
+/// therefore has a real (4 nt staggered) cut at its right edge and arbitrary
+/// padding at its left, where the fifteen Type IIB windows have genuine cuts at
+/// both edges.
 ///
-/// This matters for the cross-enzyme design: Bsp24I carries no information
-/// independent of CjePI, so treating them as two independent strata overstates
-/// the panel's replication. See `docs/enzymes.md`.
-pub static CONTAINED_PAIRS: &[(&str, &str)] = &[("Bsp24I", "CjePI")];
+/// This is *not* about the two patterns: `GTCCC` is the reverse complement of
+/// `GGGAC`, so BslFI's second pattern is the same window seen from the other
+/// strand, exactly as for every other enzyme in the panel.
+///
+/// In silico the window is still deterministic, reverse-complement closed and
+/// applied identically to reference and reads — a perfectly good marker stratum.
+/// At the bench it is not executable as 2bRAD: a real digest yields kilobase
+/// fragments (mean 1.3–1.7 kb across E. coli, B. subtilis and P. putida; only
+/// ~3 % below 40 bp), so there is no short band to size-select. Consequence for
+/// this project: BslFI's route-B stratum can never be validated against real
+/// 2bRAD data.
+pub const BSLFI_IS_TYPE_IIS: bool = true;
+
+/// One enzyme's tags being a subset of another's.
+// No `Eq`: `measured_fraction` is f64.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Containment {
+    pub subset: &'static str,
+    pub superset: &'static str,
+    /// `true` when *every* tag of `subset` is also a tag of `superset`.
+    pub total: bool,
+    /// Measured share of `subset`'s tags also claimed by `superset`, on
+    /// E. coli K-12 / B. subtilis 168 / P. putida KT2440.
+    pub measured_fraction: [f64; 3],
+}
+
+/// Containment relations within the panel, proved from the patterns and measured
+/// on three genomes spanning 43.5–61.5 % GC.
+///
+/// These matter because `python/sk2bgrow/fusion.py` treats the enzymes as
+/// independent measurement strata. They are not:
+///
+/// * **Bsp24I ⊂ CjePI, totally.** The two enzymes' patterns are written in
+///   opposite strand orientations, so the comparison is Bsp24I pattern 0 against
+///   CjePI pattern *1*. Aligned over the 27 bp window they differ at exactly one
+///   position — Bsp24I fixes a `C` at offset 10 that CjePI leaves free — so
+///   CjePI is the less specific enzyme and its site set contains Bsp24I's.
+///   Measured 1 636/1 636, 891/891, 2 910/2 910.
+/// * **Bsp24I pattern 0 ⊂ CjeI pattern 1**, over their shared 27-base prefix
+///   (CjeI's tag is one base longer, so an equal-length test misses it). About
+///   half of Bsp24I's tags — exactly its pattern-0 share.
+///
+/// So the panel offers at most ~15 independent strata, not 16.
+pub static CONTAINMENTS: &[Containment] = &[
+    Containment {
+        subset: "Bsp24I",
+        superset: "CjePI",
+        total: true,
+        measured_fraction: [1.0, 1.0, 1.0],
+    },
+    Containment {
+        subset: "Bsp24I",
+        superset: "CjeI",
+        total: false,
+        measured_fraction: [0.484, 0.474, 0.509],
+    },
+];
+
+/// Enzymes carrying no information independent of another panel member. A caller
+/// building a stratum set should drop these or declare them sub-strata.
+pub fn redundant_enzymes() -> Vec<&'static str> {
+    CONTAINMENTS
+        .iter()
+        .filter(|c| c.total)
+        .map(|c| c.subset)
+        .collect()
+}
 
 /// True when `a`'s tags are a subset of `b`'s.
 pub fn is_contained_in(a: &str, b: &str) -> bool {
-    CONTAINED_PAIRS
+    CONTAINMENTS
         .iter()
-        .any(|&(x, y)| x.eq_ignore_ascii_case(a) && y.eq_ignore_ascii_case(b))
+        .any(|c| c.total && c.subset.eq_ignore_ascii_case(a) && c.superset.eq_ignore_ascii_case(b))
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -494,6 +562,12 @@ mod tests {
         }
         assert!(is_contained_in("Bsp24I", "CjePI"));
         assert!(!is_contained_in("CjePI", "Bsp24I"));
+        assert_eq!(redundant_enzymes(), vec!["Bsp24I"]);
+        // The CjeI relation is partial and must not be reported as total.
+        assert!(!is_contained_in("Bsp24I", "CjeI"));
+        assert!(CONTAINMENTS
+            .iter()
+            .any(|c| c.superset == "CjeI" && !c.total));
     }
 
     #[test]
