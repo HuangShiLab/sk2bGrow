@@ -5,22 +5,22 @@ BENCHMARK: log2(PTR) vs measured growth rate  (Zheng et al. 2020, E. coli K-12 M
      0.5x  sk2bGrow                        16     0.9069    0.8912        0.5063   0.519
      0.5x  sk2bGrow (Pilea-parity est.)    16     0.4454    0.3529        1.1295   0.115
      0.5x  Pilea (defaults)                 0         --        --            --      --
-     0.5x  Pilea (gates off)               15        nan       nan        1.1012   0.000
+     0.5x  Pilea (gates off)               16        nan       nan        1.1168   0.000
 
      1.0x  sk2bGrow                        16     0.9539    0.9118        0.3392   0.720
      1.0x  sk2bGrow (Pilea-parity est.)    16     0.6049    0.7088        0.9716   0.130
      1.0x  Pilea (defaults)                 0         --        --            --      --
-     1.0x  Pilea (gates off)               15     0.8968    0.8893        0.4076   0.572
+     1.0x  Pilea (gates off)               16     0.8885    0.9029        0.3971   0.550
 
      2.0x  sk2bGrow                        16     0.9753    0.9294        0.1854   0.755
      2.0x  sk2bGrow (Pilea-parity est.)    16     0.8182    0.8676        0.6849   0.311
      2.0x  Pilea (defaults)                 0         --        --            --      --
-     2.0x  Pilea (gates off)               15     0.9547    0.9179        0.2659   0.782
+     2.0x  Pilea (gates off)               16     0.9471    0.9265        0.2592   0.755
 
      5.0x  sk2bGrow                        16     0.9788    0.9765        0.0343   0.918
      5.0x  sk2bGrow (Pilea-parity est.)    16     0.9122    0.9029        0.3707   0.584
      5.0x  Pilea (defaults)                 0         --        --            --      --
-     5.0x  Pilea (gates off)               15     0.9532    0.9464        0.1057   0.922
+     5.0x  Pilea (gates off)               16     0.9535    0.9559        0.1031   0.909
 
     10.0x  sk2bGrow                        15     0.9737    0.9679        0.0565   0.945
     10.0x  sk2bGrow (Pilea-parity est.)    15     0.8979    0.9036        0.2572   0.715
@@ -30,8 +30,8 @@ BENCHMARK: log2(PTR) vs measured growth rate  (Zheng et al. 2020, E. coli K-12 M
 NEGATIVE CONTROL — RUN_OUT (stationary phase, expect log2(PTR) ~ 0)
   sk2bGrow                       0.5x=0.113  1x=0.045  2x=0.100  5x=0.081  10x=0.054
   sk2bGrow (Pilea-parity est.)   0.5x=2.168  1x=1.788  2x=1.481  5x=0.851  10x=0.748
-  Pilea (defaults)               10x=0.168
-  Pilea (gates off)              10x=0.168
+  Pilea (defaults)               0.5x=--  10x=0.168
+  Pilea (gates off)              0.5x=0.000  10x=0.168
 
 PER-CONDITION at the highest coverage
 arm     growth_rate  Zheng pred     A     B  C_default  C_relaxed

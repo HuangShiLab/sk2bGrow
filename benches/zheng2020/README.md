@@ -91,11 +91,13 @@ Full table in `RESULTS.txt`, per-run values in `results_raw.tsv`.
 
 | coverage | sk2bGrow | Pilea (defaults) | Pilea (gates off) |
 |---|---:|---:|---:|
-| 0.5x | **0.907** (n=16) | no estimate (n=0) | undefined — every sample returned PTR=1.0 |
-| 1x | **0.954** (n=16) | no estimate (n=0) | 0.897 (n=15) |
-| 2x | **0.975** | no estimate (n=0) | 0.955 |
-| 5x | **0.979** | no estimate (n=0) | 0.953 |
-| 10x | 0.974 | 0.972 (n=15) | 0.972 |
+| 0.5x | **0.907** | no estimate (n=0) | undefined — all 16 returned PTR=1.0 |
+| 1x | **0.954** | no estimate (n=0) | 0.889 |
+| 2x | **0.975** | no estimate (n=0) | 0.947 |
+| 5x | **0.979** | no estimate (n=0) | 0.954 |
+| 10x | 0.974 | 0.972 | 0.972 |
+
+n = 16 for every cell except 10x (n = 15; M13 arrived too late for that level).
 
 Pilea's published figure on this dataset is r = 0.9764 at full depth; it reaches
 0.972 here at 10x, so the reimplementation-free comparison is consistent with its
@@ -116,8 +118,9 @@ which is defect D1 exactly as described.
 
 Same sketch, same reads. **The estimator, not the sketch, produces most of the
 gain.** Fitting the V-shape on real coordinates is doing the work — defect D3.
-Comparing arm B against Pilea (0.605 vs 0.897 at 1x) shows the deterministic
-sketch by itself is *behind* FracMinHash under a sorted-regression estimator;
+Comparing arm B against Pilea (0.605 vs 0.889 at 1x) shows the deterministic
+sketch by itself is *behind* FracMinHash under a sorted-regression estimator
+(0.605 vs 0.889 at 1x);
 the anchors only pay off once their coordinates are used. That is a sharper and
 less flattering finding than "deterministic anchors are better", and it is the
 one the data supports.
@@ -149,5 +152,7 @@ coordinate fit matters beyond its correlation score.
 4. **This is the easiest possible case**: one organism, one strain, a complete
    single-contig reference, no community. It says nothing yet about the
    metagenomic setting, which is where PTR estimation is actually hard.
-5. n = 15 for Pilea vs 16 for sk2bGrow at some levels (a few runs were still
-   pending when the table was generated).
+5. Pilea's 0.5x row has no defined correlation because it returned the constant
+   PTR = 1.0 for all 16 samples — a degenerate answer, not a missing one. It is
+   reported as undefined rather than as a low correlation, and should not be
+   read as "Pilea scored 0".
