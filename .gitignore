@@ -36,3 +36,6 @@ benches/work/
 .DS_Store
 # Word lock files, created while a .docx is open
 ~$*
+
+# design documents are kept outside the public repo
+*.docx
