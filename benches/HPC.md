@@ -4,53 +4,78 @@ Written for whoever runs the large-scale benchmarks. Everything below was
 measured on an M3 Max laptop against the reduced datasets in `benches/`; the
 numbers are real, the extrapolations are marked as extrapolations.
 
-**Read Part A before starting Part C.** One issue (A1) makes the GTDB-scale
-experiment impossible as the code stands, and two others (A2, A3) decide whether
-the headline claim survives.
+**Read Part A before starting Part C.** A1 (index memory) has been addressed but
+only halves the requirement, so the GTDB-scale experiment is now expensive rather
+than impossible; A2 and A3 decide whether the headline claim survives. A3 is
+settled — see below — and it changed the answer.
 
 ---
 
 ## Part A — open algorithm/engineering issues
 
-Priority order. A1–A3 should be settled before or during the first HPC runs;
-A4–A8 are refinements.
+Priority order. A1 and A3 are done; A2 is open and is the one that decides the
+paper's scope. A4–A8 are refinements.
 
-### A1. The index does not fit in memory at GTDB scale — **blocking**
+### A1. Index memory — **done, but only 2.2× and still the binding constraint**
 
-`AnchorIndex` stores `HashMap<u64, Vec<u32>>` for the exact table and one more
+`AnchorIndex` stored `HashMap<u64, Vec<u32>>` for the exact table and one more
 per seed slot. A separate heap-allocated `Vec` per key, holding typically one
-`u32`, is the whole problem.
+`u32`, was the whole problem. It is now a CSR layout: a sorted `Vec<u64>` of
+keys, a `Vec<u32>` of offsets, a `Vec<u32>` of anchor indices, binary-searched.
 
-Measured (16-genome database, 506,785 anchors, peak RSS from `/usr/bin/time -l`,
-marginal cost over a 1-genome database):
+Measured marginal RAM per anchor — peak RSS from `/usr/bin/time -l` on the
+506,785-anchor database minus the 43,735-anchor one, median of five runs:
 
-| `--max-mismatch` | bytes/anchor in RAM |
-|---|---|
-| 0 | 184 |
-| 1 | 363 |
-| 2 (default) | 375 |
+| `--max-mismatch` | HashMap | CSR | |
+|---|---|---|---|
+| 0 | 174 | 111 | 1.57× |
+| 1 | 356 | 173 | 2.06× |
+| 2 (default) | 352 | 160 | **2.20×** |
 
-On disk an anchor is 38 bytes, so the in-memory index costs **~10× the database
-it was built from**. Extrapolated to GTDB R226 species representatives
-(136,646 genomes, ~0.55 Gbp, ~4.7 × 10⁹ anchors at 8,642 anchors/Mb):
+Count tables are bit-identical before and after. Wall time is ~1% *worse*
+(6.39 s against 6.31 s for one 10× *E. coli* sample, median of five): binary
+search is not faster than a hash lookup here, and the earlier guess in this
+document that CSR would also be quicker was wrong.
+
+**The 12–16 bytes/anchor this document originally projected was also wrong**, by
+an order of magnitude, because it costed only the steady-state arrays. Of the
+160 bytes actually spent per anchor at the default: ~38 are the `AnchorDb`
+itself, held in RAM alongside the index; ~64 are the CSR arrays across the exact
+table and three seed slots; the remaining ~58 are build transient — the
+`(key, value)` pair buffer and its sort. Seed slots are already built one at a
+time to keep that transient down.
+
+Extrapolated to GTDB R226 species representatives (136,646 genomes, ~0.55 Gbp,
+~4.7 × 10⁹ anchors at 8,642 anchors/Mb), at mm = 2:
 
 | | 16 enzymes | 8 enzymes | 2 enzymes |
 |---|---|---|---|
-| as it stands (mm=2) | **1.77 TB** | 1.58 TB | 691 GB |
-| projected after the fix below | 227 GB | 202 GB | 88 GB |
+| HashMap (before) | 1.65 TB | 1.48 TB | 645 GB |
+| CSR (now) | **752 GB** | 672 GB | 293 GB |
+
+That is the difference between "needs a distributed index" and "needs one fat
+node", which is the change that matters for C6.
 
 Pilea's sketch for the same 16 genomes is 4.46 MB against our 19.3 MB on disk
-(0.076 vs 0.33 MB per Mb of genome), so it starts 4.3× smaller and does not have
-the per-key allocation problem.
+(0.076 vs 0.33 MB per Mb of genome), so it starts 4.3× smaller.
 
-**Fix:** replace each `HashMap<u64, Vec<u32>>` with a CSR layout — a sorted
-`Vec<u64>` of keys, a `Vec<u32>` of offsets, a `Vec<u32>` of anchor indices — and
-binary-search it. That is 12–16 bytes/anchor per table instead of ~180, needs no
-change to `lookup`'s semantics, and is likely *faster* (cache-friendly, no
-pointer chase). Estimated half a day.
+**Where the remaining factor of ~2 is, in priority order:**
 
-Until it is done, keep reference sets under ~10⁷ anchors (≈1,200 average
-bacterial genomes at 16 enzymes). **Everything in Part C except C6 fits.**
+1. *Drop the transient.* Build each CSR table by counting keys, prefix-summing,
+   then scattering, instead of materialising and sorting a pair buffer. Removes
+   ~58 B/anchor — the single largest remaining item.
+2. *Ship 8 enzymes, not 16* (A6). Independent of the layout and worth 10%; the
+   panel sweep already says 4–8 is at least as accurate.
+3. *Memory-map the `AnchorDb`* rather than deserialising it. Removes ~38
+   B/anchor and makes the resident set page-cache-backed.
+4. *Shard by genome.* The index is embarrassingly partitionable; a GTDB-scale
+   run does not need one process holding everything.
+
+With (1) and (3), 16 enzymes projects to ~300 GB, which is a single fat node
+rather than a distributed problem. Until then, keep reference sets under
+~4 × 10⁹ anchors per process (roughly 100,000 average bacterial genomes at 16
+enzymes on a 700 GB node). **Everything in Part C fits, including C6 at 8
+enzymes.**
 
 ### A2. Fragmented references and MAGs are untested — **decides the paper's scope**
 
@@ -69,23 +94,31 @@ not rescue it, the honest framing is *"a method for complete references"*, and
 the marine/RBC datasets (both MAG-based) become a limitation section rather than
 a result.
 
-### A3. The attribution 2×2 has an empty cell
+### A3. The attribution 2×2 — **done; it changed the claim**
+
+The missing cell is now arm E (`benches/zheng2020/armE.sh`). Pearson r at 1×:
 
 | | rank regression | coordinate V-fit |
 |---|---|---|
-| FracMinHash | Pilea, r = 0.889 @1× | **not run** |
-| 2bRAD anchors | arm B, r = 0.683 @1× | sk2bGrow, r = 0.981 @1× |
+| FracMinHash | Pilea, 0.889 | arm E, **0.940** |
+| 2bRAD anchors | arm B, 0.683 | sk2bGrow, **0.981** |
 
-Under a fixed estimator our anchors are *behind* FracMinHash. The gain is the
-coordinate-aware fit. Whether deterministic anchors add anything at all is
-unanswered until the top-right cell exists.
+**The factors interact.** The coordinate fit is worth +0.30 r on anchors but only
++0.05 on the sketch, and the sketch effect changes sign with the estimator
+(+0.04 under the V-fit, −0.21 under rank regression). The previous reading off
+three cells — "the gain is the estimator, the anchors are if anything behind" —
+was an artefact of the hole. At 0.5× only the combination works at all: 0.913
+against 0.724 for the same estimator on a FracMinHash sketch, with Pilea's own
+arm degenerate.
 
-It is constructible: Pilea's `profile.py::_fit` receives `observation` as a list
-of per-window k-mer count vectors **in positional order** and then calls
-`sorted()` on them. Window *i* spans bp `[i·25000, (i+1)·25000)`. Dump the
-per-window rates with their index, feed them to `sk2bgrow.fit.fit_v_shape`, done.
-Half a day, no HPC needed. **Do this before the big runs** — it can change what
-the paper claims.
+Construction note for anyone repeating it: do **not** feed Pilea's per-window
+rates straight into `fit_v_shape`. That returns log₂PTR 2.65 against a measured
+1.73, because it removes the GC correction, the ZTP/ZTNB standard errors, the
+outlier handling and the fusion QC along with the sorting. `armE_counts.py`
+instead rewrites the sketch into our count-table format, so the entire estimator
+runs unchanged and the only difference from arm A is which loci are counted.
+Sketch positions are not in the `.pdb` and are recovered by replaying `hash64`
+over the reference.
 
 ### A4. Low-coverage compression is unfixed
 
@@ -153,7 +186,7 @@ Reference sets:
 | 525 MAGs (RBC) | under PRJNA974210 | small | 3 archaeal to be removed |
 | 120 NCBI-Pathogen complete genomes | RefSeq | ~500 Mb | simulation reference set; completeness ≥ 99.97, contamination ≤ 1.54, 1–9 contigs |
 | 45,529 *Escherichia* assemblies | GTDB R226 | **~60 GB est.** | assembly-quality sweep; used one at a time |
-| GTDB R226 species reps (136,646) | GTDB | **~100 GB est.** | scalability only; blocked by A1 |
+| GTDB R226 species reps (136,646) | GTDB | **~100 GB est.** | scalability only; needs a ~700 GB node, or ~300 GB after A1's follow-ups |
 
 Marine growth rates come from Long et al.; *E. coli* growth rates are in
 `benches/zheng2020/growth_rates.tsv` (already extracted).
@@ -268,16 +301,24 @@ after removing 3 archaeal, plus a GTDB R226 AOB/NOB/COM reference set
 tracks the nitrogen chemistry. Do this last; it is only meaningful once C2 has
 established whether MAG references are usable at all.
 
-### C6 — GTDB-scale scalability — **blocked by A1**
+### C6 — GTDB-scale scalability — **needs a large-memory node**
 
 **Objective.** Pilea's headline: 136,646 GTDB species representatives profiled
 against 100 Gbp in under ten minutes on 32 threads.
 
-**Do not attempt until A1 is fixed.** As it stands the index needs ~1.8 TB. After
-the CSR rewrite, budget ~230 GB at 16 enzymes or ~90 GB at 2 enzymes, and note
-that a 2-enzyme panel (17,055 anchors on *E. coli*) is almost exactly the size
-of Pilea's FracMinHash sketch (18,261 k-mers) — that is the honest like-for-like
-comparison of the two sketches.
+Budget from the measured 160 B/anchor: **~750 GB at 16 enzymes, ~670 GB at 8,
+~290 GB at 2**. Before the CSR rewrite this was 1.65 TB and there was no node to
+run it on; it is now a single fat node, and A1's follow-ups (drop the build
+transient, mmap the database) would bring 16 enzymes to ~300 GB.
+
+Run it at **8 enzymes** unless there is a reason not to: the panel sweep (Table
+7) shows 8 is at least as accurate as 16, and it saves 10% of the index and 40%
+of the wall time.
+
+Note that a 2-enzyme panel (17,055 anchors on *E. coli*) is almost exactly the
+size of Pilea's FracMinHash sketch (18,261 k-mers) — that is the honest
+like-for-like comparison of the two sketches, and worth one run even though 2
+enzymes is not the recommended default.
 
 ---
 

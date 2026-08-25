@@ -31,7 +31,6 @@
 //! `m+1` seed slots cannot miss a true match. Candidates are then verified by
 //! full Hamming distance. `m = 0` skips the seed table entirely.
 
-use std::collections::HashMap;
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
@@ -82,13 +81,80 @@ impl Default for MatchConfig {
     }
 }
 
+/// A hash -> anchor-indices map in compressed-sparse-row form: sorted unique
+/// keys, offsets into a flat value array, and the values.
+///
+/// This replaces `HashMap<u64, Vec<u32>>`. That shape costs a hash-table slot
+/// *plus a separate heap allocation per key*, and the overwhelming majority of
+/// keys hold exactly one `u32` — against 38 bytes for the same anchor on disk.
+///
+/// Marginal RAM per anchor (peak RSS on a 506,785-anchor database minus a
+/// 43,735-anchor one, median of five runs), `HashMap` against `CsrMap`:
+///
+/// | `max_mismatch` | before | after |
+/// |---|---|---|
+/// | 0 | 174 | 111 |
+/// | 1 | 356 | 173 |
+/// | 2 (default) | 352 | 160 |
+///
+/// It is not faster — binary search over the key array costs about 1% more wall
+/// time than the hash lookup it replaces (6.39 s against 6.31 s for one 10x
+/// *E. coli* sample, median of five) — and count tables are bit-identical.
+/// Memory is the whole point: the index is what will not fit at GTDB scale.
+///
+/// Of the 160 bytes still spent per anchor at the default, roughly 38 are the
+/// `AnchorDb` itself and 64 are the steady-state CSR arrays (12 bytes per entry
+/// plus 12 per distinct key, across the exact table and three seed slots). The
+/// rest is build transient — the `(key, value)` pair buffer and its sort — which
+/// is why the seed tables are built one slot at a time rather than all at once.
+#[derive(Default)]
+struct CsrMap {
+    keys: Vec<u64>,
+    /// `offsets[j]..offsets[j + 1]` is `keys[j]`'s slice of `vals`.
+    offsets: Vec<u32>,
+    vals: Vec<u32>,
+}
+
+impl CsrMap {
+    /// Build from unsorted `(key, value)` pairs. Consumes the input buffer.
+    fn from_pairs(mut pairs: Vec<(u64, u32)>) -> Self {
+        pairs.sort_unstable();
+        let mut m = CsrMap {
+            keys: Vec::new(),
+            offsets: vec![0],
+            vals: Vec::with_capacity(pairs.len()),
+        };
+        for (k, v) in pairs {
+            if m.keys.last() != Some(&k) {
+                m.keys.push(k);
+                m.offsets.push(m.vals.len() as u32);
+            }
+            m.vals.push(v);
+            *m.offsets.last_mut().unwrap() = m.vals.len() as u32;
+        }
+        m.keys.shrink_to_fit();
+        m.offsets.shrink_to_fit();
+        m.vals.shrink_to_fit();
+        m
+    }
+
+    #[inline]
+    fn get(&self, key: u64) -> &[u32] {
+        match self.keys.binary_search(&key) {
+            Ok(j) => &self.vals[self.offsets[j] as usize..self.offsets[j + 1] as usize],
+            Err(_) => &[],
+        }
+    }
+}
+
 /// Lookup structure over an [`AnchorDb`].
 pub struct AnchorIndex<'a> {
     db: &'a AnchorDb,
     /// Canonical tag hash -> anchor indices (exact matching).
-    exact: HashMap<u64, Vec<u32>>,
-    /// (seed slot, seed hash) -> anchor indices (mismatch-tolerant matching).
-    seeds: HashMap<(u8, u64), Vec<u32>>,
+    exact: CsrMap,
+    /// One table per seed slot: seed hash -> anchor indices
+    /// (mismatch-tolerant matching).
+    seeds: Vec<CsrMap>,
     n_seeds: u8,
     /// Panel entries actually present in this database.
     /// Active enzymes grouped by tag length. Two enzymes of the same tag length
@@ -122,24 +188,31 @@ impl<'a> AnchorIndex<'a> {
     ) -> Self {
         let selected = |idx: u8| restrict.map_or(true, |s| s.contains(idx));
         let n_seeds = (max_mismatch + 1) as u8;
-        let mut exact: HashMap<u64, Vec<u32>> = HashMap::with_capacity(db.anchors.len());
-        let mut seeds: HashMap<(u8, u64), Vec<u32>> = HashMap::new();
+        // One seed slot at a time. Holding every slot's pair buffer at once
+        // would triple the build-time peak, and peak is what has to fit.
+        let mut exact_pairs: Vec<(u64, u32)> = Vec::with_capacity(db.anchors.len());
         for (i, a) in db.anchors.iter().enumerate() {
-            if !selected(a.enzyme_idx) {
-                continue;
+            if selected(a.enzyme_idx) {
+                exact_pairs.push((a.seq_hash, i as u32));
             }
-            exact.entry(a.seq_hash).or_default().push(i as u32);
-            if max_mismatch > 0 {
-                let tag = db.tag(i);
-                for (slot, (lo, hi)) in seed_ranges(tag.len(), n_seeds as usize)
-                    .into_iter()
-                    .enumerate()
-                {
-                    seeds
-                        .entry((slot as u8, hash_tag(&tag[lo..hi])))
-                        .or_default()
-                        .push(i as u32);
+        }
+        let exact = CsrMap::from_pairs(exact_pairs);
+
+        let mut seeds: Vec<CsrMap> = Vec::new();
+        if max_mismatch > 0 {
+            let mut pairs: Vec<(u64, u32)> = Vec::with_capacity(db.anchors.len());
+            for slot in 0..n_seeds as usize {
+                pairs.clear();
+                for (i, a) in db.anchors.iter().enumerate() {
+                    if !selected(a.enzyme_idx) {
+                        continue;
+                    }
+                    let tag = db.tag(i);
+                    let (lo, hi) = seed_ranges(tag.len(), n_seeds as usize)[slot];
+                    pairs.push((hash_tag(&tag[lo..hi]), i as u32));
                 }
+                seeds.push(CsrMap::from_pairs(std::mem::take(&mut pairs)));
+                pairs = Vec::with_capacity(db.anchors.len());
             }
         }
         let mut by_len: Vec<(usize, Vec<&'static Enzyme>)> = Vec::new();
@@ -179,18 +252,16 @@ impl<'a> AnchorIndex<'a> {
         // The exact hash is strand-canonical, so one bucket lookup serves both
         // orientations; only the verification has to consider each.
         let rc = revcomp(query);
-        if let Some(hits) = self.exact.get(&canonical_hash(query)) {
-            for &i in hits {
-                // Verify against the stored bases: a hash collision would
-                // otherwise become a phantom count.
-                let tag = self.db.tag(i as usize);
-                if tag == query || tag == rc {
-                    out.push((i, 0));
-                }
+        for &i in self.exact.get(canonical_hash(query)) {
+            // Verify against the stored bases: a hash collision would otherwise
+            // become a phantom count.
+            let tag = self.db.tag(i as usize);
+            if tag == query || tag == rc {
+                out.push((i, 0));
             }
-            if !out.is_empty() {
-                return;
-            }
+        }
+        if !out.is_empty() {
+            return;
         }
         if budget == 0 {
             return;
@@ -201,10 +272,7 @@ impl<'a> AnchorIndex<'a> {
                 .into_iter()
                 .enumerate()
             {
-                let Some(cands) = self.seeds.get(&(slot as u8, hash_tag(&probe[lo..hi]))) else {
-                    continue;
-                };
-                for &i in cands {
+                for &i in self.seeds[slot].get(hash_tag(&probe[lo..hi])) {
                     if seen.contains(&i) {
                         continue;
                     }
