@@ -14,8 +14,12 @@ expensive rather than impossible.
 
 ## Part A — open algorithm/engineering issues
 
-Priority order. A1–A3 are done. What A2 opened — a QC that cannot see a
-destroyed coordinate — is the most important item left. A4–A8 are refinements.
+Status: A1, A2, A3, A5 and A7 are settled; A4 is narrowed to a single remaining
+mechanism; A6 needs one crossed run, not new code; A8 stays a stated limitation.
+
+The two items that still matter are **the QC blind spot A2 opened** — it passes a
+destroyed coordinate at 100% — and **A4's remaining candidate**, low-count window
+shrinkage. Everything else is either done or measured and found immaterial.
 
 ### A1. Index memory — **done, but only 2.2× and still the binding constraint**
 
@@ -189,26 +193,58 @@ runs unchanged and the only difference from arm A is which loci are counted.
 Sketch positions are not in the `.pdb` and are recovered by replaying `hash64`
 over the reference.
 
-### A4. Low-coverage compression is unfixed
+### A4. Low-coverage compression — **still open, but three causes are now excluded**
 
-Slope of estimated on measured log₂PTR: 0.62 at 0.5×, 0.78 at 1×, 0.84 at 2×,
-0.92 at 5×, 0.95 at 10×. Systematic underestimation that shrinks with depth —
-the signature of errors-in-variables attenuation: window log-rates are noisy
-regressors, and noise in the *predictor* (here, effectively, in the rate) biases
-the slope toward zero. Pilea shows the same effect in the opposite direction
-(it overestimates, bias +0.168 in simulation, against ours of −0.013).
+Slope of estimated on predicted log₂PTR: 0.68 at 0.5×, 0.86 at 1×, 0.91 at 2×,
+**1.03 at 5×, 1.07 at 10×**. Underestimation at low depth, mild *over*-estimation
+at high depth.
 
-Candidate fixes, none tried: a measurement-error-aware fit (weight by the ZTP
-standard errors already computed, in a Deming/total-least-squares sense rather
-than OLS), or a depth-conditioned shrinkage correction calibrated on simulation.
+**The mechanism this document previously gave is wrong.** It said
+errors-in-variables attenuation, "noise in the predictor biases the slope toward
+zero". The predictor in that regression is the λ·C-derived prediction, which is
+effectively noise-free; the noise is in the *response*, and noise in the response
+does not bias an OLS slope. The compression happens inside the estimator, and the
+slope exceeding 1 at depth rules out any universal attenuation story.
 
-### A5. Enzyme containment is documented but not used
+Four candidates, three now excluded from data already on disk:
+
+| candidate | verdict |
+|---|---|
+| outlier trimming cutting the peak/trough windows | **excluded** — 100% of windows are kept at every depth |
+| inverse-variance fusion shrinking toward low-amplitude enzymes | **excluded** — estimate and SE are *negatively* correlated (ρ −0.06 to −0.28), and IV fusion gives a better slope than unweighted (0.681 vs 0.497 at 0.5×). The weighting helps |
+| origin misplacement flattening the V | **real but minor** — see A7: a perfect origin recovers only 0.06 of the 0.32 shortfall at 0.5× |
+| window-rate shrinkage at low counts | **the remaining candidate**, by elimination — untested |
+
+So the target is now narrow: what the ZTP/ZTNB layer does to a window's rate when
+counts are near zero, before the fit ever sees it. Compare the recovered spread
+of window log₂ rates against a simulation with known λ per window; if the
+low-count windows are pulled toward the mean, the gradient is compressed before
+fitting and no change to the fit will help.
+
+**Worth recording either way:** at 0.5× the mean per-enzyme fit has r² = −0.009 —
+individually worthless — yet fusing sixteen of them correlates 0.913 with
+measured growth rate. The panel, not any single fit, is what works at that depth.
+
+### A5. Enzyme containment — **measured; immaterial, do not spend code on it**
 
 `enzyme::CONTAINMENTS` records that Bsp24I's sites are *totally* contained in
-CjePI's, and that ~half are also CjeI's. `fusion.py` still treats all 16 as
-independent strata, so Cochran's *Q* has ~15 degrees of freedom, not 16, and is
-mildly anti-conservative. Either drop Bsp24I from the strata or model the
-covariance.
+CjePI's. `fusion.py` treats all 16 as independent strata, so Cochran's *Q*
+nominally has one degree of freedom too many.
+
+Re-fusing every Zheng sample with Bsp24I dropped, from the `per_enzyme.tsv`
+files already written:
+
+| | 0.5× | 1× | 2× | 5× | 10× |
+|---|---:|---:|---:|---:|---:|
+| mean \|Δ estimate\| | 0.010 | 0.011 | 0.007 | 0.006 | 0.007 |
+| Q rejects, 16 strata | 6% | 19% | 25% | 25% | 25% |
+| Q rejects, 15 strata | 6% | 25% | 25% | 31% | 25% |
+
+Largest change on any sample: **0.050 log₂ units**, against an RMSE of 0.04–0.30.
+The rejection rate does not improve — if anything it rises, since dropping a
+stratum also drops a degree of freedom. The theoretical objection is correct and
+the practical effect is nil. Document it in the Discussion and leave the code
+alone.
 
 ### A6. The panel should probably be 8 enzymes, not 16
 
@@ -219,20 +255,49 @@ negative-control bias** (mean |log₂PTR| on a replication run-out: 0.073 at k =
 0.145 at k = 16). Cost is linear in k: 3.2 s / 7.0 s / 8.6 s per sample at
 k = 2 / 8 / 16.
 
-A2 may change this — sparse enzymes may matter more on fragmented references,
-where every window is short. Re-run the sweep there before fixing a default.
+A2 did not change this so much as add a second reason to care: on a fragmented
+reference every window is short, so a sparse enzyme contributes even less. The
+sweep under fragmentation is the one piece still missing before the default is
+changed — `benches/fragmentation/sweep.sh` and the panel sweep now both exist, so
+it is a matter of running them crossed rather than writing anything.
 
-### A7. The origin is always fitted, never annotated
+**Recommendation, pending that run: ship 8.** It is at least as accurate on
+complete references, 25% cheaper, and halves the negative-control bias.
 
-`index --ori` accepts a DoriC/Ori-Finder/*dnaA* annotation but no database in any
-benchmark supplies one. Median |fitted − reference| origin error is 90–230 kb at
-0.5× and 9–15 kb at 10×, and origin error propagates into every enzyme's slope.
-Supplying an annotation should mostly help at low depth. Untested.
+### A7. Origin annotation — **tested; a small free gain at ≤1×, nothing at depth**
 
-### A8. One species = one strain = one PTR
+`index --ori` accepts a DoriC/Ori-Finder/*dnaA* annotation and no benchmark
+supplied one. Rebuilding the *E. coli* database with oriC = 3,925,744
+(NC_000913.3) and re-running the whole Zheng grid:
 
-No model for strain mixtures within a species. Real metagenomes have them. Out
-of scope for this paper; state it as a limitation.
+| coverage | | r | RMSE | bias | slope |
+|---|---|---:|---:|---:|---:|
+| 0.5× | fitted | 0.913 | 0.304 | −0.252 | 0.681 |
+| | annotated | **0.932** | **0.271** | **−0.233** | **0.740** |
+| 1× | fitted | 0.981 | 0.157 | −0.130 | 0.857 |
+| | annotated | **0.986** | **0.143** | **−0.113** | 0.834 |
+| 2× | fitted | 0.982 | 0.128 | −0.078 | 0.911 |
+| | annotated | 0.985 | 0.123 | −0.078 | 0.904 |
+| 5×, 10× | either | identical to three decimals | | | |
+
+Worth having — it costs one column in a TSV and cuts RMSE by ~10% in the band
+this project is about — but it is **not** the fix for A4: with the origin exactly
+right the 0.5× slope is still 0.74, not 1.0. The negative control is unchanged at
+0.5× (0.231 against 0.260) and slightly worse at 1× (0.139 against 0.077), so do
+not claim it helps there.
+
+Supply an annotation wherever one exists for the HPC datasets. For GTDB-scale
+runs, DoriC covers only a fraction of species, so most genomes will still be
+fitted.
+
+### A8. One species = one strain = one PTR — **out of scope, keep it that way**
+
+No model for strain mixtures within a species. Real metagenomes have them. This
+is a modelling project of its own, not a refinement: two strains of one species
+at different growth rates produce a superposition of two tent functions, which is
+not identifiable from a single sample without either strain-resolved anchors or
+multiple timepoints. State it as a limitation and do not start it inside this
+paper.
 
 ---
 
