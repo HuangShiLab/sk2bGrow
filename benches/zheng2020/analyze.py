@@ -3,15 +3,17 @@ import re, sys, glob
 import numpy as np, pandas as pd
 from scipy import stats
 
-ARM = {'A':'sk2bGrow', 'B':'sk2bGrow (Pilea-parity est.)',
-       'C_default':'Pilea (defaults)', 'C_relaxed':'Pilea (gates off)'}
+# Ordered as the 2x2 of sketch x estimator, then Pilea at its shipped gates.
+ARM = {'A':'anchors + V-fit (sk2bGrow)', 'E':'FracMinHash + V-fit',
+       'B':'anchors + rank regression', 'C_relaxed':'Pilea (gates off)',
+       'C_default':'Pilea (defaults)'}
 
 gt = pd.read_csv('growth_rates.tsv', sep='\t').set_index('medium')
 
 rows = []
 for d in sorted(glob.glob('out/*/')):
     name = d.split('/')[1]
-    m = re.match(r'^(A|B|C_default|C_relaxed)_(.+?)_([\d.]+)x$', name)
+    m = re.match(r'^(A|B|E|C_default|C_relaxed)_(.+?)_([\d.]+)x$', name)
     if not m: continue
     arm, medium, cov = m.group(1), m.group(2), float(m.group(3))
     try:
@@ -37,7 +39,7 @@ print("=" * 96)
 print(f"{'coverage':>9}  {'arm':30}{'n':>4}{'Pearson r':>11}{'Spearman':>10}"
       f"{'RMSE vs pred':>14}{'slope':>8}")
 for cov in sorted(grow['cov'].unique()):
-    for arm in ['A','B','C_default','C_relaxed']:
+    for arm in ARM:
         s = grow[(grow['cov']==cov) & (grow['arm']==arm) & np.isfinite(grow['log2ptr'])]
         if len(s) < 3:
             print(f"{cov:>8}x  {ARM[arm]:30}{len(s):>4}{'--':>11}{'--':>10}{'--':>14}{'--':>8}")
@@ -52,7 +54,7 @@ for cov in sorted(grow['cov'].unique()):
 
 print("NEGATIVE CONTROL — RUN_OUT (stationary phase, expect log2(PTR) ~ 0)")
 ctl = res[res['medium']=='RUN_OUT']
-for arm in ['A','B','C_default','C_relaxed']:
+for arm in ARM:
     s = ctl[ctl['arm']==arm].sort_values('cov')
     if s.empty: continue
     vals = "  ".join(f"{c:g}x={v:.3f}" if np.isfinite(v) else f"{c:g}x=--"
