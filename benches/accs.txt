@@ -1,0 +1,16 @@
+GCF_000005845.2	Escherichia_coli_K12
+GCF_000008865.2	Escherichia_coli_O157H7
+GCF_000012005.1	Shigella_dysenteriae
+GCF_000006945.2	Salmonella_enterica_LT2
+GCF_000240185.1	Klebsiella_pneumoniae
+GCF_000009045.1	Bacillus_subtilis_168
+GCF_000013425.1	Staphylococcus_aureus
+GCF_000196035.1	Listeria_monocytogenes
+GCF_000009085.1	Campylobacter_jejuni
+GCF_000008525.1	Helicobacter_pylori
+GCF_000006885.1	Streptococcus_pneumoniae
+GCF_000007785.1	Enterococcus_faecalis
+GCF_000006745.1	Vibrio_cholerae
+GCF_000008805.1	Neisseria_meningitidis
+GCF_000027305.1	Haemophilus_influenzae
+GCF_000006765.1	Pseudomonas_aeruginosa
