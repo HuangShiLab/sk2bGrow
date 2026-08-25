@@ -91,7 +91,14 @@ pub struct AnchorIndex<'a> {
     seeds: HashMap<(u8, u64), Vec<u32>>,
     n_seeds: u8,
     /// Panel entries actually present in this database.
-    active: Vec<&'static Enzyme>,
+    /// Active enzymes grouped by tag length. Two enzymes of the same tag length
+    /// can satisfy their patterns on the *same physical read window* — the panel
+    /// guarantees it, because every Bsp24I tag is byte-identical to a CjePI tag.
+    /// Scanning per enzyme would then visit that window once per enzyme and
+    /// credit every anchor at the locus once per visit; scanning per length
+    /// visits it once, which is the correct model: one physical tag, one
+    /// observation, credited to each stratum the locus belongs to.
+    by_len: Vec<(usize, Vec<&'static Enzyme>)>,
 }
 
 impl<'a> AnchorIndex<'a> {
@@ -115,16 +122,20 @@ impl<'a> AnchorIndex<'a> {
                 }
             }
         }
-        let active: Vec<&'static Enzyme> = PANEL
-            .iter()
-            .filter(|e| db.params.enzymes.contains(e.idx))
-            .collect();
+        let mut by_len: Vec<(usize, Vec<&'static Enzyme>)> = Vec::new();
+        for e in PANEL.iter().filter(|e| db.params.enzymes.contains(e.idx)) {
+            let len = e.tag_len as usize;
+            match by_len.iter_mut().find(|(l, _)| *l == len) {
+                Some((_, v)) => v.push(e),
+                None => by_len.push((len, vec![e])),
+            }
+        }
         AnchorIndex {
             db,
             exact,
             seeds,
             n_seeds,
-            active,
+            by_len,
         }
     }
 
@@ -195,14 +206,17 @@ impl<'a> AnchorIndex<'a> {
     ) -> u32 {
         let mut recorded = 0u32;
         let mut hits: Vec<(u32, u32)> = Vec::new();
-        for enzyme in self.active.iter() {
-            let len = enzyme.tag_len as usize;
+        for (len, enzymes) in self.by_len.iter() {
+            let len = *len;
             if read.len() < len {
                 continue;
             }
             for start in 0..=(read.len() - len) {
                 let window = &read[start..start + len];
-                if enzyme.match_window(window).is_none() {
+                // One physical window, tested against every enzyme of this tag
+                // length. `any` rather than a per-enzyme loop is the whole point:
+                // a window satisfying two patterns is still one observation.
+                if !enzymes.iter().any(|e| e.match_window(window).is_some()) {
                     continue;
                 }
                 stats.motif_hits += 1;
@@ -459,6 +473,61 @@ mod tests {
             assemble(params, vec![(meta, anchors, tags)]),
             seq.into_bytes(),
         )
+    }
+
+    /// Regression: one physical read window that satisfies two enzymes' patterns
+    /// is ONE observation, credited once to each stratum -- not one per enzyme.
+    ///
+    /// The panel makes this unavoidable: every Bsp24I site is also a CjePI site
+    /// (their patterns, written in opposite strand orientations, differ at a
+    /// single position). Scanning per enzyme visited such a window twice and
+    /// incremented every anchor at the locus on each visit, inflating CjePI by
+    /// 21% on E. coli and distorting its coverage profile -- exactly the enzyme
+    /// carrying the second-largest weight in the fusion.
+    #[test]
+    fn a_shared_locus_is_counted_once_per_enzyme_not_once_per_pass() {
+        use std::sync::atomic::{AtomicU32, Ordering};
+        static N: AtomicU32 = AtomicU32::new(0);
+
+        // 27 bp: GAC at offset 8 and TGG at 17 satisfies Bsp24I pattern 0, and
+        // the same bases satisfy CjePI pattern 1 (GA at 8, TGG at 17).
+        let tag = "TTTTTTTTGACTTTTTTTGGTTTTTTT";
+        assert_eq!(tag.len(), 27);
+        let seq = format!("{}{}{}", "A".repeat(300), tag, "A".repeat(300));
+
+        let mut path = std::env::temp_dir();
+        path.push(format!(
+            "sk2bgrow-{}-{}-shared.fna",
+            std::process::id(),
+            N.fetch_add(1, Ordering::Relaxed)
+        ));
+        std::fs::write(&path, format!(">c0\n{seq}\n")).unwrap();
+        let enzymes = vec![by_name("Bsp24I").unwrap(), by_name("CjePI").unwrap()];
+        let (meta, anchors, tags, _) =
+            build_genome(&path, 0, &enzymes, &DigestConfig::default(), GC_FLANK).unwrap();
+        let params = BuildParams {
+            enzymes: EnzymeSet::from_slice(&enzymes),
+            ..BuildParams::default()
+        };
+        std::fs::remove_file(&path).ok();
+        let db = assemble(params, vec![(meta, anchors, tags)]);
+
+        // Both enzymes must have found the locus, or the test proves nothing.
+        assert_eq!(db.anchors.len(), 2, "expected one anchor per enzyme");
+        assert_eq!(db.tag(0), db.tag(1), "the two anchors must share a tag");
+
+        let cfg = MatchConfig::default();
+        let index = AnchorIndex::build(&db, cfg.max_mismatch);
+        let mut counts = vec![0u32; db.anchors.len()];
+        let mut stats = CountStats::default();
+        let read = format!("GGGGG{tag}GGGGG");
+        index.count_read(read.as_bytes(), &cfg, &mut counts, &mut stats);
+
+        assert_eq!(
+            counts,
+            vec![1, 1],
+            "one read over one shared locus must give each enzyme exactly one count"
+        );
     }
 
     #[test]
