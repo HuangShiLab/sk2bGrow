@@ -37,7 +37,7 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 
 use crate::anchor_db::AnchorDb;
-use crate::enzyme::{Enzyme, PANEL};
+use crate::enzyme::{Enzyme, EnzymeSet, PANEL};
 use crate::error::Result;
 use crate::seq::{canonical_hash, hamming_within, hash_tag, revcomp};
 
@@ -102,12 +102,32 @@ pub struct AnchorIndex<'a> {
 }
 
 impl<'a> AnchorIndex<'a> {
-    /// Build the index. Cost is O(n_anchors × (m+1)).
+    /// Build the index over every enzyme the database was built with.
+    /// Cost is O(n_anchors × (m+1)).
     pub fn build(db: &'a AnchorDb, max_mismatch: u32) -> Self {
+        Self::build_restricted(db, max_mismatch, None)
+    }
+
+    /// Build the index over a subset of the database's enzymes.
+    ///
+    /// Excluded enzymes' anchors are left out of the lookup tables entirely, so
+    /// they are never scanned for and never credited — a restricted index
+    /// behaves like a database built with only those enzymes, and is
+    /// correspondingly cheaper. That is the point of `profile --enzymes`: try a
+    /// panel size without rebuilding the index.
+    pub fn build_restricted(
+        db: &'a AnchorDb,
+        max_mismatch: u32,
+        restrict: Option<EnzymeSet>,
+    ) -> Self {
+        let selected = |idx: u8| restrict.map_or(true, |s| s.contains(idx));
         let n_seeds = (max_mismatch + 1) as u8;
         let mut exact: HashMap<u64, Vec<u32>> = HashMap::with_capacity(db.anchors.len());
         let mut seeds: HashMap<(u8, u64), Vec<u32>> = HashMap::new();
         for (i, a) in db.anchors.iter().enumerate() {
+            if !selected(a.enzyme_idx) {
+                continue;
+            }
             exact.entry(a.seq_hash).or_default().push(i as u32);
             if max_mismatch > 0 {
                 let tag = db.tag(i);
@@ -123,7 +143,10 @@ impl<'a> AnchorIndex<'a> {
             }
         }
         let mut by_len: Vec<(usize, Vec<&'static Enzyme>)> = Vec::new();
-        for e in PANEL.iter().filter(|e| db.params.enzymes.contains(e.idx)) {
+        for e in PANEL
+            .iter()
+            .filter(|e| db.params.enzymes.contains(e.idx) && selected(e.idx))
+        {
             let len = e.tag_len as usize;
             match by_len.iter_mut().find(|(l, _)| *l == len) {
                 Some((_, v)) => v.push(e),
@@ -391,6 +414,7 @@ pub fn write_count_table(
     counts: &[u32],
     window_ids: &[u32],
     include_masked: bool,
+    enzymes: Option<EnzymeSet>,
 ) -> Result<()> {
     use std::io::Write;
     let f = std::fs::File::create(path).map_err(|e| crate::error::Sk2bError::Io {
@@ -405,6 +429,12 @@ pub fn write_count_table(
     writeln!(w, "{COUNT_TABLE_HEADER}").map_err(io)?;
     for (i, a) in db.anchors.iter().enumerate() {
         if !include_masked && !a.is_usable() {
+            continue;
+        }
+        // An enzyme excluded by `--enzymes` was never counted; emitting its
+        // anchors as zeros would tell the statistics layer the enzyme was
+        // measured and found empty.
+        if enzymes.is_some_and(|s| !s.contains(a.enzyme_idx)) {
             continue;
         }
         let gname = db
@@ -484,17 +514,15 @@ mod tests {
     /// incremented every anchor at the locus on each visit, inflating CjePI by
     /// 21% on E. coli and distorting its coverage profile -- exactly the enzyme
     /// carrying the second-largest weight in the fusion.
-    #[test]
-    fn a_shared_locus_is_counted_once_per_enzyme_not_once_per_pass() {
+    /// A database whose single locus belongs to two enzymes at once: 27 bp with
+    /// GAC at offset 8 and TGG at 17 satisfies Bsp24I pattern 0, and the same
+    /// bases satisfy CjePI pattern 1 (GA at 8, TGG at 17).
+    fn shared_locus_db() -> (AnchorDb, &'static str) {
         use std::sync::atomic::{AtomicU32, Ordering};
         static N: AtomicU32 = AtomicU32::new(0);
-
-        // 27 bp: GAC at offset 8 and TGG at 17 satisfies Bsp24I pattern 0, and
-        // the same bases satisfy CjePI pattern 1 (GA at 8, TGG at 17).
         let tag = "TTTTTTTTGACTTTTTTTGGTTTTTTT";
         assert_eq!(tag.len(), 27);
         let seq = format!("{}{}{}", "A".repeat(300), tag, "A".repeat(300));
-
         let mut path = std::env::temp_dir();
         path.push(format!(
             "sk2bgrow-{}-{}-shared.fna",
@@ -510,7 +538,12 @@ mod tests {
             ..BuildParams::default()
         };
         std::fs::remove_file(&path).ok();
-        let db = assemble(params, vec![(meta, anchors, tags)]);
+        (assemble(params, vec![(meta, anchors, tags)]), tag)
+    }
+
+    #[test]
+    fn a_shared_locus_is_counted_once_per_enzyme_not_once_per_pass() {
+        let (db, tag) = shared_locus_db();
 
         // Both enzymes must have found the locus, or the test proves nothing.
         assert_eq!(db.anchors.len(), 2, "expected one anchor per enzyme");
@@ -528,6 +561,36 @@ mod tests {
             vec![1, 1],
             "one read over one shared locus must give each enzyme exactly one count"
         );
+    }
+
+    /// `profile --enzymes` must restrict the *counting*, not just the report:
+    /// an excluded enzyme's anchors are never scanned for and never credited,
+    /// even when they sit on a locus a selected enzyme also claims.
+    #[test]
+    fn restricting_the_index_excludes_an_enzyme_from_counting() {
+        let (db, tag) = shared_locus_db();
+        assert_eq!(db.anchors.len(), 2);
+        let cjepi = by_name("CjePI").unwrap();
+        let only_cjepi = EnzymeSet::from_slice(&[cjepi]);
+
+        let cfg = MatchConfig::default();
+        let index = AnchorIndex::build_restricted(&db, cfg.max_mismatch, Some(only_cjepi));
+        let mut counts = vec![0u32; db.anchors.len()];
+        let mut stats = CountStats::default();
+        index.count_read(
+            format!("GGGGG{tag}GGGGG").as_bytes(),
+            &cfg,
+            &mut counts,
+            &mut stats,
+        );
+
+        let total: u32 = counts.iter().sum();
+        assert_eq!(total, 1, "only the selected enzyme may be credited");
+        for (c, a) in counts.iter().zip(db.anchors.iter()) {
+            if a.enzyme_idx != cjepi.idx {
+                assert_eq!(*c, 0, "an excluded enzyme received a count");
+            }
+        }
     }
 
     #[test]

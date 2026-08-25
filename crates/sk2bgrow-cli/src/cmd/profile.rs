@@ -95,20 +95,33 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
         db.genomes.len()
     ));
 
-    if let Some(sel) = &args.enzymes {
-        let wanted = sk2bgrow_core::enzyme::parse_selection(sel)?;
-        let missing: Vec<&str> = wanted
-            .iter()
-            .filter(|e| !db.params.enzymes.contains(e.idx))
-            .map(|e| e.name)
-            .collect();
-        if !missing.is_empty() {
-            bail!(
-                "the database was not built with {}; rebuild the index or drop them from --enzymes",
-                missing.join(", ")
-            );
+    // `--enzymes` restricts the *counting*, not just the report: excluded
+    // anchors are left out of the lookup tables, so a restricted run costs what
+    // a database built with only those enzymes would cost.
+    let restrict = match &args.enzymes {
+        None => None,
+        Some(sel) => {
+            let wanted = sk2bgrow_core::enzyme::parse_selection(sel)?;
+            let missing: Vec<&str> = wanted
+                .iter()
+                .filter(|e| !db.params.enzymes.contains(e.idx))
+                .map(|e| e.name)
+                .collect();
+            if !missing.is_empty() {
+                bail!(
+                    "the database was not built with {}; rebuild the index or drop them from --enzymes",
+                    missing.join(", ")
+                );
+            }
+            let set = sk2bgrow_core::enzyme::EnzymeSet::from_slice(&wanted);
+            ctx.say(format!(
+                "restricting to {} of {} enzymes",
+                wanted.len(),
+                db.params.enzymes.len()
+            ));
+            Some(set)
         }
-    }
+    };
 
     std::fs::create_dir_all(&args.output)?;
 
@@ -165,7 +178,7 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
     let wpath = args.output.join("windows.tsv");
     write_windows(&wpath, &db, &all_windows)?;
 
-    let index = AnchorIndex::build(&db, args.max_mismatch);
+    let index = AnchorIndex::build_restricted(&db, args.max_mismatch, restrict);
     let cfg = MatchConfig {
         max_mismatch: args.max_mismatch,
         mode: match args.mode {
@@ -182,7 +195,7 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
             let (counts, stats) = count_sample(&index, files, &cfg)?;
             let em = reassign(&db, &counts, &EmConfig::default());
             let tsv = args.output.join(format!("{name}.counts.tsv"));
-            write_count_table(&tsv, name, &db, &counts, &window_ids, true)?;
+            write_count_table(&tsv, name, &db, &counts, &window_ids, true, restrict)?;
             let statj = args.output.join(format!("{name}.stats.json"));
             std::fs::write(
                 &statj,
