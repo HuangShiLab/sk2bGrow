@@ -4,17 +4,18 @@ Written for whoever runs the large-scale benchmarks. Everything below was
 measured on an M3 Max laptop against the reduced datasets in `benches/`; the
 numbers are real, the extrapolations are marked as extrapolations.
 
-**Read Part A before starting Part C.** A1 (index memory) has been addressed but
-only halves the requirement, so the GTDB-scale experiment is now expensive rather
-than impossible; A2 and A3 decide whether the headline claim survives. A3 is
-settled — see below — and it changed the answer.
+**Read Part A before starting Part C.** A1–A3 are now settled on the laptop and
+two of them changed the answer: A3's missing cell overturned the attribution
+claim, and A2 found that the QC passes fragmented references *more* often than
+correct ones. A1 halves the index rather than shrinking it tenfold, so C6 is
+expensive rather than impossible.
 
 ---
 
 ## Part A — open algorithm/engineering issues
 
-Priority order. A1 and A3 are done; A2 is open and is the one that decides the
-paper's scope. A4–A8 are refinements.
+Priority order. A1–A3 are done. What A2 opened — a QC that cannot see a
+destroyed coordinate — is the most important item left. A4–A8 are refinements.
 
 ### A1. Index memory — **done, but only 2.2× and still the binding constraint**
 
@@ -77,22 +78,68 @@ rather than a distributed problem. Until then, keep reference sets under
 enzymes on a 700 GB node). **Everything in Part C fits, including C6 at 8
 enzymes.**
 
-### A2. Fragmented references and MAGs are untested — **decides the paper's scope**
+### A2. Fragmented references — **done; scaffolding rescues it, but the QC is blind**
 
-The V-shape fit regresses on genomic coordinate. On a MAG the contig order and
-orientation are unknown, so the coordinate does not exist. `scaffold.rs` (398
-lines) exists to order contigs against a reference but **no benchmark exercises
-it**, and no result in the paper uses anything but a complete genome.
+`benches/fragmentation/` now runs Pilea's Fig 3 protocol on the Zheng *E. coli*
+data: the same reads against the complete chromosome, against 100 shuffled
+lognormal contigs, and against those contigs re-ordered by `sk2bgrow scaffold`.
+n = 16 media per cell.
 
-This is the one place where Pilea is architecturally better: sorted-rank
-regression needs no coordinates and is fragmentation-proof by construction. Its
-Fig 3 runs every cell twice, on complete genomes and on the same genomes split
-into 100 contigs.
+| coverage | | complete | 100 contigs | scaffolded vs O157:H7 | Pilea on 100 contigs |
+|---|---|---:|---:|---:|---:|
+| 1× | r | 0.981 | 0.550 | 0.977 | 0.827 |
+| | slope | 0.779 | 0.103 | 0.755 | 0.628 |
+| 10× | r | 0.968 | 0.859 | 0.967 | 0.960 |
+| | RMSE | 0.063 | 0.862 | 0.086 | 0.077 |
+| | slope | 0.951 | 0.210 | 0.984 | 0.820 |
+| | QC pass | 75% | **100%** | 88% | — |
 
-Experiment C2 settles it. If sk2bGrow collapses on contigs and `scaffold` does
-not rescue it, the honest framing is *"a method for complete references"*, and
-the marine/RBC datasets (both MAG-based) become a limitation section rather than
-a result.
+**Fragmentation does not add noise, it removes the gradient.** Every estimate
+lands at about a fifth of truth. Correlation hides this — r = 0.86 at 10× looks
+survivable — so read the slope, not r.
+
+**On unscaffolded contigs Pilea wins outright** — r 0.827 against 0.550 at 1× —
+because rank regression discards position by construction. Fragmentation costs
+it almost nothing (0.889 to 0.827 at 1×). Say this plainly; it is a real
+advantage of the sorted estimator.
+
+**Scaffolding restores the complete-reference result exactly, across strains.**
+Contig order comes back with Spearman 1.0000 against O157:H7 and orientation
+99/99 correct; the 712 kb raw placement error is almost all a rigid rotation,
+which the fit is blind to because it searches for the origin instead of assuming
+it. So the paper does **not** have to be reframed as "complete references only",
+and the marine and RBC MAG datasets stay in scope — provided a complete relative
+exists to scaffold against, which for those datasets needs checking per MAG.
+
+**The open problem is now the QC, not the fit.** 100% of the fragmented
+estimates pass at 5–10×, against 75% of the correct ones. The fusion QC asks
+whether the enzymes agree; a destroyed coordinate makes all sixteen agree there
+is no gradient, so Cochran's Q cannot see it. Two follow-ups:
+
+1. **Flag multi-contig references at estimation time — at 2 contigs, not at
+   some tuned larger number.** The contig-count sweep (`sweep.sh`, 10×, n = 16)
+   shows no safe threshold and, worse, that correlation cannot locate one:
+
+   | contigs | 1 | 2 | 5 | 10 | 20 | 50 | 100 |
+   |---|---:|---:|---:|---:|---:|---:|---:|
+   | N50 | 4.6 Mb | 2.6 Mb | 939 kb | 626 kb | 305 kb | 156 kb | 78 kb |
+   | r | 0.968 | 0.970 | 0.971 | 0.948 | 0.961 | 0.962 | 0.859 |
+   | slope | 0.951 | 0.876 | 0.634 | 0.609 | 0.508 | 0.444 | 0.210 |
+   | bias | +0.03 | −0.06 | −0.29 | −0.35 | −0.41 | −0.57 | −0.81 |
+
+   r never leaves 0.86–0.97 while the slope falls by a factor of four. At 50
+   contigs (N50 156 kb, a draft most people would call good) r reads 0.96 and
+   every estimate is 44% of truth. Degradation is smooth and monotone in bias,
+   so there is no cliff to stay above — it is a tax that begins as soon as the
+   reference is not closed.
+2. **`rescaffold.py` overwrites overlapping placements**, losing 1.93% of the
+   draft when scaffolding across strains. Emitting contigs at cumulative
+   order-preserving offsets, or teaching `index` to read a scaffolded TGT
+   directly, removes it — the numbers above are that much pessimistic.
+
+Still untested: fragmentation on MAGs that are genuinely incomplete (missing
+sequence, not just cut), contamination, and the enzyme-panel sweep under
+fragmentation.
 
 ### A3. The attribution 2×2 — **done; it changed the claim**
 
@@ -229,22 +276,30 @@ above 5×. Run-out |log₂PTR| < 0.1.
 something in the full-depth path differs from the subsampled path — check for
 duplicate reads first (`fastp --dedup`; the RBC samples needed it).
 
-### C2 — reference fragmentation — **the important one**
+### C2 — reference fragmentation — **answered on one genome; generalise it**
 
-**Objective.** Settle A2. Pilea's Fig 3 runs every simulation cell on complete
-genomes and on the same genomes split into 100 contigs (lognormal lengths,
-μ = 0, σ = 1).
+A2 settled this for *E. coli*: fragmentation collapses the estimate to a fifth
+of truth, and `sk2bgrow scaffold` restores it fully, even against a different
+strain. `benches/fragmentation/run.sh` is the harness; it takes any genome.
 
-**Run.** Same design, three reference conditions: complete, 100 contigs, 100
-contigs + `sk2bgrow scaffold` against a complete relative. Also re-run the
-enzyme-panel sweep (A6) under fragmentation.
+**What is left, in order of value:**
 
-**Expect.** Honestly: unknown, and we should not pretend otherwise. The V-fit
-needs coordinates the contigs do not carry. Best case, `scaffold` recovers
-enough order that sk2bGrow degrades gracefully; worst case it collapses to
-chance and Pilea's rank regression wins outright on fragmented references.
+1. **Genuinely incomplete MAGs, not just cut ones.** `fragment.py` preserves
+   every base. A real MAG is missing 2–10% of the genome and carries
+   contamination. Drop random contigs and splice in foreign ones, then repeat.
+2. **Scaffold against progressively more distant relatives.** O157:H7 worked
+   perfectly. Walk out to *Shigella*, *Salmonella*, and a different genus, and
+   find where placement fails — that is the rule for whether a marine or RBC MAG
+   is usable, and it cannot be guessed.
+3. **The 16-genome simulation grid under fragmentation**, so the multi-strain
+   result is not complete-genome-only.
+4. **The enzyme-panel sweep (A6) under fragmentation** — a sparse panel has
+   fewer shared tags per contig, so scaffolding may need more than 8 enzymes even
+   if estimation does not.
 
-**Either outcome is publishable** — the second one just changes the title.
+**Expect** graceful behaviour on (1) and a failure boundary somewhere in (2).
+Both outcomes are reportable; (2)'s boundary is the number a MAG-based user
+actually needs.
 
 ### C3 — multi-strain simulation at Pilea's full scale
 
