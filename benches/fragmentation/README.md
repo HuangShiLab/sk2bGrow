@@ -130,6 +130,69 @@ report the slope beside r.
 A contig-count check is therefore the right guard, and it should fire at 2, not
 at some tuned larger number.
 
+## Can Pilea's estimator be borrowed instead?
+
+Partly, and the useful half is the *formulation*, not the code.
+
+Under the standard model log2(coverage) is a tent function of position with equal
+|slope| on both replichores. Over a uniformly tiled genome the coverage *values*
+are therefore uniform on [log2 c_ter, log2 c_ori], and the width of that uniform
+**is** log2(PTR). Only the spread of coverage is needed; position never enters.
+That is exactly why sorting the windows costs Pilea nothing here.
+
+What should not be borrowed is how Pilea estimates the width. It sorts the
+per-window rates and RANSAC-regresses them on rank, taking the fitted rise as
+log2(PTR). Sorted values of *any* sample rise, so sampling noise is counted as
+growth — on the stationary control it reports 1.15 at 1× for a culture that is
+not growing.
+
+`spread_estimator.py` keeps the formulation and puts the noise in the model.
+Each window already carries a standard error, so with mu_w ~ U(a, a+W) and
+e_w ~ N(0, s_w²), maximising the marginal likelihood over (a, W) per enzyme and
+fusing across enzymes gives an order-free estimate that cannot manufacture a
+gradient. `score_spread.py` scores it from the `windows.rates.tsv` the runs
+already wrote — no re-run needed.
+
+| coverage | estimator, on the 100-contig reference | RMSE | slope |
+|---|---|---:|---:|
+| 5× | V-fit (coordinate destroyed) | 0.871 | 0.187 |
+| | **spread-MLE** | **0.144** | **0.922** |
+| | Pilea | 0.116 | 0.888 |
+| 10× | V-fit | 0.862 | 0.210 |
+| | **spread-MLE** | **0.227** | **0.919** |
+| | Pilea | 0.077 | 0.820 |
+
+| stationary control (truth ≈ 0) | 1× | 2× | 5× | 10× |
+|---|---:|---:|---:|---:|
+| Pilea | 1.153 | 0.621 | 0.255 | 0.203 |
+| spread-MLE | **0.000** | **0.000** | 0.383 | 0.458 |
+
+So it recovers most of what fragmentation destroys — RMSE 0.87 → 0.14 at 5×,
+slope 0.19 → 0.92 — with no scaffolding at all, and it does not invent growth
+where there is none. Three things it does not do, stated plainly:
+
+1. **It does not beat Pilea at depth on a fragmented reference** (RMSE 0.227
+   against 0.077 at 10×). Pilea's advantage there is real.
+2. **Below 5× it over-shrinks to zero** (bias −0.98 at 1×). The distribution
+   alone carries too little information. Coordinates are not redundant — which is
+   why the V-fit wins at 1–2× and why scaffolding stays the better answer in the
+   band this project is actually about.
+3. **It has a positive floor** (~0.4 on the stationary control at 5–10×). Real
+   window scatter includes systematic terms — mappability, anchor density,
+   residual GC — that a pure noise model can only attribute to growth. An
+   overdispersion parameter is the obvious next step and should fix both this and
+   (2).
+
+Pooling all sixteen enzymes into one width was tried and is much worse (8.6 on
+the stationary control at 0.5×): the per-enzyme fusion earns its place by
+down-weighting sparse enzymes.
+
+**The design this points to is two estimators, not one.** With a coordinate —
+complete reference, or a scaffolded draft — use the V-fit, which is the only
+thing that works at 1–2×. Without one, and at ≥5×, use the spread estimator.
+Without one and below 5×, report nothing: that is the case the current QC passes
+at 100% while being wrong by a factor of five.
+
 ## Running
 
 ```bash
@@ -145,6 +208,8 @@ WORK=/scratch/frag python3 analyze.py
 
 | file | what |
 |---|---|
+| `spread_estimator.py` | the order-free spread estimator (prototype) |
+| `score_spread.py` | scores it against the V-fit and Pilea from existing runs |
 | `fragment.py` | cut a complete genome into lognormal contigs, shuffled and flipped; writes a `.layout.tsv` truth file |
 | `rescaffold.py` | score a scaffold result against that truth, and re-emit the draft as a coordinate-bearing FASTA |
 | `run.sh` | the four reference conditions plus the Pilea control |

@@ -111,6 +111,28 @@ it. So the paper does **not** have to be reframed as "complete references only",
 and the marine and RBC MAG datasets stay in scope — provided a complete relative
 exists to scaffold against, which for those datasets needs checking per MAG.
 
+**An order-free estimator recovers most of it without scaffolding, at depth.**
+`benches/fragmentation/spread_estimator.py` borrows Pilea's *formulation* — over
+a uniformly tiled genome log2(coverage) is uniform and the width of that uniform
+is log2(PTR), so only the spread is needed — but not its estimator, which reads
+the observed spread directly and so counts sampling noise as growth (1.15 on the
+stationary control at 1×). Putting the per-window standard error into the model
+and maximising the marginal likelihood gives, on the 100-contig reference:
+
+| | RMSE @5× | slope @5× | RMSE @10× | control @1× |
+|---|---:|---:|---:|---:|
+| V-fit (coordinate destroyed) | 0.871 | 0.187 | 0.862 | 0.192 |
+| spread-MLE | **0.144** | **0.922** | 0.227 | **0.000** |
+| Pilea | 0.116 | 0.888 | 0.077 | 1.153 |
+
+It does not beat Pilea at depth, it over-shrinks to zero below 5× (bias −0.98 at
+1×), and it has a ~0.4 floor on the stationary control at 5–10× from systematic
+window scatter a pure noise model must call growth. An overdispersion term
+s_eff² = s_w² + τ² is the obvious next step for both. **The design this points to
+is two estimators**: coordinate present (complete or scaffolded) → V-fit, the
+only thing that works at 1–2×; no coordinate and ≥5× → spread; no coordinate and
+below 5× → refuse.
+
 **The open problem is now the QC, not the fit.** 100% of the fragmented
 estimates pass at 5–10×, against 75% of the correct ones. The fusion QC asks
 whether the enzymes agree; a destroyed coordinate makes all sixteen agree there
