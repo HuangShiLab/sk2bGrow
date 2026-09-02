@@ -59,6 +59,15 @@ simultaneous WMS-PTR gold standard.
 assumed values of 0.3–0.6, and no published per-site depth CV exists for 2bRAD.
 If σ_eff turns out above ~0.8, the route-B gain estimates need revising downward.
 
+**This no longer has to wait for wet lab.** Sun et al. 2022 (PRJNA689204) and Hou
+et al. 2025 (PRJCA030517) both provide WGS and BcgI 2bRAD from the *same DNA
+extract*, so an in-silico digest of the WGS arm and the real 2bRAD arm differ only
+in where the cut happened. The per-anchor count ratio between them bounds σ_eff
+from above with no PTR machinery at all — see
+[`../../benches/HPC_TASKS_PAIRED_2BRAD.md`](../../benches/HPC_TASKS_PAIRED_2BRAD.md)
+task 1. M3 remains necessary for the multi-enzyme architecture, which single-enzyme
+libraries cannot test.
+
 ## M4 / P3–P4 — scale and community data
 
 * Two-tier architecture: containment pre-filter, then anchor-level counting, to
@@ -75,7 +84,7 @@ single-sample four-dimensional profile (taxonomy + ANI + SV + PTR) demonstrated.
 
 | | question | resolution path |
 |---|---|---|
-| R1 | actual magnitude of per-site efficiency noise | P2 technical replicates |
+| R1 | actual magnitude of per-site efficiency noise | **paired WGS+2bRAD, same extract** ([`../../benches/HPC_TASKS_PAIRED_2BRAD.md`](../../benches/HPC_TASKS_PAIRED_2BRAD.md) task 1); P2 technical replicates as confirmation |
 | R2 | shared anchors across co-occurring strains | strain-specific anchors only; accept the sensitivity loss |
 | R3 | multi-fork profile non-linearity | segmented model exists; needs validation at PTR > 2 |
 | R4 | ori annotation coverage for MAGs | joint search + `ori_confidence`, cross-checked against Ori-Finder |
