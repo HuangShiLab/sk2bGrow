@@ -26,7 +26,7 @@ fi
 
 echo "==> work dir: $WORK"
 
-# --- a synthetic 400 kb genome with a planted replication gradient -----------
+# --- a synthetic 1.5 Mb genome with a planted replication gradient -----------
 "$PY" - "$WORK" <<'PYEOF'
 import sys, random
 from pathlib import Path

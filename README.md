@@ -18,7 +18,7 @@ strata*. That difference is what this project is built on.
 
 ## Why
 
-[Pilea](https://doi.org/10.1186/s40168-025-02268-7) established alignment-free
+[Pilea](https://doi.org/10.1186/s40168-026-02374-0) established alignment-free
 PTR estimation and set the accuracy bar (r = 0.976 against measured growth
 rates). Its remaining weaknesses are structural, and they all trace to one
 choice — a random, position-less, unstratified sketch:
@@ -115,10 +115,10 @@ make test          # cargo test --workspace && pytest
 
 Milestone **M1** of the plan in [`docs/design/04-roadmap.md`](docs/design/04-roadmap.md):
 the full pipeline runs end to end and recovers planted PTR values in simulation.
-82 Rust tests and 106 Python tests, plus `scripts/smoke.sh`, which builds a
+86 Rust tests and 106 Python tests, plus `scripts/smoke.sh`, which builds a
 1.5 Mb genome with a planted gradient and checks the whole stack recovers it —
-currently log2(PTR) 0.98 against a planted 1.0, origin within 1.3 kb, all 15
-enzymes agreeing (I² = 0).
+currently log2(PTR) 0.986 against a planted 1.0, origin within 417 bp of the
+planted 150 kb, all 16 enzymes fitting and agreeing (I² = 0).
 
 M2 — the A/B benchmark against Pilea on the Zheng E. coli dataset — is the next
 gate, and the honest one: if sk2bGrow does not beat the Pilea baseline at 1×
