@@ -36,6 +36,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::OnceLock;
 use std::time::Instant;
 
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::anchor_db::AnchorDb;
@@ -477,6 +478,24 @@ pub struct CountStats {
 }
 
 impl CountStats {
+    /// Element-wise sum of another chunk's stats. Counting is order-
+    /// independent (counts and every stat are pure sums), so merging
+    /// per-file partials in any order yields the serial result.
+    pub fn merge(&mut self, other: CountStats) {
+        self.reads_total += other.reads_total;
+        self.reads_with_anchor += other.reads_with_anchor;
+        self.motif_hits += other.motif_hits;
+        self.tag_truncated += other.tag_truncated;
+        self.tag_ambiguous += other.tag_ambiguous;
+        self.tag_unmatched += other.tag_unmatched;
+        self.tag_multi_locus += other.tag_multi_locus;
+        self.tag_multi_enzyme += other.tag_multi_enzyme;
+        self.tag_matched += other.tag_matched;
+        for (d, s) in self.mismatch_hist.iter_mut().zip(other.mismatch_hist.iter()) {
+            *d += s;
+        }
+    }
+
     /// Tags fully extracted from reads, i.e. motif hits that were not truncated
     /// by a read end or rejected for an ambiguous base.
     pub fn tags_extracted(&self) -> u64 {
@@ -514,22 +533,48 @@ impl CountStats {
 }
 
 /// Count one sample's reads against the database.
+///
+/// Files are counted in parallel (one rayon task per file) and merged in file
+/// order. Merging is plain element-wise addition of `u32` counts and of every
+/// `CountStats` field, both order-independent, so the result is bit-identical
+/// to the serial loop regardless of completion order.
+///
+/// Intra-file parallelism is deliberately not attempted: read files are
+/// usually gzip-compressed, and gzip cannot be seeked, so a worker wanting
+/// "reads 10M..20M" would have to decompress and discard everything before
+/// it — for a single 68.5M-pair file that is nearly the whole serial cost
+/// paid N times. Splitting a sample's *files* across cores captures the
+/// common cases (several files per sample; several samples, which the caller
+/// already spreads across the pool) without that penalty.
 pub fn count_sample(
     index: &AnchorIndex<'_>,
     reads: &[std::path::PathBuf],
     cfg: &MatchConfig,
 ) -> Result<(Vec<u32>, CountStats)> {
+    let parts: Vec<Result<(Vec<u32>, CountStats)>> = reads
+        .par_iter()
+        .map(|path| {
+            let mut counts = vec![0u32; index.db().n_anchors()];
+            let mut stats = CountStats::default();
+            let n = crate::fasta::for_each_read(path, |read| {
+                stats.reads_total += 1;
+                let rec = index.count_read(read, cfg, &mut counts, &mut stats);
+                if rec > 0 {
+                    stats.reads_with_anchor += 1;
+                }
+            })?;
+            debug_assert!(n <= stats.reads_total);
+            Ok((counts, stats))
+        })
+        .collect();
     let mut counts = vec![0u32; index.db().n_anchors()];
     let mut stats = CountStats::default();
-    for path in reads {
-        let n = crate::fasta::for_each_read(path, |read| {
-            stats.reads_total += 1;
-            let rec = index.count_read(read, cfg, &mut counts, &mut stats);
-            if rec > 0 {
-                stats.reads_with_anchor += 1;
-            }
-        })?;
-        debug_assert!(n <= stats.reads_total);
+    for part in parts {
+        let (c, s) = part?;
+        for (dst, src) in counts.iter_mut().zip(c.iter()) {
+            *dst += src;
+        }
+        stats.merge(s);
     }
     timing_report("count_sample");
     Ok((counts, stats))
@@ -911,6 +956,59 @@ mod tests {
         idx.count_read(&genome[20..170], &cfg, &mut counts, &mut stats);
         assert_eq!(counts.iter().sum::<u32>(), 0);
         assert_eq!(stats.tag_multi_locus, 1);
+    }
+
+    #[test]
+    fn parallel_count_sample_matches_serial() {
+        // count_sample spreads files over rayon and merges partials; the merge
+        // is plain addition, so the result must equal the serial loop exactly.
+        let (db, genome) = tiny_db();
+        let idx = AnchorIndex::build(&db, 2);
+        let cfg = MatchConfig::default();
+
+        let mut files = Vec::new();
+        for f in 0..4 {
+            let mut body = String::new();
+            for r in 0..50 {
+                let start = 20 + ((f * 50 + r) * 7) % (genome.len() - 170);
+                body.push_str(&format!(
+                    ">r{f}_{r}\n{}\n",
+                    String::from_utf8_lossy(&genome[start..start + 150])
+                ));
+            }
+            let mut p = std::env::temp_dir();
+            p.push(format!(
+                "sk2bgrow-{}-par-{f}.fna",
+                std::process::id()
+            ));
+            std::fs::write(&p, body).unwrap();
+            files.push(p);
+        }
+
+        let (counts_par, stats_par) = count_sample(&idx, &files, &cfg).unwrap();
+
+        // Serial reference: same loop the parallel version must reproduce.
+        let mut counts = vec![0u32; db.n_anchors()];
+        let mut stats = CountStats::default();
+        for path in &files {
+            crate::fasta::for_each_read(path, |read| {
+                stats.reads_total += 1;
+                if idx.count_read(read, &cfg, &mut counts, &mut stats) > 0 {
+                    stats.reads_with_anchor += 1;
+                }
+            })
+            .unwrap();
+        }
+
+        assert_eq!(counts_par, counts, "parallel counts diverged from serial");
+        assert_eq!(
+            format!("{stats_par:?}"),
+            format!("{stats:?}"),
+            "parallel stats diverged from serial"
+        );
+        for p in files {
+            std::fs::remove_file(p).ok();
+        }
     }
 
     #[test]
