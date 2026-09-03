@@ -1,0 +1,172 @@
+C5 评分复核意见 —— 在写五项 benchmark 综合汇报之前必须先处理
+================================================================
+
+范围：只针对 C5 (PRJNA974210, RBC) 的评分口径。补跑数组 3981503 和重评分
+3981504 继续跑，不要停。以下所有检查都在现有产物上做，不需要重跑 count。
+
+结论先说：**recall 522/522 = 1.00 不能作为综合汇报的头条。** 它反映的是指标
+定义，不是方法性能。下面四条按重要性排序。
+
+
+1. recall 口径不可比 —— 计划里已经预警过
+----------------------------------------------------------------
+
+benches/RESEARCH_PLAN.md 的 C4 条目原文：
+
+    Note Pilea itself got estimates for only 18 of 101 — report the same
+    denominator, or the comparison is recall-vs-accuracy again.
+
+这条对 C5 同样适用。sk2bGrow 对 522 个 MAG 全部输出估计，是因为它在这条路径上
+没有 gate；Pilea default 有 gate。1.00 vs 0.05-0.11 比较的是"全部输出"对
+"Pilea 拒绝输出"，不是两个方法的召回能力。
+
+同口径（各自通过自己的门槛）的比较是：
+
+    sk2bGrow，QC pass 20-72 / 522  =  3.8% - 13.8%
+    Pilea default                  =  5.0% - 11.0%
+
+两者几乎完全重叠。这才是可以写进论文的那一行。
+
+要做的事：
+  (a) 打印 score_c5.py 里 recall 的确切定义（分子分母各是什么）。
+  (b) 增加一列 qc_recall = QC 通过数 / 522，与 pilea_default 并排报。
+  (c) 增加"共同分母"口径：只在两个工具都输出估计的 MAG 上比较，报 n。
+  (d) 保留原始 recall，但改名为 reported_fraction，避免和 Pilea 的 recall
+      混为一谈。
+
+
+2. suspicious = 0 与 recall = 1.00 自相矛盾
+----------------------------------------------------------------
+
+9 个真实 RBC 样本不可能每个都含全部 522 个 MAG 且覆盖度足够。既然每个 MAG 在
+每个样本都拿到了估计，按定义就必然存在"低覆盖却给了估计"的 MAG。所以
+suspicious = 0 说明那个判据的覆盖阈值没有咬合，而不是结果干净。
+
+这与 RESEARCH_PLAN.md Part 3 已记录的失效模式一致：
+
+    The QC is anti-correlated with the failure: 100% of fragmented estimates
+    pass at 5-10% against 75% of correct ones. Cochran's Q asks whether the
+    enzymes agree, and a destroyed coordinate makes all sixteen agree there is
+    no gradient. Q cannot see a failure identical across strata.
+
+要做的事：
+  (a) 打印 suspicious 的判据（阈值变量名 + 数值 + 用的是哪个覆盖度字段）。
+  (b) 输出每样本每 MAG 的覆盖度分布，确认阈值落在分布的什么位置。
+  (c) 如果阈值确实从未触发，如实写"该判据在 C5 上不产生约束"，不要报 0。
+
+
+3. 成本随规模翻转 —— 这是本次最重要的新事实
+----------------------------------------------------------------
+
+    sk2bGrow  16-27 h (count) + 20-44 min (stats)   = 980-1664 min / 样本
+    Pilea     6-15 min / arm
+    比值      约 65x - 277x
+
+而在 Zheng 单菌基准上是 8.2 s vs 11.5 s，我们更快。方向在规模上翻转了。
+
+这不是"其他要点"，它是 roadmap M4 两层架构（containment 预筛 -> anchor 级
+计数）必要性的直接证据，也直接影响 C6 的 GTDB 预算。
+
+要做的事：
+  (a) 把 /usr/bin/time 的原始数据按样本列出，不要只给区间。
+  (b) 拆分 count 阶段的耗时：索引载入 / 读比对 / 计数写出，定位瓶颈。
+  (c) 报告峰值 RSS。
+  (d) 在综合汇报里单列一节写这个翻转，不要淡化。
+
+
+4. C5 没有 ground truth，recall 无法证伪 —— 它该报的是另一件事
+----------------------------------------------------------------
+
+RESEARCH_PLAN.md 里 C5 挂在 R2（scaffolding 的失效边界）下，是 application
+section，不是 R1 的 recall 比较。RBC 的 MAG 没有实测生长率，所以 recall 是
+唯一可得指标，而单独的 recall 无法证伪——返回噪声也能拿满分。
+
+522 个 MAG 就是 522 个碎片化参考。A2 已证明碎片化会摧毁复制梯度，而 QC 看不见。
+所以 C5 真正该出的结果是这张交叉表：
+
+    QC pass (是/否)  ×  该 MAG 的 contig 数 / N50 / completeness / contamination
+
+判读：
+  - 若 QC 通过率随 contig 数下降而上升 -> QC 在真实数据上有效，这是 R2 的
+    正面结果，也是 C5 作为 application section 的核心内容。
+  - 若与 contig 数无关 -> R3 在真实数据上被确认为活的问题。这同样是结果，
+    按 Part 7 的要求（"If a result overturns something, that is the result"）
+    写成一条。
+
+要做的事：
+  (a) 取 MAG 的 CheckM/CheckM2 统计（completeness, contamination, contig 数,
+      N50）。若 PRJNA974210 附带则直接用，否则现算。
+  (b) 输出上述交叉表，并给出 QC pass 与 log(contig 数) 的相关。
+  (c) 同时报 sk2bGrow 估计值在 9 个样本间对同一 MAG 的一致性（同一 MAG 跨样本
+      的 log2PTR 变异），作为无真值情况下的内部一致性检查。
+
+
+5. 两件小事
+----------------------------------------------------------------
+
+  - 计划写的是 525 MAGs，报告是 522。说明差的 3 个是什么原因被排除的。
+  - set -e 导致 .done 未写、任务显示 FAILED 但产物完整——这个诊断是对的。
+    顺手确认同样的掩盖没有发生在其他数组里：逐个核对已完成数组的产物完整性，
+    不要只依赖 .done 标记。
+
+
+6. 代码侧证据 —— recall=1.00 和 suspicious=0 是实现的性质
+----------------------------------------------------------------
+
+已在本地核实（python/sk2bgrow/fusion.py, fit.py）。四条里前两条已修（纯增列，
+不改变任何已有数值），后两条未修，因为会改变论文里的每个数字。
+
+已修（增量，安全）：
+
+  - fuse_table 此前不输出 ok 列。下游写 r.get("ok", True) 会静默得到 True——
+    而这正是 fuse_table 自己在 fusion.py:194 对 per-enzyme 表用的写法。现已
+    输出 ok。
+  - 新增 consistency_checked 列。此前单酶存活时 dof=0 -> q_pvalue=NaN ->
+    consistent=True，即"没做过的检验被记为通过"。现在两者可区分，QC 通过应
+    要求 consistent AND consistency_checked。
+  - 新增 min_r2 与 n_enzymes_negative_r2 列（此前 r2 不经过融合）。
+
+未修（会改变已有数值，等重评分后一起做）：
+
+  - 全流程没有任何覆盖度闸门。fit.py 拦窗口数/RANSAC/下坡 origin/符号；
+    fuse 拦非有限估计/SE/anchor<30。没有一处看覆盖度。实测 coverage=0.02、
+    单酶、6 窗口的基因组照样输出估计。这就是 recall=1.00 的来源。
+  - coverage 列 = 存活酶的 mean_rate 无权重均值。失败的恰是覆盖度低的那些，
+    所以低丰度时系统性偏高（构造场景高估 6.5x）。suspicious 判据若卡在这一列
+    上，基本不会触发。
+
+真实数据上的量化（sk2bGrow-paper/data/per_enzyme_zheng.tsv，1360 次拟合）：
+
+  - ok=False 共 87 次，全部是估计非有限，log2_ptr<0 的有 0 次。
+    fit.py 的 ok = log2_ptr >= 0 在真实数据上没有拒绝过任何东西。
+  - ok=True 的拟合里 r2<0（比拟合一条水平线还差）占 15.9%；按深度：
+        0.5x  57.5%    1x  20.7%    2x  6.7%    5x/10x  1.1%
+    低覆盖时多数被接受的拟合比常数还差，而没有任何地方据 r2 拦截。
+
+重要限定：k=1（单酶存活）在 Zheng 数据上从未发生（各深度 k=0 和 k=1 均为 0 个
+cell）。所以"consistent 未检验即通过"是确凿的代码缺陷，但它与 C5 的关联目前是
+假设，不是证据——要靠 C5 的表来确认。这正是下面第 4 项要的东西。
+
+复核工具：benches/qc_audit.py
+
+    python3 benches/qc_audit.py <per_enzyme.tsv> --fused <fused.tsv>
+
+对 C5 的表直接跑，会输出：每 (sample, genome) 存活酶数分布、k=1 的比例、
+ok 拒绝了什么、r2<0 的接受率、以及 coverage 分位数与 enzyme_fit_rate 的对照。
+兼容简写列名（log2ptr/nw/na/medium）。
+
+
+7. 补跑完成后需要交付的东西
+----------------------------------------------------------------
+
+  1) 更新的 C5 评分表，含 reported_fraction / qc_recall / 共同分母三种口径
+  2) suspicious 判据的定义与覆盖度分布，或"该判据未触发"的明确声明
+  3) 逐样本的耗时与峰值 RSS 原始数据，count 阶段拆分
+  4) QC pass × MAG 质量的交叉表 + 相关系数
+  5) 同一 MAG 跨 9 样本的估计一致性
+  6) 525 vs 522 的差异说明
+  7) C5 的 per-enzyme 表与融合表各一份，用于跑 benches/qc_audit.py
+     （这是把上面代码缺陷与 C5 数字对应起来的唯一途径）
+
+在这六项齐备之前，先不要发五项 benchmark 的综合汇报。C1b/C2/C3/C4 的结果可以
+照常整理，但 C5 那一节的结论会随上面几条改变。
