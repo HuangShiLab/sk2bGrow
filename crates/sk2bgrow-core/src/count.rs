@@ -32,6 +32,9 @@
 //! full Hamming distance. `m = 0` skips the seed table entirely.
 
 use std::path::Path;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::OnceLock;
+use std::time::Instant;
 
 use serde::{Deserialize, Serialize};
 
@@ -39,6 +42,62 @@ use crate::anchor_db::AnchorDb;
 use crate::enzyme::{Enzyme, EnzymeSet, PANEL};
 use crate::error::Result;
 use crate::seq::{canonical_hash, hamming_within, hash_tag, revcomp};
+
+// ---- env-gated phase timing (SK2B_COUNT_TIMING=1) --------------------------
+//
+// Diagnostics for where the count loop spends its time: the enzyme motif scan
+// per window versus the hash lookup per candidate window. Opt-in because the
+// Instant probes cost a few percent even when reported and merged; off by
+// default the hot loop is untouched. Counters are process-wide atomics (the
+// count loop itself may run on several rayon workers) and are printed by
+// `count_sample` when it finishes, in the same `[phase-timing]` style the
+// bench scripts used.
+
+static TIMING_ON: OnceLock<bool> = OnceLock::new();
+static MOTIF_NS: AtomicU64 = AtomicU64::new(0);
+static LOOKUP_NS: AtomicU64 = AtomicU64::new(0);
+/// Windows tested against the enzyme patterns (whether or not they matched).
+static MOTIF_TESTED: AtomicU64 = AtomicU64::new(0);
+static LOOKUPS: AtomicU64 = AtomicU64::new(0);
+
+#[inline]
+fn timing_enabled() -> bool {
+    *TIMING_ON.get_or_init(|| {
+        std::env::var_os("SK2B_COUNT_TIMING").is_some_and(|v| v != "0" && !v.is_empty())
+    })
+}
+
+#[inline]
+fn timed_motif_match(enzymes: &[&'static Enzyme], window: &[u8]) -> bool {
+    if !timing_enabled() {
+        return enzymes.iter().any(|e| e.match_window(window).is_some());
+    }
+    let t = Instant::now();
+    let m = enzymes.iter().any(|e| e.match_window(window).is_some());
+    MOTIF_NS.fetch_add(t.elapsed().as_nanos() as u64, Ordering::Relaxed);
+    MOTIF_TESTED.fetch_add(1, Ordering::Relaxed);
+    m
+}
+
+fn timing_report(extra: &str) {
+    if !timing_enabled() {
+        return;
+    }
+    let motif = MOTIF_NS.load(Ordering::Relaxed) as f64 / 1e9;
+    let lookup = LOOKUP_NS.load(Ordering::Relaxed) as f64 / 1e9;
+    let total = motif + lookup;
+    let (mp, lp) = if total > 0.0 {
+        (100.0 * motif / total, 100.0 * lookup / total)
+    } else {
+        (0.0, 0.0)
+    };
+    eprintln!(
+        "[phase-timing] {extra}: motif_scan {motif:.3} s ({mp:.1}%), lookup {lookup:.3} s ({lp:.1}%), \
+         windows tested {}, lookups {}",
+        MOTIF_TESTED.load(Ordering::Relaxed),
+        LOOKUPS.load(Ordering::Relaxed),
+    );
+}
 
 /// How reads are interpreted.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -307,7 +366,7 @@ impl<'a> AnchorIndex<'a> {
                 // One physical window, tested against every enzyme of this tag
                 // length. `any` rather than a per-enzyme loop is the whole point:
                 // a window satisfying two patterns is still one observation.
-                if !enzymes.iter().any(|e| e.match_window(window).is_some()) {
+                if !timed_motif_match(enzymes, window) {
                     continue;
                 }
                 stats.motif_hits += 1;
@@ -318,7 +377,16 @@ impl<'a> AnchorIndex<'a> {
                     stats.tag_ambiguous += 1;
                     continue;
                 }
+                let t_lookup = if timing_enabled() {
+                    LOOKUPS.fetch_add(1, Ordering::Relaxed);
+                    Some(Instant::now())
+                } else {
+                    None
+                };
                 self.lookup(window, cfg.max_mismatch, &mut hits);
+                if let Some(t) = t_lookup {
+                    LOOKUP_NS.fetch_add(t.elapsed().as_nanos() as u64, Ordering::Relaxed);
+                }
                 if hits.is_empty() {
                     stats.tag_unmatched += 1;
                     continue;
@@ -463,6 +531,7 @@ pub fn count_sample(
         })?;
         debug_assert!(n <= stats.reads_total);
     }
+    timing_report("count_sample");
     Ok((counts, stats))
 }
 
