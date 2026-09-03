@@ -80,6 +80,19 @@ pub struct Args {
     #[arg(long)]
     pub no_stats: bool,
 
+    /// Two-tier counting (M4): pass 1 screens reads against the per-genome
+    /// containment sketch built by `index --screen-scale`, pass 2 counts
+    /// anchors only on genomes the screen selected. Requires a sketch in the
+    /// database directory.
+    #[arg(long)]
+    pub screen: bool,
+
+    /// Minimum estimated relative abundance for a genome to enter pass 2
+    /// (with `--screen`). Genomes with at least 50 sketch hits are kept
+    /// regardless.
+    #[arg(long, default_value_t = 5e-4)]
+    pub screen_min_frac: f64,
+
     /// Python interpreter used for the statistics layer.
     #[arg(long, default_value = "python3")]
     pub python: String,
@@ -189,10 +202,78 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
         keep_multimappers: true,
     };
 
+    // Pass 1 of the two-tier architecture (M4): the containment sketch picks
+    // each sample's genome subset. Without the sketch files --screen is an
+    // error rather than a silent full scan — a screen the user asked for and
+    // did not get would silently cost the full-index price.
+    let screen_sketch = if args.screen {
+        let sk = sk2bgrow_core::screen::ScreenSketch::load(&args.db)?.ok_or_else(|| {
+            anyhow::anyhow!(
+                "--screen needs a containment sketch, but {} has none; rebuild the index with `sk2bgrow index --screen-scale <N>`",
+                args.db.display()
+            )
+        })?;
+        ctx.say(format!(
+            "screen: k={}, scale={}, {} genomes sketched",
+            sk.k,
+            sk.scale,
+            sk.sizes.len()
+        ));
+        Some(sk)
+    } else {
+        None
+    };
+
     let outputs: Vec<PathBuf> = samples
         .par_iter()
         .map(|(name, files)| -> Result<PathBuf> {
-            let (counts, stats) = count_sample(&index, files, &cfg)?;
+            // With --screen the genome subset is per-sample, so pass 2's
+            // index is built per sample inside the loop; the merge and the
+            // count tables stay identical to the unscreened path (the counts
+            // vector is always full-length — unselected genomes are zeros).
+            let (counts, stats, screen_json) = if let Some(sk) = &screen_sketch {
+                let t1 = std::time::Instant::now();
+                let hits = sk2bgrow_core::screen::screen_sample(sk, files)?;
+                let selected = sk.select(&db, &hits, args.screen_min_frac);
+                let pass1 = t1.elapsed();
+                let mut filter = vec![false; db.genomes.len()];
+                for &g in &selected {
+                    filter[g as usize] = true;
+                }
+                let index =
+                    AnchorIndex::build_screened(&db, args.max_mismatch, restrict, Some(&filter));
+                let t2 = std::time::Instant::now();
+                let (counts, stats) = count_sample(&index, files, &cfg)?;
+                let pass2 = t2.elapsed();
+                let genomes: Vec<_> = selected
+                    .iter()
+                    .map(|&g| {
+                        let meta = db.genome(g);
+                        serde_json::json!({
+                            "genome_id": g,
+                            "genome": meta.map(|m| m.name.as_str()).unwrap_or("?"),
+                            "hits": hits.get(g as usize).copied().unwrap_or(0),
+                            "sketch_size": sk.sizes.get(g as usize).copied().unwrap_or(0),
+                        })
+                    })
+                    .collect();
+                (
+                    counts,
+                    stats,
+                    serde_json::json!({
+                        "k": sk.k,
+                        "scale": sk.scale,
+                        "min_frac": args.screen_min_frac,
+                        "selected_genomes": selected.len(),
+                        "pass1_seconds": pass1.as_secs_f64(),
+                        "pass2_seconds": pass2.as_secs_f64(),
+                        "genomes": genomes,
+                    }),
+                )
+            } else {
+                let (counts, stats) = count_sample(&index, files, &cfg)?;
+                (counts, stats, serde_json::Value::Null)
+            };
             let em = reassign(&db, &counts, &EmConfig::default());
             let tsv = args.output.join(format!("{name}.counts.tsv"));
             write_count_table(&tsv, name, &db, &counts, &window_ids, true, restrict)?;
@@ -205,6 +286,7 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
                     "mode": match args.mode { Mode::Wms => "wms", Mode::TwoBrad => "2brad" },
                     "max_mismatch": args.max_mismatch,
                     "counting": stats,
+                    "screen": screen_json,
                     "em": {
                         "iterations": em.iterations,
                         "converged": em.converged,

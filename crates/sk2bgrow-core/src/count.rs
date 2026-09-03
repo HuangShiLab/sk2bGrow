@@ -246,13 +246,44 @@ impl<'a> AnchorIndex<'a> {
         max_mismatch: u32,
         restrict: Option<EnzymeSet>,
     ) -> Self {
-        let selected = |idx: u8| restrict.map_or(true, |s| s.contains(idx));
+        Self::build_screened(db, max_mismatch, restrict, None)
+    }
+
+    /// Build the index over a subset of enzymes AND a subset of genomes.
+    ///
+    /// `genomes` is a per-genome-id boolean; `None` keeps every genome. This
+    /// is the pass-2 index behind `profile --screen`: the containment
+    /// pre-filter ([`crate::screen`]) selects the genomes a sample actually
+    /// carries, and pass 2 counts as if the database had been built from
+    /// only those genomes. Correctness rests on the lookup tables then
+    /// holding exactly the same entries a reduced database would hold:
+    ///
+    /// * an anchor unique to a selected genome resolves identically to the
+    ///   full index, so its counts match an unscreened run;
+    /// * a tag shared with an unselected genome is credited only at the
+    ///   selected locus — the same semantics enzyme restriction has always
+    ///   had — so shared anchors behave exactly as they would in a database
+    ///   built from the selected genomes alone;
+    /// * unselected genomes are never credited, and their count-table rows
+    ///   stay zero, which downstream layers already handle (the
+    ///   `--enzymes` restriction produces the same shape).
+    pub fn build_screened(
+        db: &'a AnchorDb,
+        max_mismatch: u32,
+        restrict: Option<EnzymeSet>,
+        genomes: Option<&[bool]>,
+    ) -> Self {
+        let selected = |a: &crate::anchor_db::Anchor| {
+            restrict.map_or(true, |s| s.contains(a.enzyme_idx))
+                && genomes
+                    .map_or(true, |g| g.get(a.genome_id as usize).copied().unwrap_or(false))
+        };
         let n_seeds = (max_mismatch + 1) as u8;
         // One seed slot at a time. Holding every slot's pair buffer at once
         // would triple the build-time peak, and peak is what has to fit.
         let mut exact_pairs: Vec<(u64, u32)> = Vec::with_capacity(db.anchors.len());
         for (i, a) in db.anchors.iter().enumerate() {
-            if selected(a.enzyme_idx) {
+            if selected(a) {
                 exact_pairs.push((a.seq_hash, i as u32));
             }
         }
@@ -264,7 +295,7 @@ impl<'a> AnchorIndex<'a> {
             for slot in 0..n_seeds as usize {
                 pairs.clear();
                 for (i, a) in db.anchors.iter().enumerate() {
-                    if !selected(a.enzyme_idx) {
+                    if !selected(a) {
                         continue;
                     }
                     let tag = db.tag(i);
@@ -278,7 +309,7 @@ impl<'a> AnchorIndex<'a> {
         let mut by_len: Vec<(usize, Vec<&'static Enzyme>)> = Vec::new();
         for e in PANEL
             .iter()
-            .filter(|e| db.params.enzymes.contains(e.idx) && selected(e.idx))
+            .filter(|e| db.params.enzymes.contains(e.idx) && restrict.map_or(true, |s| s.contains(e.idx)))
         {
             let len = e.tag_len as usize;
             match by_len.iter_mut().find(|(l, _)| *l == len) {
@@ -1009,6 +1040,104 @@ mod tests {
         for p in files {
             std::fs::remove_file(p).ok();
         }
+    }
+
+    /// `profile --screen` pass 2 counts through build_screened; on a database
+    /// whose genomes share no tags, restricting to genome 0 must give
+    /// bit-identical counts to the full index (genome 1 simply never sees a
+    /// read, and its anchors are absent from the restricted tables).
+    #[test]
+    fn genome_screened_counting_matches_full_counting() {
+        use std::sync::atomic::{AtomicU32, Ordering};
+        static N: AtomicU32 = AtomicU32::new(0);
+        let mut p = std::env::temp_dir();
+        p.push(format!(
+            "sk2bgrow-{}-{}-two-genomes.fna",
+            std::process::id(),
+            N.fetch_add(1, Ordering::Relaxed)
+        ));
+        // Genome 0: the tiny_db sequence (two BcgI loci). Genome 1: an
+        // unrelated AlfI-bearing sequence. Both digested with the same panel.
+        let mut seq = String::new();
+        seq.push_str(&"A".repeat(60));
+        seq.push_str("CGAACGTACTGC"); // BcgI site at 60
+        seq.push_str(&"T".repeat(300));
+        seq.push_str("CGAGGGTTCTGC"); // BcgI site at 372
+        seq.push_str(&"C".repeat(160));
+        let mut seq2 = String::new();
+        seq2.push_str(&"G".repeat(60));
+        seq2.push_str("GCAACGTTCTGC"); // AlfI site at 60
+        seq2.push_str(&"TTCGA".repeat(120));
+        std::fs::write(&p, format!(">g0c0\n{seq}\n")).unwrap();
+        let enzymes = vec![by_name("BcgI").unwrap(), by_name("AlfI").unwrap()];
+        let (meta, anchors, tags, _) =
+            build_genome(&p, 0, &enzymes, &DigestConfig::default(), GC_FLANK).unwrap();
+        std::fs::remove_file(&p).ok();
+        let mut p = std::env::temp_dir();
+        p.push(format!(
+            "sk2bgrow-{}-{}-g1.fna",
+            std::process::id(),
+            N.fetch_add(1, Ordering::Relaxed)
+        ));
+        std::fs::write(&p, format!(">c0\n{seq2}\n")).unwrap();
+        let (meta2, anchors2, tags2, _) =
+            build_genome(&p, 1, &enzymes, &DigestConfig::default(), GC_FLANK).unwrap();
+        std::fs::remove_file(&p).ok();
+        let params = BuildParams {
+            enzymes: EnzymeSet::from_slice(&enzymes),
+            ..BuildParams::default()
+        };
+        let db = assemble(params, vec![(meta, anchors, tags), (meta2, anchors2, tags2)]);
+        assert!(
+            db.anchors.iter().all(|a| a.flags & crate::anchor_db::flags::UNIQUE_ACROSS_DB != 0),
+            "fixture genomes share a tag; the equality check would be vacuous"
+        );
+
+        // Reads drawn only from genome 0's sequence.
+        let g0: Vec<u8> = seq.into_bytes();
+        let mut rpath = std::env::temp_dir();
+        rpath.push(format!(
+            "sk2bgrow-{}-{}-screen-reads.fna",
+            std::process::id(),
+            N.fetch_add(1, Ordering::Relaxed)
+        ));
+        let mut body = String::new();
+        for i in 0..40 {
+            let start = 20 + i * 7;
+            body.push_str(&format!(
+                ">r{i}\n{}\n",
+                String::from_utf8_lossy(&g0[start..start + 150])
+            ));
+        }
+        std::fs::write(&rpath, body).unwrap();
+
+        let cfg = MatchConfig::default();
+        let full = AnchorIndex::build(&db, cfg.max_mismatch);
+        let (counts_full, stats_full) = count_sample(&full, &[rpath.clone()], &cfg).unwrap();
+
+        let mut filter = vec![false; db.genomes.len()];
+        filter[0] = true;
+        let screened = AnchorIndex::build_screened(&db, cfg.max_mismatch, None, Some(&filter));
+        let (counts_scr, stats_scr) = count_sample(&screened, &[rpath.clone()], &cfg).unwrap();
+
+        assert_eq!(
+            counts_full, counts_scr,
+            "screened pass 2 diverged from the full count"
+        );
+        assert_eq!(
+            format!("{stats_full:?}"),
+            format!("{stats_scr:?}"),
+            "screened stats diverged from the full count"
+        );
+        // Genome 1's anchors must be all-zero in both runs (reads carry no
+        // genome-1 sequence).
+        for (i, a) in db.anchors.iter().enumerate() {
+            if a.genome_id == 1 {
+                assert_eq!(counts_full[i], 0);
+            }
+        }
+        assert!(counts_full.iter().sum::<u32>() > 0, "fixture matched nothing");
+        std::fs::remove_file(rpath).ok();
     }
 
     #[test]

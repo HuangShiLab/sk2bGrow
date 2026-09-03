@@ -47,6 +47,14 @@ pub struct Args {
     /// Also write a per-genome TGT text dump under `<output>/tgt/`.
     #[arg(long)]
     pub write_tgt: bool,
+
+    /// Also build a FracMinHash containment sketch for `profile --screen`
+    /// with this sampling scale (a k-mer hash is kept when
+    /// `h < u64::MAX / scale`; larger is sparser). The sketch lands next to
+    /// the anchor database as `screen.meta` + `screen.csr` and roughly
+    /// doubles the disk footprint of the genome sequences.
+    #[arg(long)]
+    pub screen_scale: Option<u64>,
 }
 
 pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
@@ -133,5 +141,22 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
     db.save(&args.output)
         .with_context(|| format!("writing database to {}", args.output.display()))?;
     ctx.say(format!("database written to {}", args.output.display()));
+
+    if let Some(scale) = args.screen_scale {
+        let t = std::time::Instant::now();
+        // Genome ids were assigned from this same sorted path list, so the
+        // sketch's per-genome indexing matches the anchor database's.
+        let sketch = sk2bgrow_core::screen::ScreenSketch::build(
+            &genomes,
+            sk2bgrow_core::screen::SCREEN_K,
+            scale,
+        )?;
+        sketch.save(&args.output)?;
+        ctx.say(format!(
+            "containment sketch written (scale {scale}, {} genomes, {:.1}s)",
+            sketch.sizes.len(),
+            t.elapsed().as_secs_f64()
+        ));
+    }
     Ok(())
 }
