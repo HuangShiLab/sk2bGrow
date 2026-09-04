@@ -75,8 +75,25 @@ class FusionResult:
         return float(2.0**self.log2_ptr) if np.isfinite(self.log2_ptr) else np.nan
 
     @property
+    def consistency_checked(self) -> bool:
+        """True when Q could actually be computed, i.e. at least two enzymes.
+
+        With one surviving enzyme there are zero degrees of freedom, so
+        ``q_pvalue`` is NaN and :attr:`consistent` reports ``True`` for a test
+        that never ran. Filter on ``consistency_checked and consistent`` when
+        what you mean is "the enzymes were checked and agreed".
+        """
+        return self.n_enzymes >= 2 and bool(np.isfinite(self.q_pvalue))
+
+    @property
     def consistent(self) -> bool:
-        """True when the enzymes do not measurably disagree."""
+        """True when the enzymes do not measurably disagree.
+
+        **Also True when no check was possible** (a single surviving enzyme
+        gives NaN ``q_pvalue``). That is deliberate — one enzyme's estimate is
+        not wrong merely for being alone — but it makes this property unsafe as
+        a QC filter on its own. Pair it with :attr:`consistency_checked`.
+        """
         return not np.isfinite(self.q_pvalue) or self.q_pvalue >= DEFAULT_ALPHA
 
     def ci(self, level: float = 0.95) -> tuple[float, float]:
@@ -85,6 +102,21 @@ class FusionResult:
             return (np.nan, np.nan)
         z = stats.norm.ppf(0.5 + level / 2.0)
         return (self.log2_ptr - z * self.se, self.log2_ptr + z * self.se)
+
+
+def _col_min(df: pd.DataFrame, col: str) -> float:
+    """Minimum of ``col``, or NaN when the column or the rows are absent."""
+    if col not in df.columns or not len(df):
+        return float("nan")
+    v = pd.to_numeric(df[col], errors="coerce")
+    return float(v.min()) if v.notna().any() else float("nan")
+
+
+def _count_negative(df: pd.DataFrame, col: str) -> int:
+    """How many rows have ``col < 0``; 0 when the column is absent."""
+    if col not in df.columns or not len(df):
+        return 0
+    return int((pd.to_numeric(df[col], errors="coerce") < 0).sum())
 
 
 def fuse(
@@ -227,7 +259,21 @@ def fuse_table(
                 "enzyme_i2": res.i2,
                 "tau2": res.tau2,
                 "fusion_model": res.model,
+                "ok": res.ok,
                 "consistent": res.consistent,
+                # ``consistent`` is True both when the enzymes agreed and when
+                # there was only one of them, so a filter that reads it alone
+                # counts unchecked estimates as having passed. This column
+                # separates the two cases; require both to mean "checked and
+                # agreed".
+                "consistency_checked": res.consistency_checked,
+                # Per-enzyme fit quality does not otherwise survive fusion.
+                # r2 < 0 means the V-fit is worse than a horizontal line, which
+                # on the Zheng grid is 57.5% of accepted fits at 0.5x — the
+                # ``ok`` flag does not exclude them, so carry the evidence
+                # forward instead of dropping it here.
+                "min_r2": _col_min(used, "r2"),
+                "n_enzymes_negative_r2": _count_negative(used, "r2"),
                 "n_anchors": int(used["n_anchors"].sum()) if len(used) else 0,
                 "n_windows": int(used["n_windows_used"].sum()) if len(used) else 0,
                 "ori": float(used["ori"].median()) if len(used) and used["ori"].notna().any() else np.nan,
