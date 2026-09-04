@@ -31,6 +31,7 @@
 //! `m+1` seed slots cannot miss a true match. Candidates are then verified by
 //! full Hamming distance. `m = 0` skips the seed table entirely.
 
+use std::cell::Cell;
 use std::path::Path;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::OnceLock;
@@ -47,12 +48,26 @@ use crate::seq::{canonical_hash, hamming_within, hash_tag, revcomp};
 // ---- env-gated phase timing (SK2B_COUNT_TIMING=1) --------------------------
 //
 // Diagnostics for where the count loop spends its time: the enzyme motif scan
-// per window versus the hash lookup per candidate window. Opt-in because the
-// Instant probes cost a few percent even when reported and merged; off by
-// default the hot loop is untouched. Counters are process-wide atomics (the
-// count loop itself may run on several rayon workers) and are printed by
-// `count_sample` when it finishes, in the same `[phase-timing]` style the
-// bench scripts used.
+// per window versus the hash lookup per candidate window.
+//
+// The default path must be *zero-cost*, not merely cheap: this loop runs
+// hundreds of millions of windows per sample, so even a cache-friendly atomic
+// or an extra branch per window is measurable, and contended atomics are far
+// worse — the first implementation accumulated per-window samples into
+// process-wide AtomicU64s, which benchmarked ~2.9x slower than the untimed
+// loop with only two rayon workers ping-ponging the same cache lines (and
+// slower than *serial* on the HPC run). So the probe code lives in a separate
+// monomorphization of the count loop (`count_read_impl::<true>`); the default
+// `count_read` is `count_read_impl::<false>` and contains no clock reads and
+// no atomic writes at all. Accumulation is thread-local and merged into the
+// globals once per file, so even the timed path never contends.
+
+thread_local! {
+    static TL_MOTIF_NS: Cell<u64> = const { Cell::new(0) };
+    static TL_LOOKUP_NS: Cell<u64> = const { Cell::new(0) };
+    static TL_MOTIF_TESTED: Cell<u64> = const { Cell::new(0) };
+    static TL_LOOKUPS: Cell<u64> = const { Cell::new(0) };
+}
 
 static TIMING_ON: OnceLock<bool> = OnceLock::new();
 static MOTIF_NS: AtomicU64 = AtomicU64::new(0);
@@ -68,16 +83,23 @@ fn timing_enabled() -> bool {
     })
 }
 
-#[inline]
-fn timed_motif_match(enzymes: &[&'static Enzyme], window: &[u8]) -> bool {
-    if !timing_enabled() {
-        return enzymes.iter().any(|e| e.match_window(window).is_some());
-    }
-    let t = Instant::now();
-    let m = enzymes.iter().any(|e| e.match_window(window).is_some());
-    MOTIF_NS.fetch_add(t.elapsed().as_nanos() as u64, Ordering::Relaxed);
-    MOTIF_TESTED.fetch_add(1, Ordering::Relaxed);
-    m
+/// Merge this worker's thread-local accumulators into the globals and reset
+/// them. Called once per file at the end of the worker's task, so the atomics
+/// see one update per file, not one per window.
+fn drain_timing() {
+    let add = |tl: &'static std::thread::LocalKey<Cell<u64>>, global: &AtomicU64| {
+        tl.with(|c| {
+            let v = c.get();
+            if v > 0 {
+                global.fetch_add(v, Ordering::Relaxed);
+                c.set(0);
+            }
+        });
+    };
+    add(&TL_MOTIF_NS, &MOTIF_NS);
+    add(&TL_LOOKUP_NS, &LOOKUP_NS);
+    add(&TL_MOTIF_TESTED, &MOTIF_TESTED);
+    add(&TL_LOOKUPS, &LOOKUPS);
 }
 
 fn timing_report(extra: &str) {
@@ -386,6 +408,21 @@ impl<'a> AnchorIndex<'a> {
         counts: &mut [u32],
         stats: &mut CountStats,
     ) -> u32 {
+        self.count_read_impl::<false>(read, cfg, counts, stats)
+    }
+
+    /// The count loop. `TIMED` selects the SK2B_COUNT_TIMING probe build; the
+    /// default (`count_read`) is `TIMED = false`, in which the loop below
+    /// contains no clock reads and no atomic writes — the untimed and timed
+    /// paths are separate machine code, so diagnostics cost literally nothing
+    /// when disabled.
+    fn count_read_impl<const TIMED: bool>(
+        &self,
+        read: &[u8],
+        cfg: &MatchConfig,
+        counts: &mut [u32],
+        stats: &mut CountStats,
+    ) -> u32 {
         let mut recorded = 0u32;
         let mut hits: Vec<(u32, u32)> = Vec::new();
         for (len, enzymes) in self.by_len.iter() {
@@ -398,7 +435,14 @@ impl<'a> AnchorIndex<'a> {
                 // One physical window, tested against every enzyme of this tag
                 // length. `any` rather than a per-enzyme loop is the whole point:
                 // a window satisfying two patterns is still one observation.
-                if !timed_motif_match(enzymes, window) {
+                let t_motif = TIMED.then(Instant::now);
+                let matched = enzymes.iter().any(|e| e.match_window(window).is_some());
+                if TIMED {
+                    let dt = t_motif.unwrap().elapsed().as_nanos() as u64;
+                    TL_MOTIF_NS.with(|c| c.set(c.get() + dt));
+                    TL_MOTIF_TESTED.with(|c| c.set(c.get() + 1));
+                }
+                if !matched {
                     continue;
                 }
                 stats.motif_hits += 1;
@@ -409,15 +453,12 @@ impl<'a> AnchorIndex<'a> {
                     stats.tag_ambiguous += 1;
                     continue;
                 }
-                let t_lookup = if timing_enabled() {
-                    LOOKUPS.fetch_add(1, Ordering::Relaxed);
-                    Some(Instant::now())
-                } else {
-                    None
-                };
+                let t_lookup = TIMED.then(Instant::now);
                 self.lookup(window, cfg.max_mismatch, &mut hits);
-                if let Some(t) = t_lookup {
-                    LOOKUP_NS.fetch_add(t.elapsed().as_nanos() as u64, Ordering::Relaxed);
+                if TIMED {
+                    let dt = t_lookup.unwrap().elapsed().as_nanos() as u64;
+                    TL_LOOKUP_NS.with(|c| c.set(c.get() + dt));
+                    TL_LOOKUPS.with(|c| c.set(c.get() + 1));
                 }
                 if hits.is_empty() {
                     stats.tag_unmatched += 1;
@@ -582,6 +623,7 @@ pub fn count_sample(
     reads: &[std::path::PathBuf],
     cfg: &MatchConfig,
 ) -> Result<(Vec<u32>, CountStats)> {
+    let timed = timing_enabled();
     let parts: Vec<Result<(Vec<u32>, CountStats)>> = reads
         .par_iter()
         .map(|path| {
@@ -589,12 +631,20 @@ pub fn count_sample(
             let mut stats = CountStats::default();
             let n = crate::fasta::for_each_read(path, |read| {
                 stats.reads_total += 1;
-                let rec = index.count_read(read, cfg, &mut counts, &mut stats);
+                // Branch once here, not per window: the TIMED const generic
+                // monomorphizes the probe code away entirely on the default
+                // path.
+                let rec = if timed {
+                    index.count_read_impl::<true>(read, cfg, &mut counts, &mut stats)
+                } else {
+                    index.count_read(read, cfg, &mut counts, &mut stats)
+                };
                 if rec > 0 {
                     stats.reads_with_anchor += 1;
                 }
             })?;
             debug_assert!(n <= stats.reads_total);
+            drain_timing();
             Ok((counts, stats))
         })
         .collect();

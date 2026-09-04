@@ -36,6 +36,45 @@
 //! * Unselected genomes' anchors are absent from the lookup tables, so they
 //!   are never credited; their count-table rows are zeros, which downstream
 //!   layers already handle (`--enzymes` produces the same shape).
+//!
+//! ## What pass 2 costs — and why a screened pass 2 is fast
+//!
+//! Pass 2 scans **every read, every window** — it does not skip reads that
+//! pass 1 missed. The motif scan is index-size-independent, so the screen's
+//! speedup comes from the lookup step: on the full database the exact CSR
+//! spans millions of keys (~200 MB at 24.1M anchors), every binary-search
+//! probe is a cache miss, and a tag that does not exact-match — the common
+//! case for reads from diverged organisms — then probes both orientations ×
+//! (m+1) seed tables before per-candidate verification. On a 24.1M-anchor
+//! database that lookup dominates the count (measured: 2M diverged reads,
+//! 22M anchors, ~25 µs/read total with the scan only ~5 µs of it). The
+//! screened index holds only the selected genomes' anchors and is
+//! cache-resident, so the same lookups cost almost nothing; what remains is
+//! the motif scan, which is why a screened pass 2 runs in seconds while the
+//! full count runs in minutes.
+//!
+//! Because the genome subset shrinks the best-hit set, screened counts can
+//! differ slightly from a full run even on selected genomes: a tag matching
+//! genome A at distance 1 and genome B (unselected) at distance 0 is credited
+//! to B alone in the full run and to A in the screened run. Measured on real
+//! data: 296 of 1.43M anchors, all with counts ≤ 3.
+//!
+//! ## A tempting wrong optimisation: skipping pass-2 reads
+//!
+//! The naive argument — "a tag matching within m mismatches shares a
+//! k = 21 mer with the reference, so reads with no sketch hit cannot
+//! match" — is **false** for m = 2: two mismatches placed ~k apart inside a
+//! 32 bp tag break every 21-mer of it (mismatches at offsets 11 and 21 break
+//! all twelve windows), and the pigeonhole guarantee for (len, m) = (32, 2)
+//! is only an exact run of ⌈(32−2)/3⌉ = 10 bp. A strictly sound read-skip
+//! filter would need the sketch k at the matcher's seed length (~10 bp),
+//! which is far too short for containment specificity. Per-genome skipping
+//! at k = 21 is sound only for exact and 1-mismatch matches. The current
+//! implementation therefore never skips reads; the screen filters *which
+//! genomes enter the index*, not which reads are scanned. Count correctness
+//! never depends on the sketch — only speed does — and the sketch threshold
+//! plus the 50-hit floor bound how much signal a false-negative genome can
+//! lose.
 
 use std::path::{Path, PathBuf};
 
