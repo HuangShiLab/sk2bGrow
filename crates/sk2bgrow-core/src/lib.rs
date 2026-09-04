@@ -40,6 +40,7 @@ pub mod error;
 pub mod fasta;
 pub mod ori;
 pub mod scaffold;
+pub mod screen;
 pub mod seq;
 pub mod tgt;
 pub mod window;

@@ -31,14 +31,96 @@
 //! `m+1` seed slots cannot miss a true match. Candidates are then verified by
 //! full Hamming distance. `m = 0` skips the seed table entirely.
 
+use std::cell::Cell;
 use std::path::Path;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::OnceLock;
+use std::time::Instant;
 
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::anchor_db::AnchorDb;
 use crate::enzyme::{Enzyme, EnzymeSet, PANEL};
 use crate::error::Result;
 use crate::seq::{canonical_hash, hamming_within, hash_tag, revcomp};
+
+// ---- env-gated phase timing (SK2B_COUNT_TIMING=1) --------------------------
+//
+// Diagnostics for where the count loop spends its time: the enzyme motif scan
+// per window versus the hash lookup per candidate window.
+//
+// The default path must be *zero-cost*, not merely cheap: this loop runs
+// hundreds of millions of windows per sample, so even a cache-friendly atomic
+// or an extra branch per window is measurable, and contended atomics are far
+// worse — the first implementation accumulated per-window samples into
+// process-wide AtomicU64s, which benchmarked ~2.9x slower than the untimed
+// loop with only two rayon workers ping-ponging the same cache lines (and
+// slower than *serial* on the HPC run). So the probe code lives in a separate
+// monomorphization of the count loop (`count_read_impl::<true>`); the default
+// `count_read` is `count_read_impl::<false>` and contains no clock reads and
+// no atomic writes at all. Accumulation is thread-local and merged into the
+// globals once per file, so even the timed path never contends.
+
+thread_local! {
+    static TL_MOTIF_NS: Cell<u64> = const { Cell::new(0) };
+    static TL_LOOKUP_NS: Cell<u64> = const { Cell::new(0) };
+    static TL_MOTIF_TESTED: Cell<u64> = const { Cell::new(0) };
+    static TL_LOOKUPS: Cell<u64> = const { Cell::new(0) };
+}
+
+static TIMING_ON: OnceLock<bool> = OnceLock::new();
+static MOTIF_NS: AtomicU64 = AtomicU64::new(0);
+static LOOKUP_NS: AtomicU64 = AtomicU64::new(0);
+/// Windows tested against the enzyme patterns (whether or not they matched).
+static MOTIF_TESTED: AtomicU64 = AtomicU64::new(0);
+static LOOKUPS: AtomicU64 = AtomicU64::new(0);
+
+#[inline]
+fn timing_enabled() -> bool {
+    *TIMING_ON.get_or_init(|| {
+        std::env::var_os("SK2B_COUNT_TIMING").is_some_and(|v| v != "0" && !v.is_empty())
+    })
+}
+
+/// Merge this worker's thread-local accumulators into the globals and reset
+/// them. Called once per file at the end of the worker's task, so the atomics
+/// see one update per file, not one per window.
+fn drain_timing() {
+    let add = |tl: &'static std::thread::LocalKey<Cell<u64>>, global: &AtomicU64| {
+        tl.with(|c| {
+            let v = c.get();
+            if v > 0 {
+                global.fetch_add(v, Ordering::Relaxed);
+                c.set(0);
+            }
+        });
+    };
+    add(&TL_MOTIF_NS, &MOTIF_NS);
+    add(&TL_LOOKUP_NS, &LOOKUP_NS);
+    add(&TL_MOTIF_TESTED, &MOTIF_TESTED);
+    add(&TL_LOOKUPS, &LOOKUPS);
+}
+
+fn timing_report(extra: &str) {
+    if !timing_enabled() {
+        return;
+    }
+    let motif = MOTIF_NS.load(Ordering::Relaxed) as f64 / 1e9;
+    let lookup = LOOKUP_NS.load(Ordering::Relaxed) as f64 / 1e9;
+    let total = motif + lookup;
+    let (mp, lp) = if total > 0.0 {
+        (100.0 * motif / total, 100.0 * lookup / total)
+    } else {
+        (0.0, 0.0)
+    };
+    eprintln!(
+        "[phase-timing] {extra}: motif_scan {motif:.3} s ({mp:.1}%), lookup {lookup:.3} s ({lp:.1}%), \
+         windows tested {}, lookups {}",
+        MOTIF_TESTED.load(Ordering::Relaxed),
+        LOOKUPS.load(Ordering::Relaxed),
+    );
+}
 
 /// How reads are interpreted.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -186,13 +268,44 @@ impl<'a> AnchorIndex<'a> {
         max_mismatch: u32,
         restrict: Option<EnzymeSet>,
     ) -> Self {
-        let selected = |idx: u8| restrict.map_or(true, |s| s.contains(idx));
+        Self::build_screened(db, max_mismatch, restrict, None)
+    }
+
+    /// Build the index over a subset of enzymes AND a subset of genomes.
+    ///
+    /// `genomes` is a per-genome-id boolean; `None` keeps every genome. This
+    /// is the pass-2 index behind `profile --screen`: the containment
+    /// pre-filter ([`crate::screen`]) selects the genomes a sample actually
+    /// carries, and pass 2 counts as if the database had been built from
+    /// only those genomes. Correctness rests on the lookup tables then
+    /// holding exactly the same entries a reduced database would hold:
+    ///
+    /// * an anchor unique to a selected genome resolves identically to the
+    ///   full index, so its counts match an unscreened run;
+    /// * a tag shared with an unselected genome is credited only at the
+    ///   selected locus — the same semantics enzyme restriction has always
+    ///   had — so shared anchors behave exactly as they would in a database
+    ///   built from the selected genomes alone;
+    /// * unselected genomes are never credited, and their count-table rows
+    ///   stay zero, which downstream layers already handle (the
+    ///   `--enzymes` restriction produces the same shape).
+    pub fn build_screened(
+        db: &'a AnchorDb,
+        max_mismatch: u32,
+        restrict: Option<EnzymeSet>,
+        genomes: Option<&[bool]>,
+    ) -> Self {
+        let selected = |a: &crate::anchor_db::Anchor| {
+            restrict.map_or(true, |s| s.contains(a.enzyme_idx))
+                && genomes
+                    .map_or(true, |g| g.get(a.genome_id as usize).copied().unwrap_or(false))
+        };
         let n_seeds = (max_mismatch + 1) as u8;
         // One seed slot at a time. Holding every slot's pair buffer at once
         // would triple the build-time peak, and peak is what has to fit.
         let mut exact_pairs: Vec<(u64, u32)> = Vec::with_capacity(db.anchors.len());
         for (i, a) in db.anchors.iter().enumerate() {
-            if selected(a.enzyme_idx) {
+            if selected(a) {
                 exact_pairs.push((a.seq_hash, i as u32));
             }
         }
@@ -204,7 +317,7 @@ impl<'a> AnchorIndex<'a> {
             for slot in 0..n_seeds as usize {
                 pairs.clear();
                 for (i, a) in db.anchors.iter().enumerate() {
-                    if !selected(a.enzyme_idx) {
+                    if !selected(a) {
                         continue;
                     }
                     let tag = db.tag(i);
@@ -218,7 +331,7 @@ impl<'a> AnchorIndex<'a> {
         let mut by_len: Vec<(usize, Vec<&'static Enzyme>)> = Vec::new();
         for e in PANEL
             .iter()
-            .filter(|e| db.params.enzymes.contains(e.idx) && selected(e.idx))
+            .filter(|e| db.params.enzymes.contains(e.idx) && restrict.map_or(true, |s| s.contains(e.idx)))
         {
             let len = e.tag_len as usize;
             match by_len.iter_mut().find(|(l, _)| *l == len) {
@@ -295,6 +408,21 @@ impl<'a> AnchorIndex<'a> {
         counts: &mut [u32],
         stats: &mut CountStats,
     ) -> u32 {
+        self.count_read_impl::<false>(read, cfg, counts, stats)
+    }
+
+    /// The count loop. `TIMED` selects the SK2B_COUNT_TIMING probe build; the
+    /// default (`count_read`) is `TIMED = false`, in which the loop below
+    /// contains no clock reads and no atomic writes — the untimed and timed
+    /// paths are separate machine code, so diagnostics cost literally nothing
+    /// when disabled.
+    fn count_read_impl<const TIMED: bool>(
+        &self,
+        read: &[u8],
+        cfg: &MatchConfig,
+        counts: &mut [u32],
+        stats: &mut CountStats,
+    ) -> u32 {
         let mut recorded = 0u32;
         let mut hits: Vec<(u32, u32)> = Vec::new();
         for (len, enzymes) in self.by_len.iter() {
@@ -307,7 +435,14 @@ impl<'a> AnchorIndex<'a> {
                 // One physical window, tested against every enzyme of this tag
                 // length. `any` rather than a per-enzyme loop is the whole point:
                 // a window satisfying two patterns is still one observation.
-                if !enzymes.iter().any(|e| e.match_window(window).is_some()) {
+                let t_motif = TIMED.then(Instant::now);
+                let matched = enzymes.iter().any(|e| e.match_window(window).is_some());
+                if TIMED {
+                    let dt = t_motif.unwrap().elapsed().as_nanos() as u64;
+                    TL_MOTIF_NS.with(|c| c.set(c.get() + dt));
+                    TL_MOTIF_TESTED.with(|c| c.set(c.get() + 1));
+                }
+                if !matched {
                     continue;
                 }
                 stats.motif_hits += 1;
@@ -318,7 +453,13 @@ impl<'a> AnchorIndex<'a> {
                     stats.tag_ambiguous += 1;
                     continue;
                 }
+                let t_lookup = TIMED.then(Instant::now);
                 self.lookup(window, cfg.max_mismatch, &mut hits);
+                if TIMED {
+                    let dt = t_lookup.unwrap().elapsed().as_nanos() as u64;
+                    TL_LOOKUP_NS.with(|c| c.set(c.get() + dt));
+                    TL_LOOKUPS.with(|c| c.set(c.get() + 1));
+                }
                 if hits.is_empty() {
                     stats.tag_unmatched += 1;
                     continue;
@@ -409,6 +550,24 @@ pub struct CountStats {
 }
 
 impl CountStats {
+    /// Element-wise sum of another chunk's stats. Counting is order-
+    /// independent (counts and every stat are pure sums), so merging
+    /// per-file partials in any order yields the serial result.
+    pub fn merge(&mut self, other: CountStats) {
+        self.reads_total += other.reads_total;
+        self.reads_with_anchor += other.reads_with_anchor;
+        self.motif_hits += other.motif_hits;
+        self.tag_truncated += other.tag_truncated;
+        self.tag_ambiguous += other.tag_ambiguous;
+        self.tag_unmatched += other.tag_unmatched;
+        self.tag_multi_locus += other.tag_multi_locus;
+        self.tag_multi_enzyme += other.tag_multi_enzyme;
+        self.tag_matched += other.tag_matched;
+        for (d, s) in self.mismatch_hist.iter_mut().zip(other.mismatch_hist.iter()) {
+            *d += s;
+        }
+    }
+
     /// Tags fully extracted from reads, i.e. motif hits that were not truncated
     /// by a read end or rejected for an ambiguous base.
     pub fn tags_extracted(&self) -> u64 {
@@ -446,23 +605,59 @@ impl CountStats {
 }
 
 /// Count one sample's reads against the database.
+///
+/// Files are counted in parallel (one rayon task per file) and merged in file
+/// order. Merging is plain element-wise addition of `u32` counts and of every
+/// `CountStats` field, both order-independent, so the result is bit-identical
+/// to the serial loop regardless of completion order.
+///
+/// Intra-file parallelism is deliberately not attempted: read files are
+/// usually gzip-compressed, and gzip cannot be seeked, so a worker wanting
+/// "reads 10M..20M" would have to decompress and discard everything before
+/// it — for a single 68.5M-pair file that is nearly the whole serial cost
+/// paid N times. Splitting a sample's *files* across cores captures the
+/// common cases (several files per sample; several samples, which the caller
+/// already spreads across the pool) without that penalty.
 pub fn count_sample(
     index: &AnchorIndex<'_>,
     reads: &[std::path::PathBuf],
     cfg: &MatchConfig,
 ) -> Result<(Vec<u32>, CountStats)> {
+    let timed = timing_enabled();
+    let parts: Vec<Result<(Vec<u32>, CountStats)>> = reads
+        .par_iter()
+        .map(|path| {
+            let mut counts = vec![0u32; index.db().n_anchors()];
+            let mut stats = CountStats::default();
+            let n = crate::fasta::for_each_read(path, |read| {
+                stats.reads_total += 1;
+                // Branch once here, not per window: the TIMED const generic
+                // monomorphizes the probe code away entirely on the default
+                // path.
+                let rec = if timed {
+                    index.count_read_impl::<true>(read, cfg, &mut counts, &mut stats)
+                } else {
+                    index.count_read(read, cfg, &mut counts, &mut stats)
+                };
+                if rec > 0 {
+                    stats.reads_with_anchor += 1;
+                }
+            })?;
+            debug_assert!(n <= stats.reads_total);
+            drain_timing();
+            Ok((counts, stats))
+        })
+        .collect();
     let mut counts = vec![0u32; index.db().n_anchors()];
     let mut stats = CountStats::default();
-    for path in reads {
-        let n = crate::fasta::for_each_read(path, |read| {
-            stats.reads_total += 1;
-            let rec = index.count_read(read, cfg, &mut counts, &mut stats);
-            if rec > 0 {
-                stats.reads_with_anchor += 1;
-            }
-        })?;
-        debug_assert!(n <= stats.reads_total);
+    for part in parts {
+        let (c, s) = part?;
+        for (dst, src) in counts.iter_mut().zip(c.iter()) {
+            *dst += src;
+        }
+        stats.merge(s);
     }
+    timing_report("count_sample");
     Ok((counts, stats))
 }
 
@@ -842,6 +1037,157 @@ mod tests {
         idx.count_read(&genome[20..170], &cfg, &mut counts, &mut stats);
         assert_eq!(counts.iter().sum::<u32>(), 0);
         assert_eq!(stats.tag_multi_locus, 1);
+    }
+
+    #[test]
+    fn parallel_count_sample_matches_serial() {
+        // count_sample spreads files over rayon and merges partials; the merge
+        // is plain addition, so the result must equal the serial loop exactly.
+        let (db, genome) = tiny_db();
+        let idx = AnchorIndex::build(&db, 2);
+        let cfg = MatchConfig::default();
+
+        let mut files = Vec::new();
+        for f in 0..4 {
+            let mut body = String::new();
+            for r in 0..50 {
+                let start = 20 + ((f * 50 + r) * 7) % (genome.len() - 170);
+                body.push_str(&format!(
+                    ">r{f}_{r}\n{}\n",
+                    String::from_utf8_lossy(&genome[start..start + 150])
+                ));
+            }
+            let mut p = std::env::temp_dir();
+            p.push(format!(
+                "sk2bgrow-{}-par-{f}.fna",
+                std::process::id()
+            ));
+            std::fs::write(&p, body).unwrap();
+            files.push(p);
+        }
+
+        let (counts_par, stats_par) = count_sample(&idx, &files, &cfg).unwrap();
+
+        // Serial reference: same loop the parallel version must reproduce.
+        let mut counts = vec![0u32; db.n_anchors()];
+        let mut stats = CountStats::default();
+        for path in &files {
+            crate::fasta::for_each_read(path, |read| {
+                stats.reads_total += 1;
+                if idx.count_read(read, &cfg, &mut counts, &mut stats) > 0 {
+                    stats.reads_with_anchor += 1;
+                }
+            })
+            .unwrap();
+        }
+
+        assert_eq!(counts_par, counts, "parallel counts diverged from serial");
+        assert_eq!(
+            format!("{stats_par:?}"),
+            format!("{stats:?}"),
+            "parallel stats diverged from serial"
+        );
+        for p in files {
+            std::fs::remove_file(p).ok();
+        }
+    }
+
+    /// `profile --screen` pass 2 counts through build_screened; on a database
+    /// whose genomes share no tags, restricting to genome 0 must give
+    /// bit-identical counts to the full index (genome 1 simply never sees a
+    /// read, and its anchors are absent from the restricted tables).
+    #[test]
+    fn genome_screened_counting_matches_full_counting() {
+        use std::sync::atomic::{AtomicU32, Ordering};
+        static N: AtomicU32 = AtomicU32::new(0);
+        let mut p = std::env::temp_dir();
+        p.push(format!(
+            "sk2bgrow-{}-{}-two-genomes.fna",
+            std::process::id(),
+            N.fetch_add(1, Ordering::Relaxed)
+        ));
+        // Genome 0: the tiny_db sequence (two BcgI loci). Genome 1: an
+        // unrelated AlfI-bearing sequence. Both digested with the same panel.
+        let mut seq = String::new();
+        seq.push_str(&"A".repeat(60));
+        seq.push_str("CGAACGTACTGC"); // BcgI site at 60
+        seq.push_str(&"T".repeat(300));
+        seq.push_str("CGAGGGTTCTGC"); // BcgI site at 372
+        seq.push_str(&"C".repeat(160));
+        let mut seq2 = String::new();
+        seq2.push_str(&"G".repeat(60));
+        seq2.push_str("GCAACGTTCTGC"); // AlfI site at 60
+        seq2.push_str(&"TTCGA".repeat(120));
+        std::fs::write(&p, format!(">g0c0\n{seq}\n")).unwrap();
+        let enzymes = vec![by_name("BcgI").unwrap(), by_name("AlfI").unwrap()];
+        let (meta, anchors, tags, _) =
+            build_genome(&p, 0, &enzymes, &DigestConfig::default(), GC_FLANK).unwrap();
+        std::fs::remove_file(&p).ok();
+        let mut p = std::env::temp_dir();
+        p.push(format!(
+            "sk2bgrow-{}-{}-g1.fna",
+            std::process::id(),
+            N.fetch_add(1, Ordering::Relaxed)
+        ));
+        std::fs::write(&p, format!(">c0\n{seq2}\n")).unwrap();
+        let (meta2, anchors2, tags2, _) =
+            build_genome(&p, 1, &enzymes, &DigestConfig::default(), GC_FLANK).unwrap();
+        std::fs::remove_file(&p).ok();
+        let params = BuildParams {
+            enzymes: EnzymeSet::from_slice(&enzymes),
+            ..BuildParams::default()
+        };
+        let db = assemble(params, vec![(meta, anchors, tags), (meta2, anchors2, tags2)]);
+        assert!(
+            db.anchors.iter().all(|a| a.flags & crate::anchor_db::flags::UNIQUE_ACROSS_DB != 0),
+            "fixture genomes share a tag; the equality check would be vacuous"
+        );
+
+        // Reads drawn only from genome 0's sequence.
+        let g0: Vec<u8> = seq.into_bytes();
+        let mut rpath = std::env::temp_dir();
+        rpath.push(format!(
+            "sk2bgrow-{}-{}-screen-reads.fna",
+            std::process::id(),
+            N.fetch_add(1, Ordering::Relaxed)
+        ));
+        let mut body = String::new();
+        for i in 0..40 {
+            let start = 20 + i * 7;
+            body.push_str(&format!(
+                ">r{i}\n{}\n",
+                String::from_utf8_lossy(&g0[start..start + 150])
+            ));
+        }
+        std::fs::write(&rpath, body).unwrap();
+
+        let cfg = MatchConfig::default();
+        let full = AnchorIndex::build(&db, cfg.max_mismatch);
+        let (counts_full, stats_full) = count_sample(&full, &[rpath.clone()], &cfg).unwrap();
+
+        let mut filter = vec![false; db.genomes.len()];
+        filter[0] = true;
+        let screened = AnchorIndex::build_screened(&db, cfg.max_mismatch, None, Some(&filter));
+        let (counts_scr, stats_scr) = count_sample(&screened, &[rpath.clone()], &cfg).unwrap();
+
+        assert_eq!(
+            counts_full, counts_scr,
+            "screened pass 2 diverged from the full count"
+        );
+        assert_eq!(
+            format!("{stats_full:?}"),
+            format!("{stats_scr:?}"),
+            "screened stats diverged from the full count"
+        );
+        // Genome 1's anchors must be all-zero in both runs (reads carry no
+        // genome-1 sequence).
+        for (i, a) in db.anchors.iter().enumerate() {
+            if a.genome_id == 1 {
+                assert_eq!(counts_full[i], 0);
+            }
+        }
+        assert!(counts_full.iter().sum::<u32>() > 0, "fixture matched nothing");
+        std::fs::remove_file(rpath).ok();
     }
 
     #[test]
