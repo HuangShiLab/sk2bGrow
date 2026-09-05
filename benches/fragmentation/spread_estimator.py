@@ -22,8 +22,9 @@ marginalise:
 
     p(y_w | a, W) = [Phi((a + W - y_w)/s_w) - Phi((a - y_w)/s_w)] / W
 
-Maximise over (a, W) per enzyme, then fuse across enzymes by inverse variance as
-usual. Same order-free property, but a sample with no gradient now returns W -> 0
+Maximise over (a, W) per enzyme, then fuse across enzymes with
+`sk2bgrow.fusion.fuse`, which escalates to DerSimonian-Laird random effects when
+Cochran's Q rejects. Same order-free property, but a sample with no gradient now returns W -> 0
 instead of being credited with the spread of its own sampling error.
 
 MEASURED, on the Zheng E. coli data against a 100-contig reference
@@ -61,9 +62,15 @@ KNOWN LIMITS, in the order worth attacking.
 This is a prototype scored offline against committed `windows.rates.tsv`, not a
 shipped estimator.
 """
+import os
+import sys
+
 import numpy as np
 from scipy.optimize import minimize
 from scipy.special import log_ndtr, ndtr
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "python"))
+from sk2bgrow.fusion import fuse as _fuse_production  # noqa: E402
 
 
 def _nll(theta, y, s):
@@ -108,7 +115,36 @@ def width_mle(y, s, min_windows=6):
     return W, se
 
 
-def per_enzyme(df, min_windows=6):
+#: Widths above this are not biology. Bacterial PTR tops out near 8
+#: (log2 = 3); the production V-fit's largest value over 1,273 accepted fits on
+#: the Zheng grid is 2.432, i.e. PTR 5.4, and nothing exceeds 3.0. A width MLE
+#: that reports more than this has not measured a gradient, it has failed to
+#: identify one.
+MAX_PLAUSIBLE_WIDTH = 3.5
+
+
+def per_enzyme(df, min_windows=6, max_width=MAX_PLAUSIBLE_WIDTH):
+    """Per-enzyme width MLEs, dropping the ones that did not identify a width.
+
+    The width MLE deconvolves a uniform spread from Gaussian window noise, and
+    that deconvolution is weakly identified when noise dominates: the profile
+    likelihood flattens, and W runs to whichever boundary the flatter side leads
+    to. Both failures are observed. On M1 at 2x, BplI (15 windows) returns
+    W = 11.478, a PTR of 2,852; at 0.5x the MLE collapses to exactly 0 in 15 of
+    17 conditions instead.
+
+    The V-fit has neither failure because it regresses on known coordinates, so
+    the slope is pinned by the data range rather than by the shape of a
+    likelihood ridge -- one more place where the coordinate is what buys
+    robustness.
+
+    Dropping implausible widths matters more than it looks. On M1 at 2x it takes
+    Cochran's Q from 1,522 to 68 over 14 enzymes and moves the fused estimate
+    from 2.375 to 1.684, whose interval covers the V-fit's 1.788; the
+    unfiltered interval does not. Under the old fixed-effect fusion the outlier
+    was masked by its own large standard error, so this only became visible once
+    the random-effects escalation was in place.
+    """
     out = []
     for enz, g in df.groupby("enzyme"):
         g = g.dropna(subset=["log2_rate", "log2_se"])
@@ -116,16 +152,37 @@ def per_enzyme(df, min_windows=6):
             continue
         W, se = width_mle(g["log2_rate"].to_numpy(), g["log2_se"].to_numpy(),
                           min_windows)
+        if max_width is not None and np.isfinite(W) and W > max_width:
+            continue
         out.append((enz, W, se, len(g)))
     return out
 
 
 def fuse(rows):
-    r = [(w, se) for _, w, se, _ in rows
-         if np.isfinite(w) and np.isfinite(se) and se > 0]
-    if not r:
+    """Fuse per-enzyme widths, delegating to the production fuser.
+
+    This used to be a local inverse-variance weighting that computed Cochran's
+    Q and then ignored it. On the Zheng grid that Q runs from 177 at 10x to
+    6,384 at 1x on 15 degrees of freedom -- Q = 37 is already p < 0.002 -- while
+    the returned standard error stayed at 0.005-0.019. A tight interval around a
+    value sixteen enzymes visibly disagree about is the worst failure a QC can
+    have, so the escalation `sk2bgrow.fusion.fuse` already implements (
+    DerSimonian-Laird between-enzyme variance when Q rejects, s_eff^2 = s_w^2 +
+    tau^2) is used here instead of a second copy of the arithmetic.
+
+    Note this does not address the other defect: at 0.5x the width MLE returns
+    exactly zero in 15 of 17 conditions. Random effects widen an interval, they
+    do not move a point estimate off a boundary. The V-fit compresses at the
+    same depths without collapsing, so that cause sits upstream in the window
+    rates -- open question A4/R4, not a fusion problem.
+
+    Returns ``(estimate, se, Q, n_enzymes)`` as before, so callers are
+    unchanged. ``min_anchors`` is disabled because the rows carry a window
+    count, not an anchor count.
+    """
+    est = {name: w for name, w, se, _ in rows if np.isfinite(w) and np.isfinite(se) and se > 0}
+    err = {name: se for name, w, se, _ in rows if np.isfinite(w) and np.isfinite(se) and se > 0}
+    if not est:
         return np.nan, np.nan, np.nan, 0
-    w = np.array([a for a, _ in r])
-    iv = 1.0 / np.array([b ** 2 for _, b in r])
-    est = float((w * iv).sum() / iv.sum())
-    return est, float(np.sqrt(1.0 / iv.sum())), float((iv * (w - est) ** 2).sum()), len(r)
+    res = _fuse_production(est, err, n_anchors=None, min_anchors=0)
+    return res.log2_ptr, res.se, res.q, res.n_enzymes
