@@ -373,12 +373,37 @@ because not growing" from "no gradient because the coordinate is scrambled"?
 Candidate: within-contig slopes should have consistent |magnitude| under a real
 gradient and be uncorrelated under a scrambled one.
 
-### R4 — What compresses the slope at low coverage?
+### R4 — What compresses the slope at low coverage? — **answered**
 
-See A4. One candidate left. The decisive experiment is a simulation with **known
-λ per window**: compare the recovered window rates to truth at 0.5–1× and see
-whether low-count windows are pulled toward the mean before fitting. If they are,
-no change to the fit will help.
+**Not window shrinkage.** `benches/window_shrinkage.py`, known λ per window,
+production estimator: at 5–10× the recovered log2 rate regresses on truth with
+slope 0.98–1.01 and zero bias; at 0.5× the slope is **3.79** — the spread is
+*inflated*, not compressed — with a level bias of −1.54 log2.
+
+Decomposing the V-fit against a true log2(PTR) of 1.3, 12 seeds:
+
+| depth | known ori | + trimming | + ori search | unweighted |
+|---:|---:|---:|---:|---:|
+| 0.5× | 0.80× | 0.71× | 0.72× | **2.82×** |
+| 1× | 0.92× | 0.85× | 0.88× | 1.37× |
+| 10× | 0.96× | 0.96× | 0.96× | 0.96× |
+
+The **origin search is exonerated** (searching costs nothing against the true
+origin). Tukey trimming costs ~0.09 at 0.5× and nothing from 5× up — real but
+secondary. The rest is **inverse-variance weighting over-correcting a
+heteroscedastic input**: `se` and `log2_rate` correlate at −0.94 at 0.5×, so the
+ter-end windows that set the bottom of the V are exactly the down-weighted ones.
+Dropping the weights overshoots to 2.82×. No reweighting repairs a biased input.
+
+**Target moves to `ztp.py` at ≤1×.** And it unifies R5: handed the same inflated
+rates and large SEs, the width MLE's deconvolution attributes all spread to noise
+and returns W = 0, while the V-fit's weighting compresses. One input defect, two
+consumers, opposite symptoms.
+
+Caveat: the simulation is milder than the real grid (0.72× vs a measured slope of
+0.615 at 0.5×) and the two are not the same statistic — a ratio at one PTR versus
+a regression slope across sixteen media. Direction and depth profile match;
+do not quote the magnitude as if it were measured.
 
 ### R5 — Does the order-free estimator become competitive with an overdispersion term?
 
@@ -479,9 +504,10 @@ there is a reason not to. Worth one 2-enzyme run for a like-for-like sketch-size
 comparison: a 2-enzyme panel (17,055 anchors on *E. coli*) is almost exactly the
 size of Pilea's FracMinHash sketch (18,261 k-mers).
 
-### C7 — the A4 window-rate experiment (R4)
-Not a scale experiment; can be done on any machine but has not been. Simulate
-with known λ per window, recover rates at 0.5–1×, compare to truth.
+### C7 — the A4 window-rate experiment (R4) — **DONE, do not re-run**
+Run locally on 2026-09-05; `benches/window_shrinkage.py` reproduces it in a
+minute. Result in R4 below. What remains from it is a *fix* in `ztp.py`, not
+another experiment.
 
 ---
 
