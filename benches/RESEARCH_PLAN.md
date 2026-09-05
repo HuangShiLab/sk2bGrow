@@ -395,10 +395,40 @@ heteroscedastic input**: `se` and `log2_rate` correlate at −0.94 at 0.5×, so 
 ter-end windows that set the bottom of the V are exactly the down-weighted ones.
 Dropping the weights overshoots to 2.82×. No reweighting repairs a biased input.
 
-**Target moves to `ztp.py` at ≤1×.** And it unifies R5: handed the same inflated
-rates and large SEs, the width MLE's deconvolution attributes all spread to noise
-and returns W = 0, while the V-fit's weighting compresses. One input defect, two
-consumers, opposite symptoms.
+**It unifies R5**: handed the same inflated rates and large SEs, the width MLE's
+deconvolution attributes all spread to noise and returns W = 0, while the V-fit's
+weighting compresses. One input defect, two consumers, opposite symptoms.
+
+**Diagnosis, then a demonstrated fix.** The ZTP inversion is exact
+(`solve_ztp_lambda` recovers λ to 4 decimals from the exact mean of positives)
+and the rate is unbiased on the *linear* scale at every λ ≥ 0.2. Model selection
+is innocent: ZTNB is chosen ≤ 2% of the time at λ ≥ 0.41 and multi-component
+never. Marginal CI coverage is 95% at every λ. What fails is the **log2
+transform**: at λ = 0.41 the log-scale sd is 0.89 against a reported `log2_se` of
+0.57, the tail is heavy to the left, and `se` correlates with `log2_rate` at
+−0.82 *within one window's own sampling distribution* — so inverse-variance
+weighting preferentially keeps the upward draws, and keeps more of them where λ
+is lowest, which is the ter end.
+
+Three repairs in log2 space were tried and all three fail: oracle weights from
+the true λ overshoot to 2.94×, one-step IRLS to 2.04×, and a parametric bootstrap
+returns se 1.93 against a true sd of 1.20 with a bias correction that overshoots
+to −0.81 against a truth of −1.29.
+
+**Fitting on the count scale works.** Treating the window totals as Poisson with
+the tent as a log-link linear predictor — no per-window rate, no log2 transform,
+no delta method, no realised-variance weighting — recovers:
+
+| depth | current | Poisson GLM | GLM, no gradient |
+|---:|---:|---:|---:|
+| 0.5× | 0.80× | **0.99×** | −0.101 |
+| 1× | 0.92× | **1.04×** | 0.038 |
+| 10× | 0.96× | **0.99×** | −0.001 |
+
+0.95–1.02× across σ_eff 0, 0.3 and 0.6, negative control intact, and it also
+sheds the residual 4% compression the current path never loses at depth.
+`benches/window_shrinkage.py` stage 3. **Not yet ported to `fit.py`** — that
+changes every number in the paper, so it is a decision, not a patch.
 
 Caveat: the simulation is milder than the real grid (0.72× vs a measured slope of
 0.615 at 0.5×) and the two are not the same statistic — a ratio at one PTR versus
