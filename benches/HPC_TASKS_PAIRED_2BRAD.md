@@ -4,6 +4,13 @@
 Additive to `RESEARCH_PLAN.md`; ranks above `HPC_TASKS_SKETCH_MODE.md`. Nothing
 here disturbs runs already in flight.
 
+**No conflict with C8.** `RESEARCH_PLAN.md` C8 (the Poisson GLM A/B) also claims
+priority, over the *re-runs* in Part 9. The two do not compete: task 1 below is a
+per-anchor count ratio with no PTR machinery in it at all, so it is unaffected by
+any estimator change and can run alongside C8 on separate nodes. Tasks 2 and 3
+*are* PTR comparisons and should use whichever estimator C8 settles on — if C8
+has not reported, run them on the current V-fit and expect to redo them.
+
 `docs/design/04-roadmap.md` lists σ_eff — per-site capture efficiency noise in a
 real 2bRAD library — as **open question R1, "the single largest open risk"**, and
 gives its resolution path as *"P2 technical replicates"*: a wet-lab experiment

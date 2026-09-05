@@ -539,6 +539,55 @@ Run locally on 2026-09-05; `benches/window_shrinkage.py` reproduces it in a
 minute. Result in R4 below. What remains from it is a *fix* in `ztp.py`, not
 another experiment.
 
+### C8 — Poisson GLM against the current fit, on the Zheng grid (R4, R5) — **new, do this before any re-run**
+
+R4 showed the amplitude loss comes from the log2 transform, and that fitting the
+window *counts* with a log-link tent recovers 0.95–1.02× at every depth in
+simulation. C8 asks whether that holds on real data. **Everything in Part 9
+waits on this**: if the GLM does not reproduce the simulated gain on the Zheng
+grid, nothing else needs re-running.
+
+**Implement first.** The GLM is not a drop-in; four pieces are missing.
+
+1. **`window_rates` does not emit a count total.** It reports `rate`, `se`,
+   `n_anchors`, `n_positive` — the sufficient statistic for a Poisson fit is the
+   window's summed count, and it is discarded. Add `total_count` (additive; the
+   `io` validator only checks for *missing* columns, so nothing breaks).
+2. **`fit_glm` in `fit.py`**, exposed as `method="glm"` in `fit_windows`
+   alongside `v_shape` and `sorted`. Keep the existing methods working — the A/B
+   is the whole point, and a parallel method means every old number stays
+   reproducible.
+3. **Joint origin search under the Poisson likelihood.** The prototype used the
+   *true* origin. R4 showed the search costs the V-fit nothing, but that is not
+   evidence it costs the GLM nothing — profile the origin on the Poisson
+   deviance and check against `ori_confidence`.
+4. **GC correction becomes an offset.** Today GC enters by adjusting
+   `log2_rate` (`log2_rate_raw`, `mean_gc_offset`, `gc_corrected`). In a GLM it
+   belongs in the linear predictor as an offset, not as a pre-adjusted response.
+   Also port the segmented/multi-fork branch, or record that `method="glm"`
+   starts single-slope and say so in every result.
+
+**Then measure.** Full Zheng grid, both methods, all five depths, per enzyme and
+fused. Report side by side and never averaged across depths:
+
+* r, RMSE and **slope** against measured growth rate, per depth;
+* the stationary control — it must stay near zero (the V-fit reports 0.077 at
+  1×; the simulated GLM gives −0.10 to +0.07);
+* per-enzyme r², and how many accepted fits still sit below zero (15.9% today,
+  57.5% at 0.5×);
+* Cochran's Q, I² and the QC pass rate — these move with the per-enzyme
+  estimates and are what Part 9 depends on;
+* wall time and peak RSS. The GLM replaces a 180-point origin grid plus a
+  weighted least-squares solve with a two-parameter optimisation; it may be
+  cheaper, but that is a guess until measured.
+
+**Falsified if** the GLM does not beat the V-fit's slope at 0.5–1× on real data,
+or if it buys that slope by degrading the stationary control. Either outcome is
+publishable: the simulation would then be missing something the real data has,
+and finding out what it is *is* the result.
+
+**Prototype and the numbers to beat:** `benches/window_shrinkage.py` stage 3.
+
 ---
 
 ## Part 7 — Reporting
@@ -578,3 +627,50 @@ scale. If a result overturns something, that is the result; write it up as one.
   line.** Hard-wrap captions.
 - **Contributors:** commits in these repositories must show `HuangShiLab` only.
   No `Co-Authored-By` trailers.
+
+---
+
+## Part 9 — What must be re-run if C8 adopts the GLM
+
+Do not start any of this before C8 reports. If the GLM is not adopted, none of
+it applies.
+
+### Moves — every one of these uses a V-fit point estimate
+
+| result | where | what changes |
+|---|---|---|
+| Zheng arms **A** and **E** | `benches/zheng2020` | r, RMSE, slope at all five depths |
+| **A3, the 2×2** | `data/results_raw.tsv` | **two of the four cells.** Arms B (rank regression) and C (Pilea) do not use the V-fit and stay put — so the *interaction* that the paper's thesis rests on has to be re-derived, not merely re-tabulated |
+| per-enzyme fits | `data/per_enzyme_zheng.tsv` | every column, including the r² < 0 rates |
+| fusion and QC | `fusion.py` outputs | Q, I², τ², `consistent`, `consistency_checked`, and the QC pass rate |
+| **A2 fragmentation** | `data/fragmentation.tsv` | slope 0.21 and bias −0.81 on contigs, and the finding that 100% of fragmented estimates pass QC against 75% of correct ones |
+| contig sweep | `data/fragmentation_sweep.tsv` | the r-stays-high-while-slope-falls curve |
+| panel sweep (A6) | `data/panel_sweep*.tsv` | the 8-vs-16 recommendation |
+| spread estimator | `data/fragmentation_spread.tsv` | its baseline is the V-fit, and R5 predicts the GLM removes the W = 0 collapse too — check that directly |
+| stationary controls | `RESULTS.txt` | all arms using the V-fit |
+| C1, C1b, C2, C3, C4, C5 | HPC | every PTR number |
+| figures and tables | `sk2bGrow-paper/figures` | fig 5, fig 8, tables 2/6/8 regenerate from the TSVs above |
+
+### Does not move — do not spend time re-running these
+
+| result | why |
+|---|---|
+| **σ_eff** (`HPC_TASKS_PAIRED_2BRAD.md` task 1) | per-anchor count ratios; no PTR machinery at all. **Safe to run now, and it should be** |
+| A1, CSR index memory | Rust index layer, below the estimator |
+| landmark density, GC tables | index-time properties |
+| near-duplicate / mismatch rates (F3) | sequence properties |
+| M4 containment screen correctness | genome selection, upstream of fitting |
+| arm **B** (sorted-rank regression) | does not use the V-fit |
+| arm **C** (Pilea, both gate settings) | their estimator, unchanged |
+| Pilea's gate bracket, coverage ∈ (3.97, 7.50] | a property of Pilea |
+| C5 recall = 522/522 | there is no coverage gate either way; the *QC pass* counts do move |
+
+### Order
+
+1. C8 implementation and A/B. Nothing else starts until it reports.
+2. If adopted: Zheng grid first, because A3's interaction is what the
+   Introduction claims. Re-derive it before rewriting anything.
+3. Then fragmentation (A2 + sweep), because R5 predicts the W = 0 collapse
+   disappears — that is a second, independent test of the same diagnosis.
+4. Then the HPC experiments, then figures.
+5. σ_eff runs in parallel throughout; it is unaffected.
