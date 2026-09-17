@@ -330,9 +330,9 @@ This section exists because it is the most useful part of the handover.
 | id | issue | status |
 |---|---|---|
 | A1 | index memory | **done** — 2.2×, 752 GB at GTDB scale. Remaining halvings: drop the build-time pair buffer (~58 B/anchor), mmap the AnchorDb (~38), ship 8 enzymes, shard by genome |
-| A2 | fragmented references | **done** — scaffolding rescues it; **the QC blind spot it exposed is now the top open item** |
+| A2 | fragmented references | **done** — scaffolding rescues it. QC blind spot: **R3 statistic exists** (WCG, two-branch within-contig gradient; `benches/fragmentation/R3_QC.md`) — 47/48 scrambled cases fire at 5–10×, all controls quiet; pending real-data null-margin validation before wiring into the gates |
 | A3 | attribution 2×2 | **done** — changed the claim |
-| A4 | low-coverage compression | **open, narrowed**. Excluded: outlier trimming (100% of windows kept), IV-fusion shrinkage (estimate and SE are *negatively* correlated, −0.06 to −0.28; IV beats unweighted 0.681 vs 0.497), origin error (minor). **Remaining candidate: what the ZTP/ZTNB layer does to a window's rate at near-zero counts, before the fit sees it** |
+| A4 | low-coverage compression | **resolved with fixes** — C7 (`benches/windowrate/`): not a truncation bias; surviving Poisson windows are median-unbiased. Compression = IV self-weighting (−0.09 of 0.40) + ori search on noise (−0.04) + Tukey asymmetry (−0.05) + b=0 one-sided floor (−0.07) + rate scatter. Fixed: all-ones ZTP boundary (ztp.py), phantom ZTP likelihood at λ→0⁺, ZTNB ridge guard, two-stage decoupled fit weights. Slope at 0.5× 0.601→0.757, no 5× regression, stationary floor unchanged. Follow-up: mixture rate-selection heuristic on bimodal windows (~0.14% of windows) |
 | A5 | enzyme containment (Bsp24I ⊂ CjePI) | **measured, immaterial** — max 0.050 log2 change, Q rejection does not improve. Document; do not code |
 | A6 | ship 8 enzymes not 16 | analysis done, **needs the panel sweep crossed with fragmentation** before the default changes. Recommendation stands: ship 8 |
 | A7 | origin annotation | **tested** — ~10% RMSE at ≤1× (0.304→0.271, 0.157→0.143), nothing at ≥5×. Not the fix for A4 |

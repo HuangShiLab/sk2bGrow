@@ -85,6 +85,52 @@ def test_standard_error_reflects_scatter_not_just_the_input_errors():
     assert b.reduced_chi2 > 10 * a.reduced_chi2
 
 
+def test_shrunken_weights_resist_self_weighting_bias():
+    """C7 regression: the window SE is a decreasing function of the window's
+    own fitted rate, so naive inverse-variance weights correlate with the
+    noise and pull the terminus up (compressing the V). Two-stage decoupled
+    weights must land closer to the truth."""
+    rng = np.random.default_rng(12)
+    pos = np.sort(rng.uniform(0, GENOME_LEN, 400))
+    d = fit.circular_distance(pos, ORI, GENOME_LEN)
+    truth = 1.5
+    y_true = 6.0 - truth * d / (GENOME_LEN / 2)
+    # Counting noise is larger where the rate is low (the terminus)...
+    sigma = 0.15 * (6.0 - y_true) ** 1.5
+    noise = rng.normal(0, 1, pos.size) * sigma
+    y = y_true + noise
+    # ...and an up-fluctuation shrinks the SE, mimicking the delta-method
+    # self-weighting of the ZTP layer.
+    se = sigma * np.exp(-1.5 * noise)
+    naive = fit.fit_v_shape(pos, y, GENOME_LEN, se=se, ori=ORI, shrink_se=False)
+    shrunk = fit.fit_v_shape(pos, y, GENOME_LEN, se=se, ori=ORI)
+    assert abs(shrunk.log2_ptr - truth) < abs(naive.log2_ptr - truth)
+    assert shrunk.log2_ptr == pytest.approx(truth, abs=0.12)
+
+
+def test_shrink_se_off_preserves_single_stage_fit():
+    pos, y = v_profile(1.0, seed=13)
+    se = np.full(pos.size, 0.05)
+    off = fit.fit_v_shape(pos, y, GENOME_LEN, se=se, ori=ORI, shrink_se=False)
+    on = fit.fit_v_shape(pos, y, GENOME_LEN, se=se, ori=ORI)
+    # With a constant SE the decoupling is a no-op; both stages agree.
+    assert on.log2_ptr == pytest.approx(off.log2_ptr, abs=1e-9)
+
+
+def test_fixed_origin_keeps_a_negative_noise_estimate():
+    """A fixed ori removes the ori/ter ambiguity, so it must not censor sign."""
+    pos = np.linspace(0, GENOME_LEN, 40, endpoint=False)
+    # A small downward profile centered at the supplied ori has a negative
+    # PTR; this is the stationary-control case, not an ori/ter swap.
+    # The fit's model is intercept - slope * distance; a negative slope means
+    # coverage rises away from the supplied ori and PTR is below one.
+    y = 0.08 * fit.circular_distance(pos, ORI, GENOME_LEN)
+    f = fit.fit_v_shape(pos, y, GENOME_LEN, ori=ORI, shrink_se=False)
+    assert f.ok
+    assert f.log2_ptr < 0
+    assert np.all(np.asarray(f.slopes) < 0)
+
+
 def test_too_few_windows_is_reported_not_guessed():
     f = fit.fit_v_shape(np.array([0.0, 1.0, 2.0]), np.array([1.0, 2.0, 3.0]), GENOME_LEN)
     assert not f.ok
@@ -125,5 +171,9 @@ def test_fit_windows_falls_back_on_fragmented_references(manifest, fragmented_ma
     good = fit.fit_windows(windows, manifest, method="auto")
     assert good["method"].iloc[0].startswith("v_shape")
     frag = fit.fit_windows(windows, fragmented_manifest, method="auto")
-    assert frag["method"].iloc[0] == "sorted_ransac"
+    assert frag["method"].iloc[0] == "none"
+    assert not frag["ok"].iloc[0]
+    assert "choose --method sorted explicitly" in frag["note"].iloc[0]
+    explicit = fit.fit_windows(windows, fragmented_manifest, method="sorted")
+    assert explicit["method"].iloc[0] == "sorted_ransac"
     assert "fragmented" in frag["note"].iloc[0]

@@ -29,6 +29,7 @@ venv/
 /out/
 /db/
 benches/work/
+benches/windowrate/work/
 !tests/data/*.fna
 !tests/data/*.fa
 

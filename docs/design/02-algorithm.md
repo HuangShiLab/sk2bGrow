@@ -89,6 +89,20 @@ rounding noise as free likelihood and NB "wins" on perfectly Poisson data. The
 implementation uses the rising-factorial form `Σ log(r+i)`, which is exact for
 integer counts.
 
+*Boundary behaviour at near-zero counts* (both found by bench C7). An all-ones
+window carries no rate information: the ZTP likelihood has a finite supremum
+(loglik → 0 as λ → 0⁺), which is evaluated at the limit so the window returns
+a NaN rate and is dropped by the fit — hard-coding −inf there instead hands the
+window to NB, which returns a finite but meaningless μ ≈ 1e-6. And because the
+truncated NB likelihood never sees the zeros, it has a degenerate ridge
+(μ → 0, α → ∞) that explains "mostly ones" with a vanishing mean: a fit whose
+implied P(X ≥ 1) misses the observed detected fraction by an order of magnitude
+is vetoed and the ZTP answer is used instead. The ZTP pmf computes
+`log(1 − e^−λ)` in `expm1` form for the same reason as the NB pmf above — the
+naive `log1p(−exp(−λ))` loses the mantissa below λ ~ 1e-8 and reports
+logpmf(1) > 0, phantom likelihood that used to collapse EM components onto
+λ ≈ 0.
+
 ## 5. Correct GC bias
 
 Fit a loess curve of log2 count against local GC **inside each enzyme**, and
@@ -168,6 +182,17 @@ Standard errors are scaled by the fit's reduced χ². The window errors from ste
 describe counting noise only; anchor efficiency, residual GC structure and
 profile misspecification all add scatter. Taking the residuals at face value
 keeps the error bars honest.
+
+**Window weights are two-stage.** The step-4 SE is a decreasing function of the
+window's own fitted rate, so plain inverse-variance weights correlate with the
+noise they weight — a window whose counts fluctuated up gets a bigger rate *and*
+a smaller SE (bench C7 measured corr(weight, error) = +0.42 at 0.5×, worth about
+−0.09 of genome-level slope). The fit therefore runs twice: a first pass with
+the SEs as given, then SEs re-evaluated as a smooth function of the first pass's
+*fitted* profile (log se regressed on observed log2 rate, predicted at the
+fitted values). The genuine rate-to-precision trend is kept; the weight-error
+correlation is broken. `shrink_se=False` restores the single-stage behaviour as
+a diagnostic.
 
 > **Addresses D3, D8.**
 

@@ -54,10 +54,18 @@ _EPS = 1e-12
 # --------------------------------------------------------------------------
 
 def ztp_logpmf(k: np.ndarray, lam: float) -> np.ndarray:
-    """log P(X = k | X >= 1) for a Poisson with rate ``lam``."""
+    """log P(X = k | X >= 1) for a Poisson with rate ``lam``.
+
+    ``log(1 - e^-lam)`` is computed as ``log(lam) + log((1 - e^-lam)/lam)``
+    with ``expm1`` for the second term. The naive ``log1p(-exp(-lam))`` loses
+    the mantissa as lam -> 0 — at lam ~ 1e-12 it is off by log 2, i.e. it
+    reports logpmf(1) ~= +0.69, a probability *above one*. That phantom
+    likelihood let an EM component collapse to lam ~ 0 on mostly-ones windows
+    and win BIC with a garbage rate (bench C7).
+    """
     lam = max(float(lam), _EPS)
     k = np.asarray(k, dtype=float)
-    return k * np.log(lam) - lam - special.gammaln(k + 1.0) - np.log1p(-np.exp(-lam))
+    return (k - 1.0) * np.log(lam) - lam - special.gammaln(k + 1.0) - np.log(-np.expm1(-lam) / lam)
 
 
 def ztp_mean(lam: float) -> float:
@@ -192,7 +200,19 @@ def fit_ztp_mixture(
         lam = solve_ztp_lambda(float(counts.mean()))
         lambdas = np.array([lam])
         weights = np.array([1.0])
-        loglik = float(ztp_logpmf(counts, lam).sum()) if lam > 0 else -np.inf
+        if lam > 0:
+            loglik = float(ztp_logpmf(counts, lam).sum())
+        else:
+            # lam == 0 happens iff every count is 1 (counts are >= 1 and the
+            # mean is <= 1). The ZTP likelihood has a finite supremum there:
+            # P(X = 1 | X >= 1) -> 1 as lam -> 0+, so loglik -> 0. Evaluating
+            # the limit — rather than reporting -inf — keeps BIC honest: an
+            # all-ones window must NOT fall through to the NB branch, whose
+            # answer at this boundary (mu -> ~0 at huge alpha) is a finite but
+            # meaningless rate. The window is uninformative about the rate;
+            # estimate_window_rate maps lam == 0 to a NaN rate, and the fit
+            # layer drops NaNs.
+            loglik = 0.0
         return ZtpMixture(
             lambdas=lambdas,
             weights=weights,
@@ -272,6 +292,13 @@ class ZtnbFit:
 #: numerically indistinguishable from Poisson, and letting the optimiser chase
 #: alpha -> 0 only finds rounding noise.
 MIN_ALPHA = 1e-8
+
+#: How far the ZTNB fit's implied detection probability may undershoot the
+#: observed detected fraction before the fit is declared to be on the
+#: non-identifiable (mu -> 0, alpha -> inf) ridge. An order of magnitude is
+#: far beyond binomial luck at any plausible window size, so only degenerate
+#: fits trip the guard.
+NB_DETECTION_MISMATCH = 10.0
 
 
 def _log_rising(k: np.ndarray, r: float) -> np.ndarray:
@@ -392,7 +419,10 @@ def estimate_window_rate(
 
     ``model`` is ``"ztp"``, ``"nb"`` or ``"auto"``. ``"auto"`` fits both and
     keeps the lower BIC, which lets a shallow window fall back to ZTP without a
-    hand-set coverage threshold.
+    hand-set coverage threshold. A ZTNB win is vetoed when the fit landed on
+    the non-identifiable (mu -> 0, alpha -> inf) ridge, detected by its implied
+    detection probability contradicting the observed detected fraction — see
+    ``NB_DETECTION_MISMATCH``.
 
     The standard error comes from the delta method::
 
@@ -429,6 +459,25 @@ def estimate_window_rate(
         best_nb = fit_ztnb(pos)
 
     use_nb = best_nb is not None and (best_ztp is None or best_nb.bic < best_ztp.bic)
+
+    if use_nb:
+        assert best_nb is not None
+        # The truncated likelihood never sees the zeros, so at low counts the
+        # ZTNB has a degenerate ridge: mu -> 0 with alpha -> infinity explains
+        # "mostly ones" about as well as any mu, and the optimiser slides down
+        # it, reporting a garbage rate (bench C7 saw mu ~ 1e-3 against a true
+        # rate of 0.5, alpha pinned at the parameter bound). The observed
+        # detected fraction is evidence the likelihood ignored: a fit whose
+        # implied P(X >= 1) misses it by an order of magnitude is on that
+        # ridge. Fall back to the ZTP answer, whose rate is identified by the
+        # positive counts (and which is itself NaN at the all-ones boundary).
+        p_detect = 1.0 - np.exp(
+            -(1.0 / max(best_nb.alpha, MIN_ALPHA)) * np.log1p(best_nb.mu * max(best_nb.alpha, MIN_ALPHA))
+        )
+        if np.isfinite(detected) and p_detect * NB_DETECTION_MISMATCH < detected:
+            use_nb = False
+            if best_ztp is None:
+                return WindowRate(np.nan, np.nan, "ztnb", disp, n_anchors, n_pos, detected, 1, best_nb.bic)
 
     if use_nb:
         assert best_nb is not None

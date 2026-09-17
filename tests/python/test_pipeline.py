@@ -149,15 +149,13 @@ def test_a_rogue_enzyme_fails_the_consistency_gate(tmp_path):
     out = tmp_path / "out"
     cli.main(["profile", str(p), "--db", str(db), "--output", str(out)])
     row = pd.read_csv(out / "output.tsv", sep="\t", na_values=["NA"]).iloc[0]
-    # An enzyme that sees no gradient fails to fit rather than reporting a
-    # deviant number, so it never reaches the Q statistic. The fit-rate gate is
-    # what catches it — without that, the surviving enzymes agree with each
-    # other and a sample where a quarter of the panel saw nothing reads as clean.
-    assert row["n_enzymes"] < row["n_enzymes_attempted"]
-    assert row["enzyme_fit_rate"] < 0.8
+    # A flat enzyme now yields its (near-zero) signed estimate; this is the
+    # correct null behaviour. Discordance is caught by the cross-enzyme Q gate,
+    # not by treating "negative slope" itself as a fit failure.
+    assert row["n_enzymes"] == row["n_enzymes_attempted"]
+    assert row["enzyme_fit_rate"] == 1.0
     assert not bool(row["pass_qc"])
-    assert "produced a fit" in row["qc_reason"]
-    assert "AlfI" in row["excluded"]
+    assert "disagree" in row["qc_reason"]
     # The estimate is still reported, not deleted.
     assert np.isfinite(row["log2(PTR)"])
 
@@ -195,11 +193,17 @@ def test_qc_flags_low_coverage_without_dropping_the_row(tmp_path):
     assert np.isfinite(row["log2(PTR)"]), "a failing row keeps its estimate"
 
 
-def test_fragmented_reference_falls_back_to_sorted_regression(tmp_path):
+def test_fragmented_auto_refuses_and_explicit_sorted_is_available(tmp_path):
     db = build_db(tmp_path, n_contigs=300)
     counts = make_counts(log2_ptr=1.0, n_per_enzyme=1500, seed=20)
     p = write_sample(tmp_path, counts, "S1")
     out = tmp_path / "out"
     cli.main(["profile", str(p), "--db", str(db), "--output", str(out)])
     per_enzyme = pd.read_csv(out / "per_enzyme.tsv", sep="\t")
-    assert (per_enzyme["method"] == "sorted_ransac").all()
+    assert (per_enzyme["method"] == "none").all()
+    assert "choose --method sorted explicitly" in per_enzyme["note"].iloc[0]
+
+    explicit_out = tmp_path / "out-sorted"
+    cli.main(["profile", str(p), "--db", str(db), "--output", str(explicit_out), "--method", "sorted"])
+    explicit = pd.read_csv(explicit_out / "per_enzyme.tsv", sep="\t")
+    assert (explicit["method"] == "sorted_ransac").all()

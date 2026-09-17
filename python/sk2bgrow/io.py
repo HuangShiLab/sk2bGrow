@@ -105,13 +105,15 @@ class GenomeInfo:
 
     @property
     def is_contiguous(self) -> bool:
-        """Whether real-coordinate fitting is defensible for this reference.
+        """Whether the manifest supplies an unambiguous whole-genome coordinate.
 
-        Pilea's own assembly-quality analysis puts the boundary near 100 contigs
-        (report §1.2); beyond it, contig order is guesswork and the V-shape
-        x-axis is not trustworthy.
+        Our fragmentation experiment finds no safe multi-contig threshold: even
+        two unordered contigs can change the slope. Coordinate fitting therefore
+        requires one closed contig (or an explicitly scaffolded reference whose
+        manifest is one contig). Multi-contig references remain available through
+        an explicit method choice, but ``auto`` no longer silently falls back.
         """
-        return self.n_contigs <= 100
+        return self.n_contigs == 1
 
 
 @dataclass(frozen=True)

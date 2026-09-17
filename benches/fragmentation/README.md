@@ -214,3 +214,6 @@ WORK=/scratch/frag python3 analyze.py
 | `rescaffold.py` | score a scaffold result against that truth, and re-emit the draft as a coordinate-bearing FASTA |
 | `run.sh` | the four reference conditions plus the Pilea control |
 | `analyze.py` | accuracy per coverage per condition |
+| `qc_within_contig.py` | R3: the WCG gate prototype (within-contig slope amplitude + boundary-jump excess) |
+| `r3_refs.py` / `r3_simulate.py` / `r3_run.sh` / `r3_score.py` | R3 grid: references (incl. correctly-ordered controls), simulated V-gradient reads, runner, scorer |
+| `R3_QC.md` | R3 report: definition, evaluation, sensitivity limit, wiring proposal |

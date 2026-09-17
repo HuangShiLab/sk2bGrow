@@ -33,6 +33,13 @@ standard errors from :mod:`sk2bgrow.ztp` describe counting noise only; anchor
 efficiency noise, residual GC structure and profile misspecification all add
 scatter on top. Taking the residuals at face value keeps the error bars honest,
 and those error bars are what :mod:`sk2bgrow.fusion` weights by.
+
+The window SE is a decreasing function of the window's own fitted rate, so raw
+inverse-variance weights correlate with the window's noise draw and pull the
+fit toward upward fluctuations at low coverage. :func:`fit_v_shape` therefore
+reweights in a second stage with SEs evaluated at the first stage's fitted
+profile (``shrink_se``), which keeps the rate-to-precision trend but breaks
+the weight-error correlation.
 """
 
 from __future__ import annotations
@@ -207,6 +214,38 @@ def _fit_at(positions, y, w, ori, genome_len, kink):
     return beta, cov, sse, red, log2_ptr, max(var, 0.0)
 
 
+def _decoupled_se(y: np.ndarray, s: np.ndarray, y_hat: np.ndarray) -> np.ndarray | None:
+    """Re-express window SEs as a smooth function of the *fitted* log2 rate.
+
+    The delta-method SE from :mod:`sk2bgrow.ztp` is a decreasing function of the
+    window's own fitted rate, so naive inverse-variance weights correlate with
+    the window's noise: a window whose counts fluctuated upward gets a bigger
+    rate *and* a smaller SE, and the fit is pulled toward upward fluctuations
+    (bench C7 measured corr(weight, error) = +0.42 at 0.5x, worth about -0.09
+    of genome-level slope there). Regressing ``log(se)`` on the observed log2
+    rate and re-evaluating at the stage-1 fitted values keeps the genuine
+    rate-to-precision trend while breaking the weight-error correlation, since
+    the fitted value is nearly independent of the window's own draw.
+
+    Returns None when the trend cannot be estimated; the caller then keeps the
+    stage-1 weights.
+    """
+    ok = np.isfinite(y) & np.isfinite(y_hat) & np.isfinite(s) & (s > 0)
+    if ok.sum() < 8:
+        return None
+    slope, intercept = np.polyfit(y[ok], np.log(s[ok]), 1)
+    if not (np.isfinite(slope) and np.isfinite(intercept)):
+        return None
+    log_s_ok = np.log(s[ok])
+    s2 = np.exp(np.clip(intercept + slope * y_hat, log_s_ok.min(), log_s_ok.max()))
+    bad = ~np.isfinite(s2) | (s2 <= 0)
+    if bad.all():
+        return None
+    # A window with an unusable error bar keeps a finite but small weight.
+    s2[bad] = np.median(s2[~bad])
+    return s2
+
+
 def fit_v_shape(
     positions: np.ndarray,
     log2_rates: np.ndarray,
@@ -216,12 +255,21 @@ def fit_v_shape(
     n_grid: int = 180,
     allow_segmented: bool = True,
     refine: bool = True,
+    shrink_se: bool = True,
 ) -> PtrFit:
     """Fit the ori-ter profile on real coordinates.
 
     ``positions`` are global anchor/window coordinates and ``log2_rates`` the
     matching log2 window rates. ``se`` supplies inverse-variance weights; without
     it every window is weighted equally.
+
+    With ``shrink_se`` (default) and an ``se`` given, the fit runs twice: the
+    first pass uses the SEs as given, the second re-expresses them as a smooth
+    function of the first pass's *fitted* values (:func:`_decoupled_se`). This
+    decouples each window's weight from its own noise — the delta-method SE
+    shrinks when the rate fluctuates up, which otherwise biases the fit toward
+    upward fluctuations at low coverage. If the SE-rate trend cannot be
+    estimated the stage-1 fit is returned unchanged.
 
     When ``ori`` is None it is grid-searched then refined. Candidate origins whose
     fit has an *uphill* slope are rejected outright: that solution is the same
@@ -232,14 +280,15 @@ def fit_v_shape(
     y = np.asarray(log2_rates, dtype=float)
     good = np.isfinite(x) & np.isfinite(y)
     x, y = x[good], y[good]
-    if se is not None:
-        s = np.asarray(se, dtype=float)[good]
+    s = np.asarray(se, dtype=float)[good] if se is not None else None
+
+    def _weights(sv: np.ndarray) -> np.ndarray:
         # A window with an unusable error bar keeps a finite but small weight
         # instead of dominating or vanishing.
-        w = np.where(np.isfinite(s) & (s > 0), 1.0 / np.maximum(s, _EPS) ** 2, np.nan)
-        w = np.where(np.isfinite(w), w, np.nanmedian(w) if np.isfinite(np.nanmedian(w)) else 1.0)
-    else:
-        w = np.ones_like(y)
+        w = np.where(np.isfinite(sv) & (sv > 0), 1.0 / np.maximum(sv, _EPS) ** 2, np.nan)
+        return np.where(np.isfinite(w), w, np.nanmedian(w) if np.isfinite(np.nanmedian(w)) else 1.0)
+
+    w = _weights(s) if s is not None else np.ones_like(y)
 
     n = y.size
     if n < 5 or genome_len <= 0:
@@ -254,7 +303,8 @@ def fit_v_shape(
     # log2(PTR) — which then shows up as enzymes disagreeing. The kink is a
     # multi-fork phenomenon, so it is only offered where multi-fork is
     # physically possible (log2 PTR above ~1) and there are enough windows to
-    # resolve it.
+    # resolve it. The gate probes with the stage-1 weights; re-gating per stage
+    # would let the two passes choose different model classes, which is worse.
     kink_grid: list[float | None] = [None]
     if allow_segmented and n >= MIN_WINDOWS_FOR_SEGMENTED:
         probe_ori = float(ori) if ori is not None else float(candidates[0])
@@ -271,37 +321,62 @@ def fit_v_shape(
         if np.isfinite(plain_ptr) and plain_ptr >= MULTIFORK_LOG2_PTR:
             kink_grid += [half * f for f in (0.25, 0.4, 0.55, 0.7)]
 
-    best = None
-    profile: list[tuple[float, float]] = []
-    for o in candidates:
-        best_here = np.inf
-        for k in kink_grid:
-            beta, cov, sse, red, log2_ptr, var = _fit_at(x, y, w, o, genome_len, k)
-            slopes = beta[1:]
-            if not np.all(np.isfinite(slopes)) or np.any(slopes < 0):
-                continue  # uphill: this is the terminus, not the origin
-            n_par = design_params(k)
-            bic = n * np.log(max(sse / n, _EPS)) + n_par * np.log(n)
-            best_here = min(best_here, sse)
-            if best is None or bic < best[0]:
-                best = (bic, o, k, beta, cov, sse, red, log2_ptr, var)
-        profile.append((o, best_here))
+    # A supplied ori means the ori/ter ambiguity has already been resolved.  Do
+    # not re-impose a sign constraint while estimating the slope: a stationary
+    # control can legitimately yield a small negative gradient.  Retain the
+    # constraint only when searching for an origin, where it separates the
+    # downhill (origin-proximal) from the uphill (terminus-proximal) solution.
+    constrain_slopes = ori is None
+    n_stages = 2 if (shrink_se and s is not None) else 1
+    for stage in range(n_stages):
+        best = None
+        profile: list[tuple[float, float]] = []
+        for o in candidates:
+            best_here = np.inf
+            for k in kink_grid:
+                beta, cov, sse, red, log2_ptr, var = _fit_at(x, y, w, o, genome_len, k)
+                slopes = beta[1:]
+                if not np.all(np.isfinite(slopes)):
+                    continue
+                if constrain_slopes and np.any(slopes < 0):
+                    continue  # uphill: this is the terminus, not the origin
+                n_par = design_params(k)
+                weighted_sse = red * max(n - n_par, 1)
+                bic = n * np.log(max(weighted_sse / n, _EPS)) + n_par * np.log(n)
+                best_here = min(best_here, weighted_sse)
+                if best is None or bic < best[0]:
+                    best = (bic, o, k, beta, cov, sse, red, log2_ptr, var)
+            profile.append((o, best_here))
 
-    if best is None:
-        return PtrFit(np.nan, np.nan, "v_shape", n, ok=False, note="no downhill origin: profile has no replication gradient")
+        if best is None:
+            return PtrFit(np.nan, np.nan, "v_shape", n, ok=False,
+                          note="no downhill origin: profile has no replication gradient")
 
-    _, o, k, beta, cov, sse, red, log2_ptr, var = best
+        _, o, k, beta, cov, sse, red, log2_ptr, var = best
 
-    if refine and ori is None:
-        # Local refinement around the winning grid point, at 1/20 of the spacing.
-        step = genome_len / n_grid
-        fine = np.linspace(o - step, o + step, 41) % genome_len
-        for o2 in fine:
-            b2, c2, s2, r2_, p2, v2 = _fit_at(x, y, w, o2, genome_len, k)
-            if np.any(b2[1:] < 0):
-                continue
-            if s2 < sse:
-                o, beta, cov, sse, red, log2_ptr, var = o2, b2, c2, s2, r2_, p2, v2
+        if refine and ori is None:
+            # Local refinement around the winning grid point, at 1/20 spacing.
+            step = genome_len / n_grid
+            fine = np.linspace(o - step, o + step, 41) % genome_len
+            for o2 in fine:
+                b2, c2, s2_, r2_, p2, v2 = _fit_at(x, y, w, o2, genome_len, k)
+                if constrain_slopes and np.any(b2[1:] < 0):
+                    continue
+                if s2_ < sse:
+                    o, beta, cov, sse, red, log2_ptr, var = o2, b2, c2, s2_, r2_, p2, v2
+
+        if stage + 1 < n_stages:
+            # Stage 2: reweight with SEs evaluated at the fitted profile, so a
+            # window's weight no longer tracks its own noise draw.
+            d = circular_distance(x, o, genome_len)
+            if k is None:
+                y_hat = beta[0] - beta[1] * d
+            else:
+                y_hat = beta[0] - beta[1] * np.minimum(d, k) - beta[2] * np.maximum(d - k, 0.0)
+            s2 = _decoupled_se(y, s, y_hat)
+            if s2 is None:
+                break
+            w = _weights(s2)
 
     ss_tot = float(np.sum((y - y.mean()) ** 2))
     r2 = 1.0 - sse / ss_tot if ss_tot > 0 else np.nan
@@ -318,8 +393,8 @@ def fit_v_shape(
         segmented=k is not None,
         slopes=tuple(float(b) for b in beta[1:]),
         kink=float(k) if k is not None else np.nan,
-        ok=log2_ptr >= 0,
-        note="" if log2_ptr >= 0 else "non-positive PTR",
+        ok=bool(np.isfinite(log2_ptr)),
+        note="" if np.isfinite(log2_ptr) else "fit did not return a finite log2(PTR)",
     )
 
 
@@ -404,10 +479,10 @@ def fit_windows(
     """Fit every (sample, genome, enzyme) group and return one row per fit.
 
     ``method`` is ``"v_shape"``, ``"sorted"`` or ``"auto"``. ``"auto"`` uses the
-    coordinate fit when the reference is contiguous enough to trust a coordinate
-    (see :attr:`sk2bgrow.io.GenomeInfo.is_contiguous`) and falls back to sorted
-    regression otherwise — a fragmented MAG has no reliable x-axis until
-    ``sk2bgrow scaffold`` has given it one.
+    coordinate fit only for a closed/scaffolded one-contig manifest. On a
+    multi-contig manifest it returns no estimate rather than silently falling
+    back to rank regression, whose failure mode is different and can be
+    confidently wrong; choose ``--method sorted`` explicitly if that is intended.
 
     ``shared_ori`` estimates one origin per (sample, genome) across all enzymes
     and fits each enzyme's slope at that fixed coordinate — see
@@ -457,7 +532,11 @@ def fit_windows(
         else:
             fit = fit_sorted_ransac(y)
             if method == "auto":
-                fit.note = (fit.note + "; " if fit.note else "") + f"fragmented reference ({info.n_contigs} contigs)"
+                fit = PtrFit(
+                    np.nan, np.nan, "none", n, ok=False,
+                    note=(f"fragmented reference ({info.n_contigs} contigs); "
+                          "scaffold and use --method v_shape, or choose --method sorted explicitly"),
+                )
 
         rows.append(
             {

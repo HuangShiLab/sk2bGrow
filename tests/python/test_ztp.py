@@ -79,6 +79,76 @@ def test_empty_window_is_reported_not_crashed():
     assert est.detected_fraction == 0.0
 
 
+def test_all_ones_window_is_uninformative_not_a_garbage_rate():
+    """C7 regression: an all-ones window carries no rate information.
+
+    The ZTP likelihood has a finite supremum at the boundary (loglik -> 0 as
+    lam -> 0+), so BIC must keep the ZTP branch and the window must come back
+    NaN. Before the fix the ZTP loglik was hard-coded to -inf at lam == 0, BIC
+    handed the window to ZTNB, and ZTNB returned a finite but meaningless
+    rate of ~1e-6 (log2 ~ -20) that the downstream Tukey fence had to catch.
+    """
+    counts = np.ones(31)
+    m = ztp.fit_ztp_mixture(counts)
+    assert m.lambdas[0] == 0.0
+    assert m.loglik == pytest.approx(0.0, abs=1e-12)
+    assert np.isfinite(m.bic)
+    est = ztp.estimate_window_rate(counts, model="auto")
+    assert est.model == "ztp", "BIC must not hand an all-ones window to ZTNB"
+    assert np.isnan(est.rate)
+
+
+def test_near_boundary_window_with_a_single_two_still_fits():
+    # 29 ones and one 2: the truncated mean is above 1, so the ordinary ZTP
+    # path applies and must yield a small but finite rate.
+    counts = np.ones(30)
+    counts[0] = 2
+    est = ztp.estimate_window_rate(counts, model="auto")
+    assert est.model == "ztp"
+    assert 0 < est.rate < 0.2
+
+
+def test_ztp_logpmf_is_accurate_at_the_zero_boundary():
+    """logpmf(1) must tend to 0 as lam -> 0+, never positive (a probability
+    above one). The naive log1p(-exp(-lam)) form lost the mantissa here and
+    handed EM phantom likelihood on mostly-ones windows (C7)."""
+    for lam in [1e-12, 1e-9, 1e-6]:
+        assert ztp.ztp_logpmf(np.array([1.0]), lam)[0] == pytest.approx(0.0, abs=1e-6)
+        assert ztp.ztp_logpmf(np.array([2.0]), lam)[0] < -5.0
+    # Away from the boundary the expm1 form matches the plain one.
+    from scipy import special
+
+    k = np.arange(1, 8, dtype=float)
+    for lam in [0.05, 0.5, 3.0]:
+        plain = k * np.log(lam) - lam - special.gammaln(k + 1.0) - np.log1p(-np.exp(-lam))
+        assert ztp.ztp_logpmf(k, lam) == pytest.approx(plain, rel=1e-12)
+
+
+def test_mixture_does_not_collapse_a_component_to_zero_on_mostly_ones():
+    """34 ones and one 2: a phantom logpmf at lam ~ 0 used to reward a
+    two-component fit whose dominant component sat at lam ~ 1e-12, returning
+    a garbage rate. With accurate boundary numerics the single component wins.
+    """
+    counts = np.concatenate([np.ones(34), [2.0]])
+    est = ztp.estimate_window_rate(counts, model="auto")
+    assert est.n_components == 1
+    assert est.rate == pytest.approx(ztp.solve_ztp_lambda(36 / 35), rel=1e-6)
+
+
+def test_ztnb_ridge_fit_falls_back_to_ztp():
+    """C7 regression: mostly-one counts with a heavy tail send the ZTNB MLE
+    onto the non-identifiable (mu -> 0, alpha -> inf) ridge, whose implied
+    detection probability contradicts the observed detected fraction. The
+    window must not report the ridge's garbage mu; it falls back to ZTP.
+    """
+    # 12 zeros, then 1x8, 2x2, 3x2, 6: ZTNB's MLE is mu ~ 0.002 at alpha ~ 1e3,
+    # implying P(X >= 1) ~ 0.001 while 13 of 25 anchors were observed.
+    counts = np.array([0] * 12 + [1] * 8 + [2] * 2 + [3] * 2 + [6], dtype=float)
+    est = ztp.estimate_window_rate(counts, model="auto")
+    assert est.model == "ztp"
+    assert est.rate == pytest.approx(ztp.solve_ztp_lambda(24 / 13), rel=1e-6)
+
+
 def test_mixture_separates_two_components():
     rng = np.random.default_rng(5)
     x = np.concatenate([rng.poisson(2.0, 3_000), rng.poisson(20.0, 3_000)])
