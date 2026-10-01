@@ -39,6 +39,11 @@ The full argument, with the simulations behind it, is in
 Claim-level wording rules and current limitations are in
 [`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md) and
 [`docs/PAPER_CLAIMS.md`](docs/PAPER_CLAIMS.md).
+The full draft is in [`docs/paper/manuscript.md`](docs/paper/manuscript.md);
+figures, supplement and pre-submission review are under
+[`docs/paper/`](docs/paper/).
+The current mixed-strain validation is in
+[`benches/mixedstrain_20261001/`](benches/mixedstrain_20261001/).
 
 ## Install
 

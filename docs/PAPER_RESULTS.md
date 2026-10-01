@@ -11,6 +11,8 @@ The archived result set is
 Machine-readable copies are in `benches/refresh_20260930/`.
 Review-driven uncertainty diagnostics and accepted scope changes are in
 [`PEER_REVIEW_RESPONSE.md`](PEER_REVIEW_RESPONSE.md).
+The formal draft, figures, supplement and pre-submission audit are under
+[`paper/`](paper/).
 
 ## Zheng 2020 E. coli benchmark
 
@@ -83,7 +85,7 @@ variable than the 2–10× points.
    A-versus-E correlation advantage is largest at 0.5× (0.911 vs 0.852) and
    1× (0.960 vs 0.923), and is small at 2–10×. The main low-depth difference
    is recall/reporting: Pilea defaults return no estimate below 10×, whereas
-   sk2bGrow returns a finite estimate—but fails its own default QC below 2×.
+   sk2bGrow returns a finite estimate, but fails its own default QC below 2×.
 4. **Correlation must not be quoted without slope and QC.** The A-arm slope is
    compressed at 0.5× (0.565) and 1× (0.850).
 
@@ -156,6 +158,21 @@ are 0.774 (0.720–0.823) at 0.5×, 0.958 (0.886–1.033) at 1×,
 are 0.701 (0.658–0.741), 0.853 (0.807–0.899), 0.857 (0.807–0.907) and
 0.982 (0.951–1.014). Thus the NB defect is clearer than random seed noise,
 whereas the Poisson point is close to one by 1×.
+
+## Mixed-strain validation
+
+The current implementation was evaluated on 18 simulated communities from 16
+bacterial references: 4, 8 or 16 strains; 1, 2 or 4× coverage per selected
+genome; two replicates. Explicit coordinate fitting was used because several
+reference assemblies contained multiple contigs or plasmid entries. Recall was
+1.00 in all 18 cells, with no spurious genomes. Aggregate RMSE was 0.140 log2
+units and mean bias was 0.015. RMSE decreased with coverage; for 16 strains it
+was 0.197, 0.100 and 0.056 at 1, 2 and 4×.
+
+This is controlled attribution evidence. It does not replace real community
+validation.
+Machine-readable cell and summary tables are in
+`benches/mixedstrain_20261001/results/`.
 
 ## R3 / fragmented-coordinate QC
 

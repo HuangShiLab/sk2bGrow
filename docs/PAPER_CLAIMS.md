@@ -29,8 +29,8 @@ V-fit.
 
 Report both views:
 
-1. all finite estimates — estimator performance;
-2. default-QC-passed estimates — deployed performance.
+1. all finite estimates: estimator performance;
+2. default-QC-passed estimates: deployed performance.
 
 Never compare the all-finite sk2bGrow column with Pilea defaults as though the
 reporting rules were identical.

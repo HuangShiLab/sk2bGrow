@@ -1,0 +1,20 @@
+[sk2bgrow.py] 506,785 anchor rows, 1 sample(s), 16 genome(s)
+[sk2bgrow.py] GC curves for 16 enzyme(s); largest amplitude 0.28 log2 (BplI)
+[sk2bgrow.py] 230/256 per-enzyme fits usable
+[sk2bgrow.py] 0/16 genome-sample estimates passed QC -> res/A_s16_c1_r2/output.tsv
+[sk2bgrow.py]   s16_c1_r2/Bacillus_subtilis_168: fraction 0.57 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Campylobacter_jejuni: fraction 0.54 < 0.75; only 11/16 enzymes produced a fit
+[sk2bgrow.py]   s16_c1_r2/Enterococcus_faecalis: fraction 0.55 < 0.75; enzymes disagree (p=0.013)
+[sk2bgrow.py]   s16_c1_r2/Escherichia_coli_K12: fraction 0.55 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Escherichia_coli_O157H7: fraction 0.56 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Haemophilus_influenzae: fraction 0.55 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Helicobacter_pylori: fraction 0.56 < 0.75; only 12/16 enzymes produced a fit
+[sk2bgrow.py]   s16_c1_r2/Klebsiella_pneumoniae: fraction 0.56 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Listeria_monocytogenes: fraction 0.54 < 0.75; enzymes disagree (p=0.038)
+[sk2bgrow.py]   s16_c1_r2/Neisseria_meningitidis: fraction 0.54 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Pseudomonas_aeruginosa: fraction 0.55 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Salmonella_enterica_LT2: fraction 0.55 < 0.75
+[sk2bgrow.py]   s16_c1_r2/Shigella_dysenteriae: fraction 0.54 < 0.75; containment 0.47 < 0.5; only 11/16 enzymes produced a fit
+[sk2bgrow.py]   s16_c1_r2/Staphylococcus_aureus: fraction 0.56 < 0.75; enzymes disagree (p=0.0046)
+[sk2bgrow.py]   s16_c1_r2/Streptococcus_pneumoniae: fraction 0.56 < 0.75; enzymes disagree (p=3.4e-05)
+[sk2bgrow.py]   s16_c1_r2/Vibrio_cholerae: fraction 0.57 < 0.75; containment 0.41 < 0.5

@@ -1,0 +1,16 @@
+[sk2bgrow.py] 506,785 anchor rows, 1 sample(s), 16 genome(s)
+[sk2bgrow.py] GC curves for 16 enzyme(s); largest amplitude 4.22 log2 (FalI)
+[sk2bgrow.py] 109/256 per-enzyme fits usable
+[sk2bgrow.py] 4/16 genome-sample estimates passed QC -> res/A_s8_c4_r2/output.tsv
+[sk2bgrow.py]   s8_c4_r2/Bacillus_subtilis_168: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Campylobacter_jejuni: only 10/16 enzymes produced a fit
+[sk2bgrow.py]   s8_c4_r2/Enterococcus_faecalis: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Escherichia_coli_O157H7: enzymes disagree (p=1.8e-08)
+[sk2bgrow.py]   s8_c4_r2/Haemophilus_influenzae: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Helicobacter_pylori: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Klebsiella_pneumoniae: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Pseudomonas_aeruginosa: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Salmonella_enterica_LT2: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Shigella_dysenteriae: only 11/16 enzymes produced a fit
+[sk2bgrow.py]   s8_c4_r2/Streptococcus_pneumoniae: containment 0.00 < 0.5; only 0/16 enzymes produced a fit; no PTR estimate
+[sk2bgrow.py]   s8_c4_r2/Vibrio_cholerae: enzymes disagree (p=0.0049)

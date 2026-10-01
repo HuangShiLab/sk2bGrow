@@ -1,0 +1,10 @@
+[sk2bgrow.py] 506,785 anchor rows, 1 sample(s), 16 genome(s)
+[sk2bgrow.py] GC curves for 16 enzyme(s); largest amplitude 0.00 log2 (AlfI)
+[sk2bgrow.py] 231/256 per-enzyme fits usable
+[sk2bgrow.py] 10/16 genome-sample estimates passed QC -> res/A_s16_c4_r1/output.tsv
+[sk2bgrow.py]   s16_c4_r1/Campylobacter_jejuni: only 10/16 enzymes produced a fit
+[sk2bgrow.py]   s16_c4_r1/Escherichia_coli_O157H7: enzymes disagree (p=1.2e-10)
+[sk2bgrow.py]   s16_c4_r1/Helicobacter_pylori: only 10/16 enzymes produced a fit
+[sk2bgrow.py]   s16_c4_r1/Shigella_dysenteriae: enzymes disagree (p=9.7e-06); only 12/16 enzymes produced a fit
+[sk2bgrow.py]   s16_c4_r1/Streptococcus_pneumoniae: enzymes disagree (p=7e-06)
+[sk2bgrow.py]   s16_c4_r1/Vibrio_cholerae: enzymes disagree (p=0.00027)

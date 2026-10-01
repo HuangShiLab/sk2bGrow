@@ -44,3 +44,5 @@ these files; use this refresh for current-commit claims and cite the hashes.
 Manuscript-facing summaries and wording constraints are in
 [`../../docs/PAPER_RESULTS.md`](../../docs/PAPER_RESULTS.md) and
 [`../../docs/PAPER_CLAIMS.md`](../../docs/PAPER_CLAIMS.md).
+The full benchmark-paper draft is in
+[`../../docs/paper/manuscript.md`](../../docs/paper/manuscript.md).
