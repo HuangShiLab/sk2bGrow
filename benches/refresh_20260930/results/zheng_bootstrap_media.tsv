@@ -1,0 +1,101 @@
+arm	coverage	metric	estimate	ci_low	ci_high	n_boot_finite	method
+A	0.5	pearson_r	0.91061434	0.82049013	0.96555932	10000	media bootstrap
+A	0.5	spearman_rho	0.83235294	0.53209092	0.95529061	10000	media bootstrap
+A	0.5	rmse_vs_pred	0.39776221	0.29903772	0.48171306	10000	media bootstrap
+A	0.5	slope_vs_growth	0.56480112	0.43836752	0.6864625	10000	media bootstrap
+A	1	pearson_r	0.95981359	0.93239432	0.97985952	10000	media bootstrap
+A	1	spearman_rho	0.93235294	0.7147146	0.99702823	10000	media bootstrap
+A	1	rmse_vs_pred	0.27989517	0.21940044	0.33549651	10000	media bootstrap
+A	1	slope_vs_growth	0.84971786	0.67894814	0.98640145	10000	media bootstrap
+A	2	pearson_r	0.96555688	0.92573644	0.98740837	10000	media bootstrap
+A	2	spearman_rho	0.93235294	0.70446657	0.99402985	10000	media bootstrap
+A	2	rmse_vs_pred	0.16136309	0.10973228	0.20588888	10000	media bootstrap
+A	2	slope_vs_growth	0.86229205	0.69646204	0.98295532	10000	media bootstrap
+A	5	pearson_r	0.97420946	0.93877798	0.99134786	10000	media bootstrap
+A	5	spearman_rho	0.96470588	0.83035714	0.99703704	10000	media bootstrap
+A	5	rmse_vs_pred	0.05160132	0.030667048	0.068089744	10000	media bootstrap
+A	5	slope_vs_growth	0.91354477	0.80754292	1.0054696	10000	media bootstrap
+A	10	pearson_r	0.96735421	0.92382351	0.98973838	10000	media bootstrap
+A	10	spearman_rho	0.96176471	0.82763486	0.99414659	10000	media bootstrap
+A	10	rmse_vs_pred	0.054503844	0.031880569	0.072941413	10000	media bootstrap
+A	10	slope_vs_growth	0.9395945	0.81948849	1.0595552	10000	media bootstrap
+E	0.5	pearson_r	0.85152271	0.71294287	0.93893206	10000	media bootstrap
+E	0.5	spearman_rho	0.78823529	0.41194037	0.94086173	10000	media bootstrap
+E	0.5	rmse_vs_pred	0.38975732	0.26607878	0.50296636	10000	media bootstrap
+E	0.5	slope_vs_growth	0.70108177	0.43794265	0.96096149	10000	media bootstrap
+E	1	pearson_r	0.92288731	0.81366348	0.97708181	10000	media bootstrap
+E	1	spearman_rho	0.95	0.76506024	0.99703264	10000	media bootstrap
+E	1	rmse_vs_pred	0.31204885	0.21627435	0.39964426	10000	media bootstrap
+E	1	slope_vs_growth	0.96418365	0.73411223	1.1550933	10000	media bootstrap
+E	2	pearson_r	0.96210401	0.91110078	0.98917053	10000	media bootstrap
+E	2	spearman_rho	0.91470588	0.66817462	0.99699259	10000	media bootstrap
+E	2	rmse_vs_pred	0.13137623	0.10030655	0.15833189	10000	media bootstrap
+E	2	slope_vs_growth	0.89608123	0.78316766	0.99299981	10000	media bootstrap
+E	5	pearson_r	0.96843287	0.91992531	0.99260805	10000	media bootstrap
+E	5	spearman_rho	0.96470588	0.83111111	0.99703264	10000	media bootstrap
+E	5	rmse_vs_pred	0.05134605	0.034003656	0.065487729	10000	media bootstrap
+E	5	slope_vs_growth	0.92357166	0.81150012	1.0204188	10000	media bootstrap
+E	10	pearson_r	0.96011751	0.92743965	0.98612803	10000	media bootstrap
+E	10	spearman_rho	0.96764706	0.85029379	1	10000	media bootstrap
+E	10	rmse_vs_pred	0.069010859	0.048282105	0.088510804	10000	media bootstrap
+E	10	slope_vs_growth	0.89186605	0.76078435	1.0569419	10000	media bootstrap
+B	0.5	pearson_r	0.13026119	-0.3214432	0.55767995	10000	media bootstrap
+B	0.5	spearman_rho	0.19411765	-0.34627011	0.66416847	10000	media bootstrap
+B	0.5	rmse_vs_pred	1.1854842	1.0006376	1.345174	10000	media bootstrap
+B	0.5	slope_vs_growth	0.034877053	-0.1071664	0.12871758	10000	media bootstrap
+B	1	pearson_r	0.57070793	-0.057549772	0.85559348	10000	media bootstrap
+B	1	spearman_rho	0.5	-0.051071071	0.8646718	10000	media bootstrap
+B	1	rmse_vs_pred	0.99211183	0.82605577	1.1374149	10000	media bootstrap
+B	1	slope_vs_growth	0.12381135	-0.0099088759	0.20918067	10000	media bootstrap
+B	2	pearson_r	0.77446184	0.44660094	0.94724197	10000	media bootstrap
+B	2	spearman_rho	0.8	0.46106605	0.94586466	10000	media bootstrap
+B	2	rmse_vs_pred	0.70431086	0.57645009	0.80929969	10000	media bootstrap
+B	2	slope_vs_growth	0.28464975	0.14823952	0.38147756	10000	media bootstrap
+B	5	pearson_r	0.88874789	0.69116573	0.98228454	10000	media bootstrap
+B	5	spearman_rho	0.90294118	0.63825964	0.9910045	10000	media bootstrap
+B	5	rmse_vs_pred	0.35613509	0.27530948	0.42836321	10000	media bootstrap
+B	5	slope_vs_growth	0.58898104	0.42078219	0.70721163	10000	media bootstrap
+B	10	pearson_r	0.90731239	0.75307539	0.97945953	10000	media bootstrap
+B	10	spearman_rho	0.90294118	0.64932745	0.97919762	10000	media bootstrap
+B	10	rmse_vs_pred	0.25219793	0.18814634	0.31531113	10000	media bootstrap
+B	10	slope_vs_growth	0.75849724	0.56372627	0.91276087	10000	media bootstrap
+C_relaxed	0.5	pearson_r				0	media bootstrap
+C_relaxed	0.5	spearman_rho				0	media bootstrap
+C_relaxed	0.5	rmse_vs_pred				0	media bootstrap
+C_relaxed	0.5	slope_vs_growth				0	media bootstrap
+C_relaxed	1	pearson_r	0.87480714	0.6714377	0.97173063	10000	media bootstrap
+C_relaxed	1	spearman_rho	0.88823529	0.63635007	0.98148643	10000	media bootstrap
+C_relaxed	1	rmse_vs_pred	0.52723812	0.43692047	0.60690786	10000	media bootstrap
+C_relaxed	1	slope_vs_growth	0.505178	0.32228017	0.62642359	10000	media bootstrap
+C_relaxed	2	pearson_r	0.87314625	0.6714439	0.96925107	10000	media bootstrap
+C_relaxed	2	spearman_rho	0.88529412	0.61961367	0.97301349	10000	media bootstrap
+C_relaxed	2	rmse_vs_pred	0.27521015	0.21831826	0.32764087	10000	media bootstrap
+C_relaxed	2	slope_vs_growth	0.67132196	0.4194047	0.8349216	10000	media bootstrap
+C_relaxed	5	pearson_r	0.98031446	0.95885527	0.99286326	10000	media bootstrap
+C_relaxed	5	spearman_rho	0.97941176	0.88639336	1	10000	media bootstrap
+C_relaxed	5	rmse_vs_pred	0.10058897	0.068298835	0.12801407	10000	media bootstrap
+C_relaxed	5	slope_vs_growth	0.80672585	0.71010294	0.87835011	10000	media bootstrap
+C_relaxed	10	pearson_r	0.97333788	0.93872964	0.99292965	10000	media bootstrap
+C_relaxed	10	spearman_rho	0.96470588	0.84614815	0.99701937	10000	media bootstrap
+C_relaxed	10	rmse_vs_pred	0.10577397	0.079011448	0.12885235	10000	media bootstrap
+C_relaxed	10	slope_vs_growth	0.81982379	0.70808031	0.89837403	10000	media bootstrap
+C_default	0.5	pearson_r				0	media bootstrap
+C_default	0.5	spearman_rho				0	media bootstrap
+C_default	0.5	rmse_vs_pred				0	media bootstrap
+C_default	0.5	slope_vs_growth				0	media bootstrap
+C_default	1	pearson_r				0	media bootstrap
+C_default	1	spearman_rho				0	media bootstrap
+C_default	1	rmse_vs_pred				0	media bootstrap
+C_default	1	slope_vs_growth				0	media bootstrap
+C_default	2	pearson_r				0	media bootstrap
+C_default	2	spearman_rho				0	media bootstrap
+C_default	2	rmse_vs_pred				0	media bootstrap
+C_default	2	slope_vs_growth				0	media bootstrap
+C_default	5	pearson_r				0	media bootstrap
+C_default	5	spearman_rho				0	media bootstrap
+C_default	5	rmse_vs_pred				0	media bootstrap
+C_default	5	slope_vs_growth				0	media bootstrap
+C_default	10	pearson_r	0.97333788	0.93806076	0.99281748	10000	media bootstrap
+C_default	10	spearman_rho	0.96470588	0.84107349	0.99701937	10000	media bootstrap
+C_default	10	rmse_vs_pred	0.10577397	0.079610708	0.12867745	10000	media bootstrap
+C_default	10	slope_vs_growth	0.81982379	0.70866623	0.89618018	10000	media bootstrap

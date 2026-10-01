@@ -29,7 +29,8 @@ use sk2bgrow_core::tgt::{pack_bases, ContigKind, ContigMeta};
 struct Rng(u64);
 impl Rng {
     fn next(&mut self) -> u64 {
-        self.0 = self.0
+        self.0 = self
+            .0
             .wrapping_mul(6364136223846793005)
             .wrapping_add(1442695040888963407);
         self.0 >> 33
@@ -45,7 +46,10 @@ const ANCHORS_PER_FAKE: usize = 40_000;
 const N_READS: usize = 1_000_000;
 
 fn env_usize(key: &str, default: usize) -> usize {
-    std::env::var(key).ok().and_then(|v| v.parse().ok()).unwrap_or(default)
+    std::env::var(key)
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(default)
 }
 
 fn main() {
@@ -64,7 +68,9 @@ fn main() {
         let seq: Vec<u8> = (0..3_000_000).map(|_| rng.base()).collect();
         let p = dir.join(format!("present{gid}.fna"));
         std::fs::write(&p, format!(">c0\n{}\n", String::from_utf8_lossy(&seq))).unwrap();
-        parts.push(build_genome(&p, gid as u32, &enzymes, &DigestConfig::default(), GC_FLANK).unwrap());
+        parts.push(
+            build_genome(&p, gid as u32, &enzymes, &DigestConfig::default(), GC_FLANK).unwrap(),
+        );
         present_seqs.push(seq);
         std::fs::remove_file(&p).ok();
     }
@@ -90,9 +96,7 @@ fn main() {
             fake_tags.push(pack_bases(&tag));
         }
     }
-    let mut metas: Vec<GenomeMeta> = (0..N_PRESENT)
-        .map(|i| parts[i].0.clone())
-        .collect();
+    let mut metas: Vec<GenomeMeta> = (0..N_PRESENT).map(|i| parts[i].0.clone()).collect();
     metas.extend((N_PRESENT..N_PRESENT + n_fake).map(|gid| GenomeMeta {
         id: gid as u32,
         name: format!("fake{gid}"),
@@ -113,10 +117,7 @@ fn main() {
             enzymes: EnzymeSet::from_slice(&enzymes),
             ..BuildParams::default()
         },
-        parts
-            .into_iter()
-            .map(|(m, a, t, _)| (m, a, t))
-            .collect(),
+        parts.into_iter().map(|(m, a, t, _)| (m, a, t)).collect(),
     );
     db.genomes = metas;
     db.anchors.extend(fake_anchors);
@@ -197,8 +198,8 @@ fn main() {
         }
         "screen" => {
             let mut filter = vec![false; db.genomes.len()];
-            for g in 0..N_PRESENT {
-                filter[g] = true;
+            for flag in filter.iter_mut().take(N_PRESENT) {
+                *flag = true;
             }
             let t = std::time::Instant::now();
             let screened = AnchorIndex::build_screened(&db, 2, None, Some(&filter));

@@ -445,7 +445,7 @@ pub fn pack_bases(tag: &[u8]) -> [u8; TAG_BYTES] {
 
 /// Inverse of [`pack_bases`].
 pub fn unpack_bases(packed: &[u8; TAG_BYTES], len: usize) -> Vec<u8> {
-    const LUT: [u8; 4] = [b'A', b'C', b'G', b'T'];
+    const LUT: [u8; 4] = *b"ACGT";
     (0..len.min(MAX_PACKED_BASES))
         .map(|i| LUT[((packed[i / 4] >> (6 - 2 * (i % 4))) & 0b11) as usize])
         .collect()

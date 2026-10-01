@@ -202,8 +202,8 @@ Each enzyme yields `log2(PTR) ± se`. Combine by inverse-variance weighting — 
 minimum-variance linear combination — so enzymes with more anchors and cleaner
 fits count for more, automatically.
 
-Then test them against each other. Under the null that all 16 measure one common
-value, Cochran's Q is χ² on `k−1` degrees of freedom. A significant Q means the
+Then test them against each other. Under the null that all included strata
+measure one common value, Cochran's Q is χ² on `k−1` degrees of freedom. A significant Q means the
 enzymes *disagree*: an enzyme with too few anchors, a methylation-blocked site
 class, a mis-assembled region. **This is a real replicate structure, available at
 zero extra sequencing cost, and no single sketch can produce it.**
@@ -217,9 +217,9 @@ about would be the worst of both worlds.
 Caveat, from [`../enzymes.md`](../enzymes.md): **every Bsp24I tag is a
 byte-identical CjePI tag**, so those two strata are not independent and their
 agreement is structural rather than evidential. With 16 enzymes the effect on Q
-is modest; a run restricted to `--enzymes Bsp24I,CjePI` would produce a
-consistency p-value that means nothing. `enzyme::CONTAINED_PAIRS` records the
-relation.
+is modest in the measured data; a run restricted to `--enzymes Bsp24I,CjePI`
+would produce a consistency p-value that means nothing. `enzyme::CONTAINMENTS`
+records the relation.
 
 > **Addresses D4.**
 

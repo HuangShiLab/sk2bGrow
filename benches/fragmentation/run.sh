@@ -32,8 +32,7 @@ for pair in "scafSelf:$SELF_NAME" "scafRel:$REL_NAME"; do
   cond=${pair%%:*}; ref=${pair#*:}
   [ -f "$WORK/$cond.fna" ] && continue
   $BIN scaffold "$WORK/frag.fna" -d "$RELDB" -r "$ref" -o "$WORK/$cond.tgt" --quiet
-  python3 rescaffold.py "$WORK/frag.fna" "$WORK/$cond.scaffold.json" --score \
-      -o "$WORK/$cond.fna" --label ecoli | sed "s/^/  [$cond] /"
+  cp "$WORK/$cond.scaffolded.fna" "$WORK/$cond.fna"
 done
 for cond in frag scafSelf scafRel; do
   [ -f "$WORK/db_$cond/manifest.json" ] || $BIN index "$WORK/$cond.fna" -o "$WORK/db_$cond" --quiet
@@ -46,8 +45,12 @@ for f in "$SUB"/*.fq; do
   for cond in complete frag scafSelf scafRel; do
     o="$WORK/out/${cond}_${s}"
     [ -f "$o/output.tsv" ] && continue
+    # The frag arm is a deliberate Pilea-parity sorted estimator; do not let a
+    # future change of `auto` silently turn it into no-estimate.
+    method_args=()
+    [ "$cond" = frag ] && method_args=(--method sorted)
     $BIN profile "$f" -d "$WORK/db_$cond" -o "$o" --quiet --python python3 \
-        >/dev/null 2>&1 || echo "FAIL $cond $s"
+        ${method_args[@]+"${method_args[@]}"} >/dev/null 2>&1 || echo "FAIL $cond $s"
   done
 done
 echo "sk2bgrow: $(ls -d "$WORK"/out/*/ 2>/dev/null | wc -l) runs"

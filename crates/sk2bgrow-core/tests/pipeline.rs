@@ -31,7 +31,7 @@ impl Rng {
 
 fn random_genome(len: usize, seed: u64) -> Vec<u8> {
     let mut rng = Rng(seed);
-    const B: [u8; 4] = [b'A', b'C', b'G', b'T'];
+    const B: [u8; 4] = *b"ACGT";
     (0..len)
         .map(|_| B[(rng.next_u64() >> 33) as usize % 4])
         .collect()

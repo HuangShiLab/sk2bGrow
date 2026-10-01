@@ -51,6 +51,8 @@ sk2bgrow profile 2brad/*.fq.gz -d db -o out/ --mode 2brad
 | `--windowing` | `anchors` | `anchors` (TGT-native) or `bp` (Pilea parity) |
 | `--window-anchors` | 100 | anchors per window |
 | `--window-bp` | 25000 | bp per window |
+| `--method` | Python default | forward `auto`, `v_shape`, or `sorted` to the statistics layer |
+| `--min-coverage` | Python default | forward the QC coverage floor to the statistics layer |
 | `--no-stats` | off | stop after the count tables |
 | `--python` | `python3` | interpreter for the statistics layer |
 
@@ -63,6 +65,7 @@ markers stripped, so paired files land in one count table.
 out/
 ├── windows.tsv           union windows (Rust)
 ├── <sample>.counts.tsv   per-anchor counts        ← Rust/Python interface
+├── <sample>.em.tsv       EM-assigned counts, including shared/masked anchors
 ├── <sample>.stats.json   counting + EM diagnostics
 ├── windows.rates.tsv     per-enzyme window rates  (Python)
 ├── per_enzyme.tsv        one PTR fit per enzyme   (Python)
@@ -121,6 +124,11 @@ Writes the scaffolded TGT plus a `.scaffold.json` of placements. Contigs that
 cannot be placed are parked past the placed region and reported — the statistics
 layer drops their anchors, because a wrong coordinate is worse than a missing one
 for a gradient fit.
+
+It also writes `<output-stem>.scaffolded.fna`, a single pseudo-contig in
+placement order. Use this FASTA for `sk2bgrow index`; the TGT is the detailed
+placement record. For a fragmented/scaffolded benchmark, pass `--method` to
+`profile` explicitly rather than relying on the `auto` rule.
 
 ---
 

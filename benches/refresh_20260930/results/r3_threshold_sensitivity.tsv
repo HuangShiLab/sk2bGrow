@@ -1,0 +1,6 @@
+z_short_threshold	slope_flags	jump_flags	total_flags	strong_5_10x_fires	strong_5_10x_runs	strong_5_10x_fraction	strong_ci_low	strong_ci_high	stationary_false_fires	stationary_runs	stationary_false_fraction	stationary_ci_low	stationary_ci_high
+2	31	87	96	72	72	1	0.94934883	1	1	81	0.012345679	0.0021826501	0.066668816
+2.25	30	87	95	72	72	1	0.94934883	1	1	81	0.012345679	0.0021826501	0.066668816
+2.5	28	87	93	72	72	1	0.94934883	1	0	81	0	0	0.045278085
+2.75	27	87	92	72	72	1	0.94934883	1	0	81	0	0	0.045278085
+3	26	87	91	72	72	1	0.94934883	1	0	81	0	0	0.045278085

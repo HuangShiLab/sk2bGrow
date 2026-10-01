@@ -1,3 +1,8 @@
+QC STATUS CORRECTION (2026-09-29): the rows below are the ALL-FINITE ESTIMATOR
+VIEW. A finite sk2bGrow estimate is not necessarily a deployable QC-passed
+estimate. Arm A passed default QC in 0/16, 0/16, 8/16, 12/16 and 12/16 cells at
+0.5x, 1x, 2x, 5x and 10x respectively. See results_qc.tsv for both views.
+
 ================================================================================================
 BENCHMARK: log2(PTR) vs measured growth rate  (Zheng et al. 2020, E. coli K-12 MG1655)
 ================================================================================================

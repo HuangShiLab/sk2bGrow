@@ -6,19 +6,42 @@ because the coordinate is scrambled" (failure, flag)? Cochran's Q cannot: a
 destroyed coordinate makes all sixteen enzymes agree there is no gradient, and
 100% of fragmented estimates pass QC at 5–10×.
 
-**Answer: yes, at 5–10×, with a measured sensitivity floor.** A two-branch
-statistic ("within-contig gradient", WCG) fires on 47/48 scrambled cells with
-log2PTR ≥ 1 at 5–10× across N = 2…100 contigs, and stays quiet on every
-complete (0/27 growing cells), correctly-ordered multi-contig (0/36), and
-stationary (0/57) control. Its floor is absolute: it fires when scrambling
-destroys ≳ 0.3–0.5 log2 units of gradient. Below that (log2PTR = 0.5 at
-N = 5–50, and the mildest N = 2 layouts) damage is real but small, and the
-gate is quiet. At 1× the window SEs are not calibrated well enough for the
-slope branch (A4 territory) — see Limits.
+**Answer: yes at 5–10× for strong gradients, but not production-ready at 1×.**
+The original one-seed grid fired on 47/48 scrambled cells with log2PTR ≥1 at
+5–10× and stayed quiet on every complete, ordered, and stationary control. The
+larger 2026-09-30 current grid confirms those controls and gives 72/72
+detection for scrambled log2PTR≥1 at 5–10×, but also finds one stationary
+false fire and weak 1× sensitivity (see “Current-refresh result” below). WCG is
+therefore best described as a promising prototype QC statistic, not a deployed
+gate.
 
 Prototype only; nothing is wired into the pipeline. Implementation:
 `qc_within_contig.py`; grid runner `r3_run.sh`; scorer `r3_score.py`;
 references `r3_refs.py`; reads `r3_simulate.py`.
+
+Version note (2026-09-29): the numeric grid below predates the fail-closed
+fragmented-reference rule and fixed-origin signed-slope change. `r3_run.sh` now
+passes `--method v_shape --min-coverage 0` explicitly, but the published R3
+numbers must be regenerated at the exact final commit before manuscript use.
+
+## Current-refresh result (2026-09-30)
+
+The current grid has 27 references (three origin-layout families) × 12 read
+cells = 324 profiles. Complete and correctly ordered controls are quiet:
+0/36 and 0/72, including stationary controls. Scrambled results are:
+
+| true log2PTR | fires / runs | 1× | 5× | 10× |
+|---:|---:|---:|---:|---:|
+| 0 | 1/54 | 1/18 | 0/18 | 0/18 |
+| 0.5 | 15/54 | 1/18 | 6/18 | 8/18 |
+| 1.0 | 40/54 | 4/18 | 18/18 | 18/18 |
+| 1.5 | 40/54 | 4/18 | 18/18 | 18/18 |
+
+Thus current sensitivity is excellent at 5–10× for true log2PTR≥1, but weak at
+1× and incomplete at 0.5×. One scrambled stationary control (`scr20RX`, 1×)
+fires on the slope branch. WCG therefore remains a prototype flag; do not wire
+it into production QC without deeper control data and threshold recalibration.
+The pre-fix grid below is retained for mechanism/provenance only.
 
 ## The statistic
 
@@ -177,6 +200,10 @@ design is unaffected:
    A_loc − b_hat > 0.5, median ≥ 20 windows/contig; jump branch ≥ 8 boundary
    pairs, z_J > 3.5, J > 0.03. Consider enabling the slope branch only at
    coverage ≥ 2× until A4 is resolved.
+   Review sensitivity on the 2026-09-30 grid suggests `z_short > 2.5` removes
+   the sole stationary false fire without losing any strong 5–10× detection.
+   This is post hoc; validate it on an independent grid before changing the
+   default.
 5. Regression test: profile the committed simulation grid (or one synthetic
    V-gradient fixture) against a 10-contig shuffled reference and assert the
    flag fires, plus a stationary control asserting it does not.
@@ -194,6 +221,9 @@ python3 benches/fragmentation/r3_simulate.py benches/genomes/Escherichia_coli_K1
 WORK=$WORK benches/fragmentation/r3_run.sh        # needs --python with statsmodels
 WORK=$WORK python3 benches/fragmentation/r3_score.py
 ```
+
+Record `git rev-parse HEAD`, the simulator seed, and the R3 stats TSV with any
+result quoted from this grid.
 
 `r3_score.py` writes `$WORK/r3_stats.tsv` (one row per run: V-fit estimate,
 both branches, flags) and prints the evaluation table.

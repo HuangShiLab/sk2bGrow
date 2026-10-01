@@ -1,0 +1,426 @@
+arm	medium	cov	seed	log2ptr	est_cov	passed	commit	pilea_version	growth_rate	pred_log2ptr
+A	M10	0.5000	1	0.6335	0.5767	False	unrecorded	unrecorded	1.1500	1.2108
+A	M10	10.0000	1	1.2312	8.2893	True	unrecorded	unrecorded	1.1500	1.2108
+A	M10	1.0000	1	0.8697	0.9215	False	unrecorded	unrecorded	1.1500	1.2108
+A	M10	2.0000	1	1.0769	1.7276	False	unrecorded	unrecorded	1.1500	1.2108
+A	M10	5.0000	1	1.2162	4.1066	True	unrecorded	unrecorded	1.1500	1.2108
+A	M12	0.5000	1	0.9114	0.6007	False	unrecorded	unrecorded	1.0220	1.1568
+A	M12	10.0000	1	1.2541	8.3243	True	unrecorded	unrecorded	1.0220	1.1568
+A	M12	1.0000	1	0.9563	0.9885	False	unrecorded	unrecorded	1.0220	1.1568
+A	M12	2.0000	1	0.9654	1.7999	False	unrecorded	unrecorded	1.0220	1.1568
+A	M12	5.0000	1	1.2222	4.2299	True	unrecorded	unrecorded	1.0220	1.1568
+A	M13	0.5000	1	0.5554	0.6793	False	unrecorded	unrecorded	0.8612	1.0326
+A	M13	10.0000	1	1.0897	8.0393	True	unrecorded	unrecorded	0.8612	1.0326
+A	M13	1.0000	1	0.5389	1.1203	False	unrecorded	unrecorded	0.8612	1.0326
+A	M13	2.0000	1	0.6922	1.8850	False	unrecorded	unrecorded	0.8612	1.0326
+A	M13	5.0000	1	0.9071	4.0328	True	unrecorded	unrecorded	0.8612	1.0326
+A	M17	0.5000	1	0.6338	0.5778	False	unrecorded	unrecorded	0.7440	0.7020
+A	M17	10.0000	1	0.7177	8.3538	True	unrecorded	unrecorded	0.7440	0.7020
+A	M17	1.0000	1	0.6594	0.9864	False	unrecorded	unrecorded	0.7440	0.7020
+A	M17	2.0000	1	0.5624	1.8217	False	unrecorded	unrecorded	0.7440	0.7020
+A	M17	5.0000	1	0.7413	4.1945	False	unrecorded	unrecorded	0.7440	0.7020
+A	M18	0.5000	1	0.4232	0.6034	False	unrecorded	unrecorded	0.7413	0.8578
+A	M18	10.0000	1	0.8940	8.2344	True	unrecorded	unrecorded	0.7413	0.8578
+A	M18	1.0000	1	0.7150	0.9305	False	unrecorded	unrecorded	0.7413	0.8578
+A	M18	2.0000	1	0.7822	1.6923	True	unrecorded	unrecorded	0.7413	0.8578
+A	M18	5.0000	1	0.8550	4.1673	True	unrecorded	unrecorded	0.7413	0.8578
+A	M19	0.5000	1	0.5757	0.6780	False	unrecorded	unrecorded	0.5776	0.8862
+A	M19	10.0000	1	0.9435	7.5789	True	unrecorded	unrecorded	0.5776	0.8862
+A	M19	1.0000	1	0.2013	1.0178	False	unrecorded	unrecorded	0.5776	0.8862
+A	M19	2.0000	1	0.5066	1.6542	False	unrecorded	unrecorded	0.5776	0.8862
+A	M19	5.0000	1	0.9133	3.7332	False	unrecorded	unrecorded	0.5776	0.8862
+A	M1	0.5000	1	1.2248	0.5198	False	unrecorded	unrecorded	1.7207	1.7250
+A	M1	10.0000	1	1.8129	8.2081	True	unrecorded	unrecorded	1.7207	1.7250
+A	M1	1.0000	1	1.7279	0.8895	False	unrecorded	unrecorded	1.7207	1.7250
+A	M1	2.0000	1	1.8391	1.6451	True	unrecorded	unrecorded	1.7207	1.7250
+A	M1	5.0000	1	1.8320	4.0842	False	unrecorded	unrecorded	1.7207	1.7250
+A	M22	0.5000	1	0.5881	0.5353	False	unrecorded	unrecorded	0.4892	0.7233
+A	M22	10.0000	1	0.7506	8.3173	True	unrecorded	unrecorded	0.4892	0.7233
+A	M22	1.0000	1	0.5190	0.9214	False	unrecorded	unrecorded	0.4892	0.7233
+A	M22	2.0000	1	0.7070	1.7028	True	unrecorded	unrecorded	0.4892	0.7233
+A	M22	5.0000	1	0.7121	4.1240	False	unrecorded	unrecorded	0.4892	0.7233
+A	M23	0.5000	1	0.4451	0.5224	False	unrecorded	unrecorded	0.4770	0.5420
+A	M23	10.0000	1	0.5610	8.2160	True	unrecorded	unrecorded	0.4770	0.5420
+A	M23	1.0000	1	0.2905	0.8640	False	unrecorded	unrecorded	0.4770	0.5420
+A	M23	2.0000	1	0.4841	1.7110	True	unrecorded	unrecorded	0.4770	0.5420
+A	M23	5.0000	1	0.5338	4.1222	True	unrecorded	unrecorded	0.4770	0.5420
+A	M24	0.5000	1	0.5319	0.4739	False	unrecorded	unrecorded	0.4648	0.6861
+A	M24	10.0000	1	0.6433	8.1539	True	unrecorded	unrecorded	0.4648	0.6861
+A	M24	1.0000	1	0.6295	0.8854	False	unrecorded	unrecorded	0.4648	0.6861
+A	M24	2.0000	1	0.7032	1.6763	True	unrecorded	unrecorded	0.4648	0.6861
+A	M24	5.0000	1	0.6135	4.1312	True	unrecorded	unrecorded	0.4648	0.6861
+A	M25	0.5000	1	0.5981	0.5113	False	unrecorded	unrecorded	0.4346	0.6425
+A	M25	10.0000	1	0.6662	8.3857	True	unrecorded	unrecorded	0.4346	0.6425
+A	M25	1.0000	1	0.5101	0.8906	False	unrecorded	unrecorded	0.4346	0.6425
+A	M25	2.0000	1	0.5196	1.7384	True	unrecorded	unrecorded	0.4346	0.6425
+A	M25	5.0000	1	0.6604	4.2098	True	unrecorded	unrecorded	0.4346	0.6425
+A	M27	0.5000	1	0.5411	0.5082	False	unrecorded	unrecorded	0.3992	0.5526
+A	M27	10.0000	1	0.5515	8.2965	False	unrecorded	unrecorded	0.3992	0.5526
+A	M27	1.0000	1	0.5065	0.8737	False	unrecorded	unrecorded	0.3992	0.5526
+A	M27	2.0000	1	0.4725	1.7162	False	unrecorded	unrecorded	0.3992	0.5526
+A	M27	5.0000	1	0.5165	4.1635	True	unrecorded	unrecorded	0.3992	0.5526
+A	M2	0.5000	1	1.1953	0.6761	False	unrecorded	unrecorded	1.5100	1.6844
+A	M2	10.0000	1	1.8152	8.5803	True	unrecorded	unrecorded	1.5100	1.6844
+A	M2	1.0000	1	1.3219	1.0892	False	unrecorded	unrecorded	1.5100	1.6844
+A	M2	2.0000	1	1.4469	1.8670	False	unrecorded	unrecorded	1.5100	1.6844
+A	M2	5.0000	1	1.6373	4.3492	True	unrecorded	unrecorded	1.5100	1.6844
+A	M3	0.5000	1	0.7420	0.5676	False	unrecorded	unrecorded	1.4380	1.4630
+A	M3	10.0000	1	1.5033	8.0356	True	unrecorded	unrecorded	1.4380	1.4630
+A	M3	1.0000	1	1.3535	0.9170	False	unrecorded	unrecorded	1.4380	1.4630
+A	M3	2.0000	1	1.4626	1.6927	True	unrecorded	unrecorded	1.4380	1.4630
+A	M3	5.0000	1	1.4504	4.1025	False	unrecorded	unrecorded	1.4380	1.4630
+A	M4	0.5000	1	0.8409	0.6851	False	unrecorded	unrecorded	1.3718	1.5315
+A	M4	10.0000	1	1.5061	8.6317	True	unrecorded	unrecorded	1.3718	1.5315
+A	M4	1.0000	1	1.2029	1.0353	False	unrecorded	unrecorded	1.3718	1.5315
+A	M4	2.0000	1	1.1522	1.8553	False	unrecorded	unrecorded	1.3718	1.5315
+A	M4	5.0000	1	1.4192	4.3089	True	unrecorded	unrecorded	1.3718	1.5315
+A	M6	0.5000	1	0.7583	0.5378	False	unrecorded	unrecorded	1.3549	1.3298
+A	M6	10.0000	1	1.3354	8.0628	True	unrecorded	unrecorded	1.3549	1.3298
+A	M6	1.0000	1	0.9771	0.9253	False	unrecorded	unrecorded	1.3549	1.3298
+A	M6	2.0000	1	1.1954	1.7311	True	unrecorded	unrecorded	1.3549	1.3298
+A	M6	5.0000	1	1.3209	4.0850	True	unrecorded	unrecorded	1.3549	1.3298
+A	RUN_OUT	0.5000	1	-0.0153	0.5116	False	unrecorded	unrecorded		
+A	RUN_OUT	10.0000	1	0.0135	8.7654	True	unrecorded	unrecorded		
+A	RUN_OUT	1.0000	1	-0.0357	0.9300	False	unrecorded	unrecorded		
+A	RUN_OUT	2.0000	1	0.0249	1.7725	True	unrecorded	unrecorded		
+A	RUN_OUT	5.0000	1	-0.0005	4.2746	True	unrecorded	unrecorded		
+B	M10	0.5000	1	2.2943	1.0392	False	unrecorded	unrecorded	1.1500	1.2108
+B	M10	10.0000	1	1.3077	8.2736	False	unrecorded	unrecorded	1.1500	1.2108
+B	M10	1.0000	1	1.8847	1.2317	False	unrecorded	unrecorded	1.1500	1.2108
+B	M10	2.0000	1	1.7926	1.8931	False	unrecorded	unrecorded	1.1500	1.2108
+B	M10	5.0000	1	1.3872	4.1765	False	unrecorded	unrecorded	1.1500	1.2108
+B	M12	0.5000	1	1.8693	1.0997	False	unrecorded	unrecorded	1.0220	1.1568
+B	M12	10.0000	1	1.3750	8.3912	True	unrecorded	unrecorded	1.0220	1.1568
+B	M12	1.0000	1	1.9594	1.3292	False	unrecorded	unrecorded	1.0220	1.1568
+B	M12	2.0000	1	1.7298	2.0030	False	unrecorded	unrecorded	1.0220	1.1568
+B	M12	5.0000	1	1.3709	4.3273	True	unrecorded	unrecorded	1.0220	1.1568
+B	M13	0.5000	1	2.2767	1.1150	False	unrecorded	unrecorded	0.8612	1.0326
+B	M13	10.0000	1	1.3909	8.3289	False	unrecorded	unrecorded	0.8612	1.0326
+B	M13	1.0000	1	1.8903	1.4360	False	unrecorded	unrecorded	0.8612	1.0326
+B	M13	2.0000	1	1.7750	2.1500	False	unrecorded	unrecorded	0.8612	1.0326
+B	M13	5.0000	1	1.4920	4.4208	False	unrecorded	unrecorded	0.8612	1.0326
+B	M17	0.5000	1	1.9303	1.0687	False	unrecorded	unrecorded	0.7440	0.7020
+B	M17	10.0000	1	1.0381	8.3853	False	unrecorded	unrecorded	0.7440	0.7020
+B	M17	1.0000	1	1.8820	1.2660	False	unrecorded	unrecorded	0.7440	0.7020
+B	M17	2.0000	1	1.6484	2.0201	False	unrecorded	unrecorded	0.7440	0.7020
+B	M17	5.0000	1	1.2013	4.3054	False	unrecorded	unrecorded	0.7440	0.7020
+B	M18	0.5000	1	2.1627	1.0293	False	unrecorded	unrecorded	0.7413	0.8578
+B	M18	10.0000	1	1.0232	8.2791	False	unrecorded	unrecorded	0.7413	0.8578
+B	M18	1.0000	1	1.9234	1.2346	False	unrecorded	unrecorded	0.7413	0.8578
+B	M18	2.0000	1	1.4341	1.8262	False	unrecorded	unrecorded	0.7413	0.8578
+B	M18	5.0000	1	1.1688	4.2653	False	unrecorded	unrecorded	0.7413	0.8578
+B	M19	0.5000	1	2.3171	1.1386	False	unrecorded	unrecorded	0.5776	0.8862
+B	M19	10.0000	1	1.4488	8.0041	False	unrecorded	unrecorded	0.5776	0.8862
+B	M19	1.0000	1	2.1814	1.4120	False	unrecorded	unrecorded	0.5776	0.8862
+B	M19	2.0000	1	1.8627	2.0726	False	unrecorded	unrecorded	0.5776	0.8862
+B	M19	5.0000	1	1.5719	4.1137	False	unrecorded	unrecorded	0.5776	0.8862
+B	M1	0.5000	1	2.2117	1.0019	False	unrecorded	unrecorded	1.7207	1.7250
+B	M1	10.0000	1	1.8654	8.2250	True	unrecorded	unrecorded	1.7207	1.7250
+B	M1	1.0000	1	2.2026	1.2396	False	unrecorded	unrecorded	1.7207	1.7250
+B	M1	2.0000	1	2.0282	1.8687	True	unrecorded	unrecorded	1.7207	1.7250
+B	M1	5.0000	1	1.8763	4.1929	True	unrecorded	unrecorded	1.7207	1.7250
+B	M22	0.5000	1	2.0608	0.9657	False	unrecorded	unrecorded	0.4892	0.7233
+B	M22	10.0000	1	0.9773	8.2533	False	unrecorded	unrecorded	0.4892	0.7233
+B	M22	1.0000	1	1.8566	1.1940	False	unrecorded	unrecorded	0.4892	0.7233
+B	M22	2.0000	1	1.6373	1.8591	False	unrecorded	unrecorded	0.4892	0.7233
+B	M22	5.0000	1	1.1391	4.2101	False	unrecorded	unrecorded	0.4892	0.7233
+B	M23	0.5000	1	2.2619	0.9743	False	unrecorded	unrecorded	0.4770	0.5420
+B	M23	10.0000	1	0.8354	8.2656	False	unrecorded	unrecorded	0.4770	0.5420
+B	M23	1.0000	1	2.0279	1.1609	False	unrecorded	unrecorded	0.4770	0.5420
+B	M23	2.0000	1	1.4821	1.8718	False	unrecorded	unrecorded	0.4770	0.5420
+B	M23	5.0000	1	1.0405	4.1724	False	unrecorded	unrecorded	0.4770	0.5420
+B	M24	0.5000	1	2.2566	0.9988	False	unrecorded	unrecorded	0.4648	0.6861
+B	M24	10.0000	1	0.8739	8.2305	False	unrecorded	unrecorded	0.4648	0.6861
+B	M24	1.0000	1	1.8273	1.1806	False	unrecorded	unrecorded	0.4648	0.6861
+B	M24	2.0000	1	1.5637	1.8165	False	unrecorded	unrecorded	0.4648	0.6861
+B	M24	5.0000	1	0.9854	4.1706	False	unrecorded	unrecorded	0.4648	0.6861
+B	M25	0.5000	1	2.2740	0.9855	False	unrecorded	unrecorded	0.4346	0.6425
+B	M25	10.0000	1	0.8940	8.3865	False	unrecorded	unrecorded	0.4346	0.6425
+B	M25	1.0000	1	1.8885	1.1972	False	unrecorded	unrecorded	0.4346	0.6425
+B	M25	2.0000	1	1.4103	1.8548	False	unrecorded	unrecorded	0.4346	0.6425
+B	M25	5.0000	1	1.0303	4.2832	False	unrecorded	unrecorded	0.4346	0.6425
+B	M27	0.5000	1	2.0145	0.9935	False	unrecorded	unrecorded	0.3992	0.5526
+B	M27	10.0000	1	0.8410	8.3077	False	unrecorded	unrecorded	0.3992	0.5526
+B	M27	1.0000	1	1.9520	1.1738	False	unrecorded	unrecorded	0.3992	0.5526
+B	M27	2.0000	1	1.4770	1.8563	False	unrecorded	unrecorded	0.3992	0.5526
+B	M27	5.0000	1	1.0130	4.2235	False	unrecorded	unrecorded	0.3992	0.5526
+B	M2	0.5000	1	2.4272	1.1998	False	unrecorded	unrecorded	1.5100	1.6844
+B	M2	10.0000	1	1.9937	8.4809	True	unrecorded	unrecorded	1.5100	1.6844
+B	M2	1.0000	1	2.2604	1.4294	False	unrecorded	unrecorded	1.5100	1.6844
+B	M2	2.0000	1	2.0291	2.1435	False	unrecorded	unrecorded	1.5100	1.6844
+B	M2	5.0000	1	1.8752	4.4903	True	unrecorded	unrecorded	1.5100	1.6844
+B	M3	0.5000	1	2.2164	1.0244	False	unrecorded	unrecorded	1.4380	1.4630
+B	M3	10.0000	1	1.5390	8.1184	True	unrecorded	unrecorded	1.4380	1.4630
+B	M3	1.0000	1	2.0114	1.2124	False	unrecorded	unrecorded	1.4380	1.4630
+B	M3	2.0000	1	1.7717	1.8879	True	unrecorded	unrecorded	1.4380	1.4630
+B	M3	5.0000	1	1.5987	4.1768	True	unrecorded	unrecorded	1.4380	1.4630
+B	M4	0.5000	1	2.2196	1.1561	False	unrecorded	unrecorded	1.3718	1.5315
+B	M4	10.0000	1	1.6578	8.5548	True	unrecorded	unrecorded	1.3718	1.5315
+B	M4	1.0000	1	1.8783	1.3363	False	unrecorded	unrecorded	1.3718	1.5315
+B	M4	2.0000	1	1.8661	2.0788	False	unrecorded	unrecorded	1.3718	1.5315
+B	M4	5.0000	1	1.6754	4.4209	True	unrecorded	unrecorded	1.3718	1.5315
+B	M6	0.5000	1	2.1701	1.0154	False	unrecorded	unrecorded	1.3549	1.3298
+B	M6	10.0000	1	1.3895	8.1316	True	unrecorded	unrecorded	1.3549	1.3298
+B	M6	1.0000	1	1.8058	1.1763	False	unrecorded	unrecorded	1.3549	1.3298
+B	M6	2.0000	1	1.6425	1.8959	True	unrecorded	unrecorded	1.3549	1.3298
+B	M6	5.0000	1	1.4894	4.1549	False	unrecorded	unrecorded	1.3549	1.3298
+B	RUN_OUT	0.5000	1	2.2614	0.9819	False	unrecorded	unrecorded		
+B	RUN_OUT	10.0000	1	0.6992	8.6040	False	unrecorded	unrecorded		
+B	RUN_OUT	1.0000	1	1.9253	1.2147	False	unrecorded	unrecorded		
+B	RUN_OUT	2.0000	1	1.4750	1.8784	False	unrecorded	unrecorded		
+B	RUN_OUT	5.0000	1	0.9347	4.3522	False	unrecorded	unrecorded		
+C_default	M10	0.5000	1				unrecorded	unrecorded	1.1500	1.2108
+C_default	M10	10.0000	1	1.0630	7.0102	True	unrecorded	unrecorded	1.1500	1.2108
+C_default	M10	1.0000	1				unrecorded	unrecorded	1.1500	1.2108
+C_default	M10	2.0000	1				unrecorded	unrecorded	1.1500	1.2108
+C_default	M10	5.0000	1				unrecorded	unrecorded	1.1500	1.2108
+C_default	M12	0.5000	1				unrecorded	unrecorded	1.0220	1.1568
+C_default	M12	10.0000	1	1.1704	6.7507	True	unrecorded	unrecorded	1.0220	1.1568
+C_default	M12	1.0000	1				unrecorded	unrecorded	1.0220	1.1568
+C_default	M12	2.0000	1				unrecorded	unrecorded	1.0220	1.1568
+C_default	M12	5.0000	1				unrecorded	unrecorded	1.0220	1.1568
+C_default	M13	0.5000	1				unrecorded	unrecorded	0.8612	1.0326
+C_default	M13	10.0000	1	0.9715	6.4044	True	unrecorded	unrecorded	0.8612	1.0326
+C_default	M13	1.0000	1				unrecorded	unrecorded	0.8612	1.0326
+C_default	M13	2.0000	1				unrecorded	unrecorded	0.8612	1.0326
+C_default	M13	5.0000	1				unrecorded	unrecorded	0.8612	1.0326
+C_default	M17	0.5000	1				unrecorded	unrecorded	0.7440	0.7020
+C_default	M17	10.0000	1	0.6395	7.1857	True	unrecorded	unrecorded	0.7440	0.7020
+C_default	M17	1.0000	1				unrecorded	unrecorded	0.7440	0.7020
+C_default	M17	2.0000	1				unrecorded	unrecorded	0.7440	0.7020
+C_default	M17	5.0000	1				unrecorded	unrecorded	0.7440	0.7020
+C_default	M18	0.5000	1				unrecorded	unrecorded	0.7413	0.8578
+C_default	M18	10.0000	1	0.7904	7.4621	True	unrecorded	unrecorded	0.7413	0.8578
+C_default	M18	1.0000	1				unrecorded	unrecorded	0.7413	0.8578
+C_default	M18	2.0000	1				unrecorded	unrecorded	0.7413	0.8578
+C_default	M18	5.0000	1				unrecorded	unrecorded	0.7413	0.8578
+C_default	M19	0.5000	1				unrecorded	unrecorded	0.5776	0.8862
+C_default	M19	10.0000	1	0.8338	6.5201	True	unrecorded	unrecorded	0.5776	0.8862
+C_default	M19	1.0000	1				unrecorded	unrecorded	0.5776	0.8862
+C_default	M19	2.0000	1				unrecorded	unrecorded	0.5776	0.8862
+C_default	M19	5.0000	1				unrecorded	unrecorded	0.5776	0.8862
+C_default	M1	0.5000	1				unrecorded	unrecorded	1.7207	1.7250
+C_default	M1	10.0000	1	1.7217	7.0499	True	unrecorded	unrecorded	1.7207	1.7250
+C_default	M1	1.0000	1				unrecorded	unrecorded	1.7207	1.7250
+C_default	M1	2.0000	1				unrecorded	unrecorded	1.7207	1.7250
+C_default	M1	5.0000	1				unrecorded	unrecorded	1.7207	1.7250
+C_default	M22	0.5000	1				unrecorded	unrecorded	0.4892	0.7233
+C_default	M22	10.0000	1	0.6152	7.0930	True	unrecorded	unrecorded	0.4892	0.7233
+C_default	M22	1.0000	1				unrecorded	unrecorded	0.4892	0.7233
+C_default	M22	2.0000	1				unrecorded	unrecorded	0.4892	0.7233
+C_default	M22	5.0000	1				unrecorded	unrecorded	0.4892	0.7233
+C_default	M23	0.5000	1				unrecorded	unrecorded	0.4770	0.5420
+C_default	M23	10.0000	1	0.5174	7.5499	True	unrecorded	unrecorded	0.4770	0.5420
+C_default	M23	1.0000	1				unrecorded	unrecorded	0.4770	0.5420
+C_default	M23	2.0000	1				unrecorded	unrecorded	0.4770	0.5420
+C_default	M23	5.0000	1				unrecorded	unrecorded	0.4770	0.5420
+C_default	M24	0.5000	1				unrecorded	unrecorded	0.4648	0.6861
+C_default	M24	10.0000	1	0.6223	7.6082	True	unrecorded	unrecorded	0.4648	0.6861
+C_default	M24	1.0000	1				unrecorded	unrecorded	0.4648	0.6861
+C_default	M24	2.0000	1				unrecorded	unrecorded	0.4648	0.6861
+C_default	M24	5.0000	1				unrecorded	unrecorded	0.4648	0.6861
+C_default	M25	0.5000	1				unrecorded	unrecorded	0.4346	0.6425
+C_default	M25	10.0000	1	0.5973	7.4993	True	unrecorded	unrecorded	0.4346	0.6425
+C_default	M25	1.0000	1				unrecorded	unrecorded	0.4346	0.6425
+C_default	M25	2.0000	1				unrecorded	unrecorded	0.4346	0.6425
+C_default	M25	5.0000	1				unrecorded	unrecorded	0.4346	0.6425
+C_default	M27	0.5000	1				unrecorded	unrecorded	0.3992	0.5526
+C_default	M27	10.0000	1	0.5132	7.5259	True	unrecorded	unrecorded	0.3992	0.5526
+C_default	M27	1.0000	1				unrecorded	unrecorded	0.3992	0.5526
+C_default	M27	2.0000	1				unrecorded	unrecorded	0.3992	0.5526
+C_default	M27	5.0000	1				unrecorded	unrecorded	0.3992	0.5526
+C_default	M2	0.5000	1				unrecorded	unrecorded	1.5100	1.6844
+C_default	M2	10.0000	1	1.4566	6.3542	True	unrecorded	unrecorded	1.5100	1.6844
+C_default	M2	1.0000	1				unrecorded	unrecorded	1.5100	1.6844
+C_default	M2	2.0000	1				unrecorded	unrecorded	1.5100	1.6844
+C_default	M2	5.0000	1				unrecorded	unrecorded	1.5100	1.6844
+C_default	M3	0.5000	1				unrecorded	unrecorded	1.4380	1.4630
+C_default	M3	10.0000	1	1.3173	7.0253	True	unrecorded	unrecorded	1.4380	1.4630
+C_default	M3	1.0000	1				unrecorded	unrecorded	1.4380	1.4630
+C_default	M3	2.0000	1				unrecorded	unrecorded	1.4380	1.4630
+C_default	M3	5.0000	1				unrecorded	unrecorded	1.4380	1.4630
+C_default	M4	0.5000	1				unrecorded	unrecorded	1.3718	1.5315
+C_default	M4	10.0000	1	1.3426	6.6515	True	unrecorded	unrecorded	1.3718	1.5315
+C_default	M4	1.0000	1				unrecorded	unrecorded	1.3718	1.5315
+C_default	M4	2.0000	1				unrecorded	unrecorded	1.3718	1.5315
+C_default	M4	5.0000	1				unrecorded	unrecorded	1.3718	1.5315
+C_default	M6	0.5000	1				unrecorded	unrecorded	1.3549	1.3298
+C_default	M6	10.0000	1	1.1758	7.0793	True	unrecorded	unrecorded	1.3549	1.3298
+C_default	M6	1.0000	1				unrecorded	unrecorded	1.3549	1.3298
+C_default	M6	2.0000	1				unrecorded	unrecorded	1.3549	1.3298
+C_default	M6	5.0000	1				unrecorded	unrecorded	1.3549	1.3298
+C_default	RUN_OUT	0.5000	1				unrecorded	unrecorded		
+C_default	RUN_OUT	10.0000	1	0.2656	7.6066	True	unrecorded	unrecorded		
+C_default	RUN_OUT	1.0000	1				unrecorded	unrecorded		
+C_default	RUN_OUT	2.0000	1				unrecorded	unrecorded		
+C_default	RUN_OUT	5.0000	1				unrecorded	unrecorded		
+C_relaxed	M10	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	1.1500	1.2108
+C_relaxed	M10	10.0000	1	1.0630	7.0102	True	unrecorded	unrecorded	1.1500	1.2108
+C_relaxed	M10	1.0000	1	1.6672	1.3932	True	unrecorded	unrecorded	1.1500	1.2108
+C_relaxed	M10	2.0000	1	1.4753	1.9003	True	unrecorded	unrecorded	1.1500	1.2108
+C_relaxed	M10	5.0000	1	1.2354	3.6282	True	unrecorded	unrecorded	1.1500	1.2108
+C_relaxed	M12	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	1.0220	1.1568
+C_relaxed	M12	10.0000	1	1.1704	6.7507	True	unrecorded	unrecorded	1.0220	1.1568
+C_relaxed	M12	1.0000	1	1.5947	1.4264	True	unrecorded	unrecorded	1.0220	1.1568
+C_relaxed	M12	2.0000	1	1.3971	1.9106	True	unrecorded	unrecorded	1.0220	1.1568
+C_relaxed	M12	5.0000	1	1.2685	3.6218	True	unrecorded	unrecorded	1.0220	1.1568
+C_relaxed	M13	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.8612	1.0326
+C_relaxed	M13	10.0000	1	0.9715	6.4044	True	unrecorded	unrecorded	0.8612	1.0326
+C_relaxed	M13	1.0000	1	1.4550	1.4650	True	unrecorded	unrecorded	0.8612	1.0326
+C_relaxed	M13	2.0000	1	1.2796	2.0058	True	unrecorded	unrecorded	0.8612	1.0326
+C_relaxed	M13	5.0000	1	1.0157	3.6000	True	unrecorded	unrecorded	0.8612	1.0326
+C_relaxed	M17	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.7440	0.7020
+C_relaxed	M17	10.0000	1	0.6395	7.1857	True	unrecorded	unrecorded	0.7440	0.7020
+C_relaxed	M17	1.0000	1	1.3177	1.4484	True	unrecorded	unrecorded	0.7440	0.7020
+C_relaxed	M17	2.0000	1	0.9745	1.9660	True	unrecorded	unrecorded	0.7440	0.7020
+C_relaxed	M17	5.0000	1	0.9089	3.7416	True	unrecorded	unrecorded	0.7440	0.7020
+C_relaxed	M18	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.7413	0.8578
+C_relaxed	M18	10.0000	1	0.7904	7.4621	True	unrecorded	unrecorded	0.7413	0.8578
+C_relaxed	M18	1.0000	1	1.5311	1.3883	True	unrecorded	unrecorded	0.7413	0.8578
+C_relaxed	M18	2.0000	1	1.0433	1.9169	True	unrecorded	unrecorded	0.7413	0.8578
+C_relaxed	M18	5.0000	1	0.9745	3.8423	True	unrecorded	unrecorded	0.7413	0.8578
+C_relaxed	M19	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.5776	0.8862
+C_relaxed	M19	10.0000	1	0.8338	6.5201	True	unrecorded	unrecorded	0.5776	0.8862
+C_relaxed	M19	1.0000	1	1.6400	1.4220	True	unrecorded	unrecorded	0.5776	0.8862
+C_relaxed	M19	2.0000	1	1.4190	1.9197	True	unrecorded	unrecorded	0.5776	0.8862
+C_relaxed	M19	5.0000	1	0.9819	3.4848	True	unrecorded	unrecorded	0.5776	0.8862
+C_relaxed	M1	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	1.7207	1.7250
+C_relaxed	M1	10.0000	1	1.7217	7.0499	True	unrecorded	unrecorded	1.7207	1.7250
+C_relaxed	M1	1.0000	1	1.8061	1.4167	True	unrecorded	unrecorded	1.7207	1.7250
+C_relaxed	M1	2.0000	1	1.9647	1.8863	True	unrecorded	unrecorded	1.7207	1.7250
+C_relaxed	M1	5.0000	1	1.7633	3.6456	True	unrecorded	unrecorded	1.7207	1.7250
+C_relaxed	M22	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.4892	0.7233
+C_relaxed	M22	10.0000	1	0.6152	7.0930	True	unrecorded	unrecorded	0.4892	0.7233
+C_relaxed	M22	1.0000	1	1.4545	1.4276	True	unrecorded	unrecorded	0.4892	0.7233
+C_relaxed	M22	2.0000	1	1.1474	1.9424	True	unrecorded	unrecorded	0.4892	0.7233
+C_relaxed	M22	5.0000	1	0.9122	3.7208	True	unrecorded	unrecorded	0.4892	0.7233
+C_relaxed	M23	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.4770	0.5420
+C_relaxed	M23	10.0000	1	0.5174	7.5499	True	unrecorded	unrecorded	0.4770	0.5420
+C_relaxed	M23	1.0000	1	1.0454	1.3985	True	unrecorded	unrecorded	0.4770	0.5420
+C_relaxed	M23	2.0000	1	0.8661	1.8827	True	unrecorded	unrecorded	0.4770	0.5420
+C_relaxed	M23	5.0000	1	0.7781	3.9567	True	unrecorded	unrecorded	0.4770	0.5420
+C_relaxed	M24	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.4648	0.6861
+C_relaxed	M24	10.0000	1	0.6223	7.6082	True	unrecorded	unrecorded	0.4648	0.6861
+C_relaxed	M24	1.0000	1	1.1953	1.4174	True	unrecorded	unrecorded	0.4648	0.6861
+C_relaxed	M24	2.0000	1	0.9558	1.9191	True	unrecorded	unrecorded	0.4648	0.6861
+C_relaxed	M24	5.0000	1	0.7691	3.9762	True	unrecorded	unrecorded	0.4648	0.6861
+C_relaxed	M25	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.4346	0.6425
+C_relaxed	M25	10.0000	1	0.5973	7.4993	True	unrecorded	unrecorded	0.4346	0.6425
+C_relaxed	M25	1.0000	1	1.2319	1.4378	True	unrecorded	unrecorded	0.4346	0.6425
+C_relaxed	M25	2.0000	1	0.9873	1.9747	True	unrecorded	unrecorded	0.4346	0.6425
+C_relaxed	M25	5.0000	1	0.7803	3.8869	True	unrecorded	unrecorded	0.4346	0.6425
+C_relaxed	M27	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	0.3992	0.5526
+C_relaxed	M27	10.0000	1	0.5132	7.5259	True	unrecorded	unrecorded	0.3992	0.5526
+C_relaxed	M27	1.0000	1	1.2861	1.4118	True	unrecorded	unrecorded	0.3992	0.5526
+C_relaxed	M27	2.0000	1	0.8212	1.9719	True	unrecorded	unrecorded	0.3992	0.5526
+C_relaxed	M27	5.0000	1	0.7239	3.8344	True	unrecorded	unrecorded	0.3992	0.5526
+C_relaxed	M2	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	1.5100	1.6844
+C_relaxed	M2	10.0000	1	1.4566	6.3542	True	unrecorded	unrecorded	1.5100	1.6844
+C_relaxed	M2	1.0000	1	2.0191	1.4645	True	unrecorded	unrecorded	1.5100	1.6844
+C_relaxed	M2	2.0000	1	1.7944	1.9398	True	unrecorded	unrecorded	1.5100	1.6844
+C_relaxed	M2	5.0000	1	1.7240	3.5374	True	unrecorded	unrecorded	1.5100	1.6844
+C_relaxed	M3	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	1.4380	1.4630
+C_relaxed	M3	10.0000	1	1.3173	7.0253	True	unrecorded	unrecorded	1.4380	1.4630
+C_relaxed	M3	1.0000	1	1.9716	1.3644	True	unrecorded	unrecorded	1.4380	1.4630
+C_relaxed	M3	2.0000	1	1.6278	1.8490	True	unrecorded	unrecorded	1.4380	1.4630
+C_relaxed	M3	5.0000	1	1.5423	3.5824	True	unrecorded	unrecorded	1.4380	1.4630
+C_relaxed	M4	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	1.3718	1.5315
+C_relaxed	M4	10.0000	1	1.3426	6.6515	True	unrecorded	unrecorded	1.3718	1.5315
+C_relaxed	M4	1.0000	1	1.9336	1.4448	True	unrecorded	unrecorded	1.3718	1.5315
+C_relaxed	M4	2.0000	1	1.5808	1.9689	True	unrecorded	unrecorded	1.3718	1.5315
+C_relaxed	M4	5.0000	1	1.4317	3.5898	True	unrecorded	unrecorded	1.3718	1.5315
+C_relaxed	M6	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded	1.3549	1.3298
+C_relaxed	M6	10.0000	1	1.1758	7.0793	True	unrecorded	unrecorded	1.3549	1.3298
+C_relaxed	M6	1.0000	1	1.6217	1.4064	True	unrecorded	unrecorded	1.3549	1.3298
+C_relaxed	M6	2.0000	1	1.1839	1.8579	True	unrecorded	unrecorded	1.3549	1.3298
+C_relaxed	M6	5.0000	1	1.3597	3.6853	True	unrecorded	unrecorded	1.3549	1.3298
+C_relaxed	RUN_OUT	0.5000	1	0.0000	1.0000	True	unrecorded	unrecorded		
+C_relaxed	RUN_OUT	10.0000	1	0.2656	7.6066	True	unrecorded	unrecorded		
+C_relaxed	RUN_OUT	1.0000	1	1.1195	1.4659	True	unrecorded	unrecorded		
+C_relaxed	RUN_OUT	2.0000	1	0.7198	2.0403	True	unrecorded	unrecorded		
+C_relaxed	RUN_OUT	5.0000	1	0.2933	4.1165	True	unrecorded	unrecorded		
+E	M10	0.5000	1	0.9851	0.4590	False	unrecorded	unrecorded	1.1500	1.2108
+E	M10	10.0000	1	1.2671	7.6205	True	unrecorded	unrecorded	1.1500	1.2108
+E	M10	1.0000	1	1.0472	0.8183	False	unrecorded	unrecorded	1.1500	1.2108
+E	M10	2.0000	1	1.1196	1.6069	False	unrecorded	unrecorded	1.1500	1.2108
+E	M10	5.0000	1	1.2553	3.8302	True	unrecorded	unrecorded	1.1500	1.2108
+E	M12	0.5000	1	0.7435	0.5217	False	unrecorded	unrecorded	1.0220	1.1568
+E	M12	10.0000	1	1.3355	7.6983	True	unrecorded	unrecorded	1.0220	1.1568
+E	M12	1.0000	1	0.9506	0.8947	False	unrecorded	unrecorded	1.0220	1.1568
+E	M12	2.0000	1	0.9662	1.6545	False	unrecorded	unrecorded	1.0220	1.1568
+E	M12	5.0000	1	1.2672	3.9069	True	unrecorded	unrecorded	1.0220	1.1568
+E	M13	0.5000	1	0.4034	0.5982	False	unrecorded	unrecorded	0.8612	1.0326
+E	M13	10.0000	1	1.0705	7.4197	True	unrecorded	unrecorded	0.8612	1.0326
+E	M13	1.0000	1	0.5041	0.9927	False	unrecorded	unrecorded	0.8612	1.0326
+E	M13	2.0000	1	0.7519	1.7559	False	unrecorded	unrecorded	0.8612	1.0326
+E	M13	5.0000	1	1.0336	3.8299	True	unrecorded	unrecorded	0.8612	1.0326
+E	M17	0.5000	1	0.6060	0.5164	False	unrecorded	unrecorded	0.7440	0.7020
+E	M17	10.0000	1	0.7513	7.7853	True	unrecorded	unrecorded	0.7440	0.7020
+E	M17	1.0000	1	0.5534	0.9118	False	unrecorded	unrecorded	0.7440	0.7020
+E	M17	2.0000	1	0.6888	1.6419	False	unrecorded	unrecorded	0.7440	0.7020
+E	M17	5.0000	1	0.7804	3.9223	True	unrecorded	unrecorded	0.7440	0.7020
+E	M18	0.5000	1	0.6243	0.4976	False	unrecorded	unrecorded	0.7413	0.8578
+E	M18	10.0000	1	0.8741	7.8166	True	unrecorded	unrecorded	0.7413	0.8578
+E	M18	1.0000	1	0.8414	0.8604	False	unrecorded	unrecorded	0.7413	0.8578
+E	M18	2.0000	1	0.5579	1.5874	True	unrecorded	unrecorded	0.7413	0.8578
+E	M18	5.0000	1	0.6339	3.8936	True	unrecorded	unrecorded	0.7413	0.8578
+E	M19	0.5000	1	1.1431	0.5580	False	unrecorded	unrecorded	0.5776	0.8862
+E	M19	10.0000	1	0.9615	7.0541	True	unrecorded	unrecorded	0.5776	0.8862
+E	M19	1.0000	1	0.5043	0.8966	False	unrecorded	unrecorded	0.5776	0.8862
+E	M19	2.0000	1	0.7148	1.5324	False	unrecorded	unrecorded	0.5776	0.8862
+E	M19	5.0000	1	1.0223	3.4015	True	unrecorded	unrecorded	0.5776	0.8862
+E	M1	0.5000	1	1.8904	0.4412	False	unrecorded	unrecorded	1.7207	1.7250
+E	M1	10.0000	1	1.8472	7.5749	True	unrecorded	unrecorded	1.7207	1.7250
+E	M1	1.0000	1	1.7202	0.8093	False	unrecorded	unrecorded	1.7207	1.7250
+E	M1	2.0000	1	1.7468	1.5440	False	unrecorded	unrecorded	1.7207	1.7250
+E	M1	5.0000	1	1.8165	3.7593	True	unrecorded	unrecorded	1.7207	1.7250
+E	M22	0.5000	1	0.4367	0.4619	False	unrecorded	unrecorded	0.4892	0.7233
+E	M22	10.0000	1	0.6776	7.6766	True	unrecorded	unrecorded	0.4892	0.7233
+E	M22	1.0000	1	0.7123	0.8282	False	unrecorded	unrecorded	0.4892	0.7233
+E	M22	2.0000	1	0.5343	1.5858	False	unrecorded	unrecorded	0.4892	0.7233
+E	M22	5.0000	1	0.7636	3.8348	True	unrecorded	unrecorded	0.4892	0.7233
+E	M23	0.5000	1	0.6222	0.4344	False	unrecorded	unrecorded	0.4770	0.5420
+E	M23	10.0000	1	0.5721	7.7392	True	unrecorded	unrecorded	0.4770	0.5420
+E	M23	1.0000	1	-0.3710	0.8040	False	unrecorded	unrecorded	0.4770	0.5420
+E	M23	2.0000	1	0.5579	1.5874	True	unrecorded	unrecorded	0.4770	0.5420
+E	M23	5.0000	1	0.6339	3.8936	True	unrecorded	unrecorded	0.4770	0.5420
+E	M24	0.5000	1	0.0495	0.4345	False	unrecorded	unrecorded	0.4648	0.6861
+E	M24	10.0000	1	0.6521	7.6915	True	unrecorded	unrecorded	0.4648	0.6861
+E	M24	1.0000	1	0.6329	0.8095	False	unrecorded	unrecorded	0.4648	0.6861
+E	M24	2.0000	1	0.5914	1.5630	True	unrecorded	unrecorded	0.4648	0.6861
+E	M24	5.0000	1	0.6333	3.8908	True	unrecorded	unrecorded	0.4648	0.6861
+E	M25	0.5000	1	0.5940	0.4070	False	unrecorded	unrecorded	0.4346	0.6425
+E	M25	10.0000	1	0.6647	7.8394	True	unrecorded	unrecorded	0.4346	0.6425
+E	M25	1.0000	1	0.5507	0.8480	False	unrecorded	unrecorded	0.4346	0.6425
+E	M25	2.0000	1	0.5649	1.6013	False	unrecorded	unrecorded	0.4346	0.6425
+E	M25	5.0000	1	0.6813	3.9289	True	unrecorded	unrecorded	0.4346	0.6425
+E	M27	0.5000	1	0.7997	0.4346	False	unrecorded	unrecorded	0.3992	0.5526
+E	M27	10.0000	1	0.5759	7.8685	True	unrecorded	unrecorded	0.3992	0.5526
+E	M27	1.0000	1	0.0456	0.8060	False	unrecorded	unrecorded	0.3992	0.5526
+E	M27	2.0000	1	0.3749	1.5852	True	unrecorded	unrecorded	0.3992	0.5526
+E	M27	5.0000	1	0.5607	3.8631	True	unrecorded	unrecorded	0.3992	0.5526
+E	M2	0.5000	1	0.7974	0.5886	False	unrecorded	unrecorded	1.5100	1.6844
+E	M2	10.0000	1	1.8103	7.8066	True	unrecorded	unrecorded	1.5100	1.6844
+E	M2	1.0000	1	1.6704	0.9619	False	unrecorded	unrecorded	1.5100	1.6844
+E	M2	2.0000	1	1.5196	1.7383	False	unrecorded	unrecorded	1.5100	1.6844
+E	M2	5.0000	1	1.8117	4.0414	True	unrecorded	unrecorded	1.5100	1.6844
+E	M3	0.5000	1	1.3178	0.4606	False	unrecorded	unrecorded	1.4380	1.4630
+E	M3	10.0000	1	1.5624	7.4844	True	unrecorded	unrecorded	1.4380	1.4630
+E	M3	1.0000	1	1.2581	0.8054	False	unrecorded	unrecorded	1.4380	1.4630
+E	M3	2.0000	1	1.4390	1.6022	False	unrecorded	unrecorded	1.4380	1.4630
+E	M3	5.0000	1	1.5804	3.7692	True	unrecorded	unrecorded	1.4380	1.4630
+E	M4	0.5000	1	0.6202	0.5823	False	unrecorded	unrecorded	1.3718	1.5315
+E	M4	10.0000	1	1.4948	7.9724	True	unrecorded	unrecorded	1.3718	1.5315
+E	M4	1.0000	1	1.2814	0.9584	False	unrecorded	unrecorded	1.3718	1.5315
+E	M4	2.0000	1	1.1762	1.6960	False	unrecorded	unrecorded	1.3718	1.5315
+E	M4	5.0000	1	1.4632	4.0551	True	unrecorded	unrecorded	1.3718	1.5315
+E	M6	0.5000	1	1.0448	0.4700	False	unrecorded	unrecorded	1.3549	1.3298
+E	M6	10.0000	1	1.3761	7.4678	True	unrecorded	unrecorded	1.3549	1.3298
+E	M6	1.0000	1	1.2065	0.8076	False	unrecorded	unrecorded	1.3549	1.3298
+E	M6	2.0000	1	1.2769	1.5277	False	unrecorded	unrecorded	1.3549	1.3298
+E	M6	5.0000	1	1.3626	3.7722	True	unrecorded	unrecorded	1.3549	1.3298
+E	RUN_OUT	0.5000	1	0.3334	0.4522	False	unrecorded	unrecorded		
+E	RUN_OUT	10.0000	1	0.0228	8.3009	True	unrecorded	unrecorded		
+E	RUN_OUT	1.0000	1	0.1783	0.8748	False	unrecorded	unrecorded		
+E	RUN_OUT	2.0000	1	0.0476	1.6499	False	unrecorded	unrecorded		
+E	RUN_OUT	5.0000	1	0.0295	4.0546	True	unrecorded	unrecorded		

@@ -297,8 +297,9 @@ impl<'a> AnchorIndex<'a> {
     ) -> Self {
         let selected = |a: &crate::anchor_db::Anchor| {
             restrict.map_or(true, |s| s.contains(a.enzyme_idx))
-                && genomes
-                    .map_or(true, |g| g.get(a.genome_id as usize).copied().unwrap_or(false))
+                && genomes.map_or(true, |g| {
+                    g.get(a.genome_id as usize).copied().unwrap_or(false)
+                })
         };
         let n_seeds = (max_mismatch + 1) as u8;
         // One seed slot at a time. Holding every slot's pair buffer at once
@@ -329,10 +330,9 @@ impl<'a> AnchorIndex<'a> {
             }
         }
         let mut by_len: Vec<(usize, Vec<&'static Enzyme>)> = Vec::new();
-        for e in PANEL
-            .iter()
-            .filter(|e| db.params.enzymes.contains(e.idx) && restrict.map_or(true, |s| s.contains(e.idx)))
-        {
+        for e in PANEL.iter().filter(|e| {
+            db.params.enzymes.contains(e.idx) && restrict.map_or(true, |s| s.contains(e.idx))
+        }) {
             let len = e.tag_len as usize;
             match by_len.iter_mut().find(|(l, _)| *l == len) {
                 Some((_, v)) => v.push(e),
@@ -563,7 +563,11 @@ impl CountStats {
         self.tag_multi_locus += other.tag_multi_locus;
         self.tag_multi_enzyme += other.tag_multi_enzyme;
         self.tag_matched += other.tag_matched;
-        for (d, s) in self.mismatch_hist.iter_mut().zip(other.mismatch_hist.iter()) {
+        for (d, s) in self
+            .mismatch_hist
+            .iter_mut()
+            .zip(other.mismatch_hist.iter())
+        {
             *d += s;
         }
     }
@@ -1058,10 +1062,7 @@ mod tests {
                 ));
             }
             let mut p = std::env::temp_dir();
-            p.push(format!(
-                "sk2bgrow-{}-par-{f}.fna",
-                std::process::id()
-            ));
+            p.push(format!("sk2bgrow-{}-par-{f}.fna", std::process::id()));
             std::fs::write(&p, body).unwrap();
             files.push(p);
         }
@@ -1137,9 +1138,14 @@ mod tests {
             enzymes: EnzymeSet::from_slice(&enzymes),
             ..BuildParams::default()
         };
-        let db = assemble(params, vec![(meta, anchors, tags), (meta2, anchors2, tags2)]);
+        let db = assemble(
+            params,
+            vec![(meta, anchors, tags), (meta2, anchors2, tags2)],
+        );
         assert!(
-            db.anchors.iter().all(|a| a.flags & crate::anchor_db::flags::UNIQUE_ACROSS_DB != 0),
+            db.anchors
+                .iter()
+                .all(|a| a.flags & crate::anchor_db::flags::UNIQUE_ACROSS_DB != 0),
             "fixture genomes share a tag; the equality check would be vacuous"
         );
 
@@ -1186,7 +1192,10 @@ mod tests {
                 assert_eq!(counts_full[i], 0);
             }
         }
-        assert!(counts_full.iter().sum::<u32>() > 0, "fixture matched nothing");
+        assert!(
+            counts_full.iter().sum::<u32>() > 0,
+            "fixture matched nothing"
+        );
         std::fs::remove_file(rpath).ok();
     }
 

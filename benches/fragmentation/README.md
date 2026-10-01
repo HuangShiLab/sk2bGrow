@@ -10,6 +10,11 @@ order that the fit degrades gracefully, or the honest framing of the whole metho
 is *"for complete references"* and every MAG-based dataset becomes a limitation
 section.
 
+Version note (2026-09-29): `scaffold` now writes an indexable
+`*.scaffolded.fna` directly, so the benchmark no longer depends on the older
+Python canvas rewrite. The accuracy table below is from the earlier workflow;
+regenerate it at the final commit before publication.
+
 ## Design
 
 Pilea's Fig 3 protocol: the same genome, cut into 100 contigs with lognormal

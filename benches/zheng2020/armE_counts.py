@@ -57,6 +57,7 @@ def main():
     ap.add_argument("-k", type=int, default=31)
     ap.add_argument("-s", type=int, default=250)
     ap.add_argument("-o", "--outdir", required=True)
+    ap.add_argument("--sample-name", help="force one combined output sample name")
     ap.add_argument("--cache", default=None, help="pickle of the reference sketch")
     a = ap.parse_args()
 
@@ -75,8 +76,19 @@ def main():
         offsets.append(run)
         run += length
 
-    for fq in a.reads:
-        sample = os.path.basename(fq).rsplit(".", 1)[0]
+    # Group paired mates so count64's within-read deduplication is preserved,
+    # while a k-mer observed on either mate contributes once to the fragment.
+    groups: dict[str, list[str]] = {}
+    if a.sample_name:
+        groups[a.sample_name] = list(a.reads)
+    else:
+        for fq in a.reads:
+            sample = os.path.basename(fq).rsplit(".", 1)[0]
+            for mate in ("_1", "_2"):
+                sample = sample.removesuffix(mate)
+            groups.setdefault(sample, []).append(fq)
+
+    for sample, fqs in groups.items():
         out = os.path.join(a.outdir, f"{sample}.counts.tsv")
         if os.path.exists(out):
             continue
@@ -84,7 +96,8 @@ def main():
         # Pilea's counting convention and must be preserved, so call it rather
         # than re-deriving counts from hash64.
         kmc = {}
-        for record in parse_fastx_file(fq):
+        for fq in fqs:
+          for record in parse_fastx_file(fq):
             count64(record, None, a.k, maxhash, kmc)
         with open(out, "w") as fh:
             fh.write(HEADER + "\n")

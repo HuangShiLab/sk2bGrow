@@ -24,7 +24,10 @@ for f in "$WORK"/reads/*.fq "$WORK"/readsR/*.fq; do
     name=$(basename "$ref" .fna)
     o="$WORK/out/${name}_${s}"
     [ -f "$o/output.tsv" ] && continue
+    # R3 deliberately evaluates the coordinate fit on broken coordinates. Under
+    # the current fail-closed auto rule this choice must be explicit.
     $BIN profile "$f" -d "$WORK/db_$name" -o "$o" --quiet --python "$PY" \
+        --method v_shape --min-coverage 0 \
         >/dev/null 2>&1 || echo "FAIL $name $s"
   done
 done

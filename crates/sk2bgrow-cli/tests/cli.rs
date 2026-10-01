@@ -32,7 +32,7 @@ fn workdir(tag: &str) -> PathBuf {
 
 fn write_genome(dir: &Path, name: &str, len: usize, seed: u64) -> (PathBuf, Vec<u8>) {
     let mut rng = Rng(seed);
-    const B: [u8; 4] = [b'A', b'C', b'G', b'T'];
+    const B: [u8; 4] = *b"ACGT";
     let seq: Vec<u8> = (0..len)
         .map(|_| B[(rng.next_u64() >> 33) as usize % 4])
         .collect();
@@ -80,6 +80,27 @@ fn run(args: &[&str]) -> std::process::Output {
         );
     }
     out
+}
+
+fn write_draft(dir: &Path, name: &str, seq: &[u8], n_contigs: usize) -> PathBuf {
+    let p = dir.join(format!("{name}.fna"));
+    let chunk = seq.len() / n_contigs;
+    let mut body = String::new();
+    for i in 0..n_contigs {
+        let start = i * chunk;
+        let end = if i + 1 == n_contigs {
+            seq.len()
+        } else {
+            start + chunk
+        };
+        body.push_str(&format!(">ctg{i}\n"));
+        for c in seq[start..end].chunks(70) {
+            body.push_str(std::str::from_utf8(c).unwrap());
+            body.push('\n');
+        }
+    }
+    std::fs::write(&p, body).unwrap();
+    p
 }
 
 #[test]
@@ -170,6 +191,14 @@ fn index_profile_audit_round_trip() {
         "g1 (absent from the sample) got {g1_total} vs g0 {g0_total}"
     );
 
+    let em_text = std::fs::read_to_string(out.join("S1.em.tsv")).unwrap();
+    let mut em_lines = em_text.lines();
+    assert_eq!(
+        em_lines.next().unwrap(),
+        "sample\tgenome_id\tgenome\tcontig_id\tposition\tglobal_position\tenzyme\tstrand\tflags\traw_count\tassigned_weight"
+    );
+    assert_eq!(em_lines.count(), usize::try_from(n_anchors).unwrap());
+
     let stats: serde_json::Value =
         serde_json::from_slice(&std::fs::read(out.join("S1.stats.json")).unwrap()).unwrap();
     assert_eq!(stats["sample"], "S1");
@@ -223,6 +252,51 @@ fn digest_reproduces_the_density_table_shape() {
             "{e} missing from the density table"
         );
     }
+    std::fs::remove_dir_all(dir).ok();
+}
+
+#[test]
+fn scaffold_writes_an_indexable_single_contig_fasta() {
+    let dir = workdir("scaffold-fasta");
+    let (reference, seq) = write_genome(&dir, "reference", 180_000, 61);
+    let db = dir.join("db");
+    run(&[
+        "index",
+        reference.to_str().unwrap(),
+        "-o",
+        db.to_str().unwrap(),
+        "--quiet",
+    ]);
+    let draft = write_draft(&dir, "draft", &seq, 3);
+    let tgt = dir.join("placed.tgt");
+    run(&[
+        "scaffold",
+        draft.to_str().unwrap(),
+        "-d",
+        db.to_str().unwrap(),
+        "-r",
+        "reference",
+        "-o",
+        tgt.to_str().unwrap(),
+        "--quiet",
+    ]);
+    let fasta = dir.join("placed.scaffolded.fna");
+    let text = std::fs::read_to_string(&fasta).unwrap();
+    assert_eq!(
+        text.lines().filter(|line| line.starts_with('>')).count(),
+        1,
+        "the indexable scaffold must have one record"
+    );
+    let bases: usize = text
+        .lines()
+        .filter(|line| !line.starts_with('>') && !line.starts_with('#'))
+        .map(|line| line.trim().len())
+        .sum();
+    assert_eq!(bases, seq.len(), "placed contigs must not be overwritten");
+    let json: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(tgt.with_extension("scaffold.json")).unwrap())
+            .unwrap();
+    assert_eq!(json["placements"].as_array().unwrap().len(), 3);
     std::fs::remove_dir_all(dir).ok();
 }
 

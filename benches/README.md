@@ -4,6 +4,19 @@ The A/B protocol against Pilea. Not a speed benchmark — the question is whethe
 deterministic anchors beat a random sketch at the same coverage, and by how much
 in the 1–2× band where the argument lives.
 
+## Version policy
+
+Every published benchmark row must identify the exact `sk2bGrow` commit, Pilea
+version, read-subsample size, estimator (`--method`) and QC view. A finite
+estimate is not the same outcome as a default-QC-passed estimate. Results
+produced before the fail-closed fragmented-reference rule and fixed-origin
+signed-slope change are historical; rerun the affected grid before promoting
+them to a manuscript.
+
+The 2026-09-30 current-implementation refresh is archived in
+[`refresh_20260930/`](refresh_20260930/) and summarized in
+[`../docs/PAPER_RESULTS.md`](../docs/PAPER_RESULTS.md).
+
 ## Principle
 
 Change **one** thing at a time. Pilea and sk2bGrow differ in both the sketch and
@@ -73,6 +86,11 @@ check `BslFI` first.
 
 PRJNA615952: 16 growth conditions, >300× coverage, measured steady-state growth
 rates 0.4–1.7 h⁻¹. Pilea reaches r = 0.9764.
+
+Report both all-finite and default-QC-passed cells; see
+[`zheng2020/README.md`](zheng2020/README.md). The archived 2026-08-24 run
+showed strong all-finite signal at 1× but no A-arm estimates passed default QC
+at 0.5–1×.
 
 ```bash
 # subsample to 0.5, 1, 2, 5, 10x and run both tools on identical inputs

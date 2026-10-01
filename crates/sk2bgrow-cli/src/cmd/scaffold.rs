@@ -11,7 +11,9 @@ use clap::Args as ClapArgs;
 use sk2bgrow_core::anchor_db::{build_genome, AnchorDb, GC_FLANK};
 use sk2bgrow_core::digest::DigestConfig;
 use sk2bgrow_core::enzyme::parse_selection;
+use sk2bgrow_core::fasta;
 use sk2bgrow_core::scaffold::{apply, scaffold, ScaffoldConfig};
+use sk2bgrow_core::seq::revcomp;
 
 use super::Ctx;
 
@@ -31,6 +33,12 @@ pub struct Args {
     /// Output TGT file for the scaffolded draft.
     #[arg(short, long)]
     pub output: PathBuf,
+
+    /// Single-contig FASTA suitable for `sk2bgrow index` and the default
+    /// coordinate fit. If omitted, it is written next to `output` as
+    /// `<output-stem>.scaffolded.fna`.
+    #[arg(long)]
+    pub index_fasta: Option<PathBuf>,
 
     #[arg(short = 'e', long, default_value = "all")]
     pub enzymes: String,
@@ -95,6 +103,15 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
     ));
 
     draft.write_text(&args.output)?;
+    let fasta_out = args.index_fasta.clone().unwrap_or_else(|| {
+        let stem = args
+            .output
+            .file_stem()
+            .map(|s| format!("{}.scaffolded.fna", s.to_string_lossy()))
+            .unwrap_or_else(|| "scaffolded.fna".to_string());
+        args.output.with_file_name(stem)
+    });
+    write_index_fasta(&args.draft, &result, &fasta_out)?;
     let json = args.output.with_extension("scaffold.json");
     std::fs::write(
         &json,
@@ -106,9 +123,59 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
         }))?,
     )?;
     ctx.say(format!(
-        "wrote {} and {}",
+        "wrote {}, {}, and {}",
         args.output.display(),
+        fasta_out.display(),
         json.display()
     ));
+    Ok(())
+}
+
+/// Emit placed contigs as one pseudo-chromosome in placement order.
+///
+/// Concatenation intentionally uses order-preserving offsets rather than the
+/// original reference starts: overlapping placements therefore cannot overwrite
+/// one another. Rotation and stretch are harmless to the V-fit because it
+/// searches for the origin; order and orientation are what it needs.
+fn write_index_fasta(
+    draft: &std::path::Path,
+    result: &sk2bgrow_core::scaffold::ScaffoldResult,
+    output: &std::path::Path,
+) -> Result<()> {
+    let records = fasta::read_fasta(draft)?;
+    let sequences: Vec<Vec<u8>> = records.iter().map(|record| record.seq.clone()).collect();
+    let mut chunks: Vec<Vec<u8>> =
+        Vec::with_capacity(result.placements.len() + result.unplaced.len());
+    for placement in &result.placements {
+        let seq = sequences.get(placement.contig_id as usize).ok_or_else(|| {
+            anyhow::anyhow!(
+                "scaffold refers to missing contig id {}",
+                placement.contig_id
+            )
+        })?;
+        chunks.push(
+            if placement.orientation == sk2bgrow_core::scaffold::Orientation::Reverse {
+                revcomp(seq)
+            } else {
+                seq.clone()
+            },
+        );
+    }
+    for id in &result.unplaced {
+        let seq = sequences
+            .get(*id as usize)
+            .ok_or_else(|| anyhow::anyhow!("scaffold refers to missing contig id {id}"))?;
+        chunks.push(seq.clone());
+    }
+    let mut joined = Vec::with_capacity(chunks.iter().map(Vec::len).sum());
+    for chunk in chunks {
+        joined.extend_from_slice(&chunk);
+    }
+    let mut body = String::from(">scaffolded\n");
+    for chunk in joined.chunks(70) {
+        body.push_str(&String::from_utf8_lossy(chunk));
+        body.push('\n');
+    }
+    std::fs::write(output, body)?;
     Ok(())
 }

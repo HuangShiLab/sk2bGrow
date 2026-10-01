@@ -133,6 +133,16 @@ Notes:
 Counting diagnostics and the EM result. `containment` for each genome comes from
 here.
 
+### Sidecar: `<sample>.em.tsv`
+
+One row per selected anchor with both `raw_count` and fractional
+`assigned_weight`. Shared anchors carry the EM split; unique anchors keep their
+integer observation. The ZTP model consumes the integer count table, while this
+sidecar is the contract for abundance or dynamics tools that want the assigned
+mass. It is **not** consumed by the current PTR statistics layer: fractional
+counts are incompatible with the zero-truncated count model, and the conservative
+PTR estimate excludes database-shared anchors.
+
 `resolved_rate` (matched ÷ *extracted* tags) is the reference-distance
 diagnostic. It deliberately does not divide by motif hits: with the 16-enzyme
 union a 150 bp read spans several anchors and its edge ones are always truncated,

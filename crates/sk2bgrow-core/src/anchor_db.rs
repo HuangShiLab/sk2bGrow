@@ -326,12 +326,109 @@ impl AnchorDb {
                 anchors.len()
             )));
         }
-        Ok(AnchorDb {
+        let db = AnchorDb {
             params: manifest.params,
             genomes: manifest.genomes,
             anchors,
             tags,
-        })
+        };
+        db.validate()?;
+        Ok(db)
+    }
+}
+
+impl AnchorDb {
+    /// Reject a database that would silently violate invariants used by lookup,
+    /// windowing and coordinate fitting.
+    fn validate(&self) -> Result<()> {
+        if self.genomes.is_empty() {
+            return Err(Sk2bError::Db("database has no genomes".into()));
+        }
+        let mut seen_genome = std::collections::HashSet::new();
+        for g in &self.genomes {
+            if !seen_genome.insert(g.id) {
+                return Err(Sk2bError::Db(format!("duplicate genome id {}", g.id)));
+            }
+            if g.contigs.is_empty() {
+                return Err(Sk2bError::Db(format!("genome {} has no contigs", g.id)));
+            }
+            let mut seen_contig = std::collections::HashSet::new();
+            let mut offset = 0u64;
+            for c in &g.contigs {
+                if !seen_contig.insert(c.id) {
+                    return Err(Sk2bError::Db(format!(
+                        "duplicate contig id {} in genome {}",
+                        c.id, g.id
+                    )));
+                }
+                if c.offset != offset {
+                    return Err(Sk2bError::Db(format!(
+                        "contig {} in genome {} has offset {}; expected {offset}",
+                        c.id, g.id, c.offset
+                    )));
+                }
+                offset = offset.saturating_add(c.length);
+            }
+            if g.genome_len != offset {
+                return Err(Sk2bError::Db(format!(
+                    "genome {} length is {}, but contig lengths sum to {offset}",
+                    g.id, g.genome_len
+                )));
+            }
+        }
+
+        for pair in self.anchors.windows(2) {
+            let (a, b) = (&pair[0], &pair[1]);
+            let key = |x: &Anchor| (x.genome_id, x.contig_id, x.position, x.enzyme_idx);
+            if key(a) > key(b) {
+                return Err(Sk2bError::Db(
+                    "anchors are not sorted by (genome_id, contig_id, position, enzyme_idx)".into(),
+                ));
+            }
+        }
+
+        for (i, a) in self.anchors.iter().enumerate() {
+            let Some(enzyme) = by_idx(a.enzyme_idx) else {
+                return Err(Sk2bError::Db(format!(
+                    "anchor {i} has unknown enzyme_idx {}",
+                    a.enzyme_idx
+                )));
+            };
+            let Some(g) = self.genome(a.genome_id) else {
+                return Err(Sk2bError::Db(format!(
+                    "anchor {i} refers to missing genome id {}",
+                    a.genome_id
+                )));
+            };
+            let Some(c) = g.contigs.iter().find(|c| c.id == a.contig_id) else {
+                return Err(Sk2bError::Db(format!(
+                    "anchor {i} refers to missing contig id {}",
+                    a.contig_id
+                )));
+            };
+            if a.tag_len() != enzyme.tag_len as usize {
+                return Err(Sk2bError::Db(format!(
+                    "anchor {i} has tag length {}, but {} uses {} bp",
+                    a.tag_len(),
+                    enzyme.name,
+                    enzyme.tag_len
+                )));
+            }
+            if a.position.saturating_add(enzyme.tag_len as u64) > c.length {
+                return Err(Sk2bError::Db(format!(
+                    "anchor {i} extends beyond contig {} in genome {}",
+                    c.id, g.id
+                )));
+            }
+            let hash = crate::seq::canonical_hash(&self.tag(i));
+            if hash != a.seq_hash {
+                return Err(Sk2bError::Db(format!(
+                    "anchor {i} seq_hash {} does not match its tag hash {hash}",
+                    a.seq_hash
+                )));
+            }
+        }
+        Ok(())
     }
 }
 

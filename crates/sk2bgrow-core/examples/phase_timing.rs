@@ -70,7 +70,10 @@ fn main() {
 
     let index = AnchorIndex::build(&db, 2);
 
-    for (label, mode, len) in [("wms/150bp", CountMode::Wms, 150), ("2brad/33bp", CountMode::TwoBrad, 33)] {
+    for (label, mode, len) in [
+        ("wms/150bp", CountMode::Wms, 150),
+        ("2brad/33bp", CountMode::TwoBrad, 33),
+    ] {
         let rpath = dir.join(format!("reads-{len}.fna"));
         // Half the reads come from the indexed genome, half from foreign DNA.
         let mut file_rng = Rng(0xbeef + len as u64);
@@ -97,7 +100,7 @@ fn main() {
         };
         eprintln!("--- {label}: 100k reads (50k from the genome, 50k foreign) ---");
         let t = std::time::Instant::now();
-        let (counts, stats) = count_sample(&index, &[rpath.clone()], &cfg).unwrap();
+        let (counts, stats) = count_sample(&index, std::slice::from_ref(&rpath), &cfg).unwrap();
         eprintln!(
             "[phase-timing] {label}: count_sample wall {:.3} s, {} reads, {} matched tags, counts {}",
             t.elapsed().as_secs_f64(),

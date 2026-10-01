@@ -20,6 +20,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 use crate::anchor_db::AnchorDb;
+use crate::enzyme::EnzymeSet;
 
 #[derive(Debug, Clone)]
 pub struct EmConfig {
@@ -70,17 +71,51 @@ pub struct EmResult {
     pub converged: bool,
 }
 
-/// Run the reassignment.
+/// Run the reassignment over the full anchor database.
 ///
 /// `counts` must be parallel to `db.anchors`.
 pub fn reassign(db: &AnchorDb, counts: &[u32], cfg: &EmConfig) -> EmResult {
+    reassign_restricted(db, counts, cfg, None)
+}
+
+/// Run the reassignment after a `--enzymes` restriction.
+///
+/// Restriction changes the experiment: an enzyme that was not counted is not
+/// evidence of absence. Both the shared groups and the unique-anchor coverage
+/// denominator must therefore be restricted in exactly the same way as the
+/// counting index.
+pub fn reassign_restricted(
+    db: &AnchorDb,
+    counts: &[u32],
+    cfg: &EmConfig,
+    restrict: Option<EnzymeSet>,
+) -> EmResult {
     assert_eq!(
         counts.len(),
         db.anchors.len(),
         "counts must be parallel to anchors"
     );
 
-    let groups = db.shared_groups();
+    let selected = |i: usize| restrict.map_or(true, |s| s.contains(db.anchors[i].enzyme_idx));
+    let groups: HashMap<u64, Vec<usize>> = db
+        .shared_groups()
+        .into_iter()
+        .map(|(hash, idxs)| {
+            (
+                hash,
+                idxs.into_iter()
+                    .filter(|&i| selected(i))
+                    .collect::<Vec<_>>(),
+            )
+        })
+        .filter(|(_, idxs)| {
+            idxs.iter()
+                .map(|&i| db.anchors[i].genome_id)
+                .collect::<std::collections::HashSet<_>>()
+                .len()
+                > 1
+        })
+        .collect();
     let mut weights: Vec<f64> = counts.iter().map(|&c| c as f64).collect();
     // Shared anchors start unassigned; their mass is distributed each E step.
     for idxs in groups.values() {
@@ -96,7 +131,7 @@ pub fn reassign(db: &AnchorDb, counts: &[u32], cfg: &EmConfig) -> EmResult {
 
     // Initial abundance from unique anchors alone.
     for &g in &genome_ids {
-        lambda.insert(g, unique_lambda(db, counts, g) + cfg.prior);
+        lambda.insert(g, unique_lambda(db, counts, g, restrict) + cfg.prior);
     }
 
     for it in 1..=cfg.max_iter {
@@ -107,6 +142,7 @@ pub fn reassign(db: &AnchorDb, counts: &[u32], cfg: &EmConfig) -> EmResult {
             // count is the same number recorded once per member. Take it once.
             let observed = idxs
                 .iter()
+                .filter(|&&i| selected(i))
                 .map(|&i| counts[i] as f64)
                 .fold(0.0f64, f64::max);
             if observed == 0.0 {
@@ -129,7 +165,7 @@ pub fn reassign(db: &AnchorDb, counts: &[u32], cfg: &EmConfig) -> EmResult {
         // --- M step: re-estimate abundance from unique anchors ---------------
         let mut max_rel = 0.0f64;
         for &g in &genome_ids {
-            let new = unique_lambda(db, counts, g) + cfg.prior;
+            let new = unique_lambda(db, counts, g, restrict) + cfg.prior;
             let old = lambda[&g];
             let rel = if old > 0.0 {
                 (new - old).abs() / old
@@ -152,7 +188,7 @@ pub fn reassign(db: &AnchorDb, counts: &[u32], cfg: &EmConfig) -> EmResult {
             let mut n_unique = 0usize;
             let mut n_detected = 0usize;
             let mut mass = 0.0f64;
-            for i in range {
+            for i in range.filter(|&i| selected(i)) {
                 let a = &db.anchors[i];
                 mass += weights[i];
                 if a.is_usable() {
@@ -186,11 +222,16 @@ pub fn reassign(db: &AnchorDb, counts: &[u32], cfg: &EmConfig) -> EmResult {
 }
 
 /// Mean count over a genome's usable (unique, chromosomal) anchors.
-fn unique_lambda(db: &AnchorDb, counts: &[u32], genome_id: u32) -> f64 {
+fn unique_lambda(
+    db: &AnchorDb,
+    counts: &[u32],
+    genome_id: u32,
+    restrict: Option<EnzymeSet>,
+) -> f64 {
     let range = db.genome_range(genome_id);
     let mut n = 0usize;
     let mut s = 0u64;
-    for i in range {
+    for i in range.filter(|&i| restrict.map_or(true, |s| s.contains(db.anchors[i].enzyme_idx))) {
         if db.anchors[i].is_usable() {
             n += 1;
             s += counts[i] as u64;
@@ -335,6 +376,54 @@ mod tests {
         assert_eq!(g.n_detected_anchors, 2);
         assert!((g.containment - 0.5).abs() < 1e-12);
         assert!((g.lambda - 2.5).abs() < 1e-12);
+    }
+
+    #[test]
+    fn enzyme_restriction_matches_counting_denominator() {
+        // One g1 unique anchor was not counted because CjePI is restricted out.
+        // Its zero must not dilute the abundance that splits shared mass.
+        let mut db = db_of(&[(1, 0), (2, 0), (99, 0), (11, 1), (12, 1), (99, 1)]);
+        let excluded = db
+            .anchors
+            .iter_mut()
+            .find(|a| a.genome_id == 1 && a.seq_hash == 11)
+            .unwrap();
+        excluded.enzyme_idx = crate::enzyme::by_name("CjePI").unwrap().idx;
+        db.recompute_uniqueness();
+
+        let bcgi = vec![crate::enzyme::by_name("BcgI").unwrap()];
+        let restrict = crate::enzyme::EnzymeSet::from_slice(&bcgi);
+        let counts: Vec<u32> = db
+            .anchors
+            .iter()
+            .map(|a| {
+                if a.seq_hash == 99 {
+                    12
+                } else if restrict.contains(a.enzyme_idx) {
+                    if a.genome_id == 0 {
+                        10
+                    } else {
+                        2
+                    }
+                } else {
+                    100 // counted enzyme is absent, but this row must be excluded
+                }
+            })
+            .collect();
+        let r = reassign_restricted(&db, &counts, &EmConfig::default(), Some(restrict));
+        let shared: Vec<(u32, f64)> = db
+            .anchors
+            .iter()
+            .zip(&r.weights)
+            .filter(|(a, _)| a.seq_hash == 99)
+            .map(|(a, &w)| (a.genome_id, w))
+            .collect();
+        let g0 = shared.iter().find(|&&(g, _)| g == 0).unwrap().1;
+        let g1 = shared.iter().find(|&&(g, _)| g == 1).unwrap().1;
+        assert!((g0 - 10.0).abs() < 1e-6, "g0 share was {g0}, expected 10");
+        assert!((g1 - 2.0).abs() < 1e-6, "g1 share was {g1}, expected 2");
+        let stats1 = r.genomes.iter().find(|g| g.genome_id == 1).unwrap();
+        assert_eq!(stats1.n_unique_anchors, 1);
     }
 
     #[test]

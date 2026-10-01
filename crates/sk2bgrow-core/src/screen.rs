@@ -221,10 +221,7 @@ impl ScreenSketch {
                 Ok(kept)
             })
             .collect::<Result<Vec<_>>>()?;
-        let sizes: Vec<u32> = per_genome
-            .iter()
-            .map(|v| v.len() as u32)
-            .collect();
+        let sizes: Vec<u32> = per_genome.iter().map(|v| v.len() as u32).collect();
 
         let mut pairs: Vec<(u64, u32)> = Vec::new();
         for (gid, hashes) in per_genome.iter().enumerate() {
@@ -262,11 +259,9 @@ impl ScreenSketch {
             sizes: self.sizes.clone(),
         };
         let mpath = dir.join("screen.meta");
-        std::fs::write(&mpath, serde_json::to_vec_pretty(&meta)?).map_err(|e| {
-            Sk2bError::Io {
-                path: mpath,
-                source: e,
-            }
+        std::fs::write(&mpath, serde_json::to_vec_pretty(&meta)?).map_err(|e| Sk2bError::Io {
+            path: mpath,
+            source: e,
         })?;
         let cpath = dir.join("screen.csr");
         let f = std::fs::File::create(&cpath).map_err(|e| Sk2bError::Io {
@@ -467,7 +462,9 @@ mod tests {
                     emitted.push(h);
                 }
             }
-            let want: Vec<u64> = (0..=(seq.len() - k)).map(|i| canonical_hash(&seq[i..i + k])).collect();
+            let want: Vec<u64> = (0..=(seq.len() - k))
+                .map(|i| canonical_hash(&seq[i..i + k]))
+                .collect();
             assert_eq!(emitted, want, "case {case}: roller diverged");
         }
         // Ambiguous bases break the window: nothing spanning an N is emitted.
@@ -481,7 +478,11 @@ mod tests {
             }
         }
         let want: Vec<u64> = (0..=seq.len() - 21)
-            .filter(|&i| seq[i..i + 21].iter().all(|b| matches!(b, b'A' | b'C' | b'G' | b'T')))
+            .filter(|&i| {
+                seq[i..i + 21]
+                    .iter()
+                    .all(|b| matches!(b, b'A' | b'C' | b'G' | b'T'))
+            })
             .map(|i| canonical_hash(&seq[i..i + 21]))
             .collect();
         assert_eq!(emitted, want, "N-containing windows leaked through");
@@ -494,8 +495,8 @@ mod tests {
         let mut rng = Rng(7);
         let g0: Vec<u8> = (0..200_000).map(|_| rng.base()).collect();
         let g1: Vec<u8> = (0..200_000).map(|_| rng.base()).collect();
-        let p0 = write_fasta("screen-g0.fna", &[g0.clone()]);
-        let p1 = write_fasta("screen-g1.fna", &[g1.clone()]);
+        let p0 = write_fasta("screen-g0.fna", std::slice::from_ref(&g0));
+        let p1 = write_fasta("screen-g1.fna", std::slice::from_ref(&g1));
 
         let sketch = ScreenSketch::build(&[p0.clone(), p1.clone()], SCREEN_K, 100).unwrap();
         assert_eq!(sketch.sizes.len(), 2);

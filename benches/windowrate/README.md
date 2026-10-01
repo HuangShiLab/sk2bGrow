@@ -23,6 +23,28 @@ garbage rate of ~1e-6. Under overdispersion the low-rate windows *are* biased up
 (+0.14 to +0.32 log2 median at ≤1×), but that arm's slope is even more compressed, so
 the upward bias is not the compressor either.
 
+## Current-commit refresh (2026-09-30)
+
+The HPC refresh in [`../refresh_20260930/`](../refresh_20260930/) reruns the
+full primary grid plus GC controls after the fixed-origin signed-slope change.
+Genome-level slopes of recovered estimates on truth (`n=15` growing samples per
+cell) are now:
+
+| arm | depth | recovered slope | exact-rate slope |
+|---|---:|---:|---:|
+| pois | 0.5× | 0.774 | 0.999 |
+| pois | 1× | 0.958 | 0.999 |
+| pois | 2× | 1.012 | 0.999 |
+| pois | 5× | 0.995 | 0.999 |
+| nb | 0.5× | 0.701 | 0.967 |
+| nb | 1× | 0.853 | 0.997 |
+| nb | 2× | 0.857 | 0.978 |
+| nb | 5× | 0.982 | 0.992 |
+
+The stationary b=0 mean is now small: 0.099/0.055/0.035/0.026 for Poisson and
+0.033/0.050/0.084/0.036 for NB at 0.5/1/2/5×. The historical sections below are
+the pre-fix mechanism record and should not be quoted as current performance.
+
 ## Design
 
 - Real E. coli K-12 MG1655 (`../genomes/Escherichia_coli_K12.fna`), indexed with the

@@ -13,7 +13,7 @@ use clap::{Args as ClapArgs, ValueEnum};
 use rayon::prelude::*;
 use sk2bgrow_core::anchor_db::AnchorDb;
 use sk2bgrow_core::count::{count_sample, write_count_table, AnchorIndex, CountMode, MatchConfig};
-use sk2bgrow_core::em::{reassign, EmConfig};
+use sk2bgrow_core::em::{reassign_restricted, EmConfig};
 use sk2bgrow_core::window::{assign_windows, WindowPolicy, NO_WINDOW};
 
 use super::{expand_inputs, sample_name, Ctx, READ_EXTS};
@@ -75,6 +75,17 @@ pub struct Args {
     /// Base pairs per window (with `--windowing bp`).
     #[arg(long, default_value_t = 25_000)]
     pub window_bp: u64,
+
+    /// Estimator handed to the Python statistics layer (`auto`, `v_shape` or
+    /// `sorted`). Exposing it here also makes benchmark protocols explicit:
+    /// fragmented references must choose a method rather than rely on an old
+    /// implicit fallback.
+    #[arg(long)]
+    pub method: Option<String>,
+
+    /// QC coverage floor handed to the Python statistics layer.
+    #[arg(long)]
+    pub min_coverage: Option<f64>,
 
     /// Stop after writing count tables; do not run the Python statistics layer.
     #[arg(long)]
@@ -198,7 +209,9 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
             Mode::Wms => CountMode::Wms,
             Mode::TwoBrad => CountMode::TwoBrad,
         },
-        // Shared anchors must keep their counts: the EM below is what resolves them.
+        // Shared anchors are counted here so the EM diagnostics and sidecar can
+        // split them. The main count table deliberately remains raw integer
+        // observations; the current ZTP PTR layer excludes shared anchors.
         keep_multimappers: true,
     };
 
@@ -274,9 +287,11 @@ pub fn run(args: Args, ctx: &Ctx) -> Result<()> {
                 let (counts, stats) = count_sample(&index, files, &cfg)?;
                 (counts, stats, serde_json::Value::Null)
             };
-            let em = reassign(&db, &counts, &EmConfig::default());
+            let em = reassign_restricted(&db, &counts, &EmConfig::default(), restrict);
             let tsv = args.output.join(format!("{name}.counts.tsv"));
             write_count_table(&tsv, name, &db, &counts, &window_ids, true, restrict)?;
+            let em_tsv = args.output.join(format!("{name}.em.tsv"));
+            write_em_table(&em_tsv, name, &db, &counts, &em, restrict)?;
             let statj = args.output.join(format!("{name}.stats.json"));
             std::fs::write(
                 &statj,
@@ -315,6 +330,56 @@ fn describe(p: WindowPolicy) -> String {
         WindowPolicy::EqualAnchors { n } => format!("{n} anchors/window"),
         WindowPolicy::FixedBp { bp } => format!("{bp} bp/window"),
     }
+}
+
+const EM_TABLE_HEADER: &str = "sample\tgenome_id\tgenome\tcontig_id\tposition\tglobal_position\tenzyme\tstrand\tflags\traw_count\tassigned_weight";
+
+/// Write the EM reassigned count for every anchor, including masked/shared rows.
+///
+/// The ZTP window model deliberately consumes only integer observations, so the
+/// main count table remains raw. This sidecar is the inspectable interface for
+/// abundance/dynamics tools that want the fractional assignment instead.
+fn write_em_table(
+    path: &std::path::Path,
+    sample: &str,
+    db: &AnchorDb,
+    counts: &[u32],
+    em: &sk2bgrow_core::em::EmResult,
+    restrict: Option<sk2bgrow_core::enzyme::EnzymeSet>,
+) -> anyhow::Result<()> {
+    use std::io::Write;
+    let f = std::fs::File::create(path)?;
+    let mut w = std::io::BufWriter::new(f);
+    writeln!(w, "{EM_TABLE_HEADER}")?;
+    for (i, a) in db.anchors.iter().enumerate() {
+        if restrict.is_some_and(|s| !s.contains(a.enzyme_idx)) {
+            continue;
+        }
+        let gname = db
+            .genome(a.genome_id)
+            .map(|g| g.name.as_str())
+            .unwrap_or("?");
+        let gpos = db.global_position(a).unwrap_or(a.position);
+        writeln!(
+            w,
+            "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{:.9}",
+            sample,
+            a.genome_id,
+            gname,
+            a.contig_id,
+            a.position,
+            gpos,
+            sk2bgrow_core::enzyme::by_idx(a.enzyme_idx)
+                .map(|e| e.name)
+                .unwrap_or("?"),
+            if a.strand == 0 { '+' } else { '-' },
+            a.flags,
+            counts[i],
+            em.weights[i],
+        )?;
+    }
+    w.flush()?;
+    Ok(())
 }
 
 fn write_windows(
@@ -367,6 +432,12 @@ fn run_python_stats(args: &Args, ctx: &Ctx, count_tables: &[PathBuf]) -> Result<
         .arg(&args.output)
         .arg("--windows")
         .arg(args.output.join("windows.tsv"));
+    if let Some(method) = &args.method {
+        cmd.arg("--method").arg(method);
+    }
+    if let Some(min_coverage) = args.min_coverage {
+        cmd.arg("--min-coverage").arg(min_coverage.to_string());
+    }
     for t in count_tables {
         cmd.arg(t);
     }

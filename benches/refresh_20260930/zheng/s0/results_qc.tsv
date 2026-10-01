@@ -1,0 +1,51 @@
+arm	coverage	view	n_finite	n_pass_qc	pearson_r	spearman	rmse_vs_pred	slope_vs_growth
+A	0.5	all finite estimates	16	0	0.898897	0.873529	0.349514	0.62808
+E	0.5	all finite estimates	16	0	0.696445	0.601328	0.569643	0.840784
+B	0.5	all finite estimates	16	0	0.205906	0.261765	1.19522	0.0861079
+C_relaxed	0.5	all finite estimates	16	16				
+C_default	0.5	all finite estimates	0	0				
+A	1	all finite estimates	16	0	0.890665	0.882353	0.32288	0.857597
+E	1	all finite estimates	16	0	0.816042	0.872701	0.38697	0.848226
+B	1	all finite estimates	16	0	0.421959	0.535294	1.01276	0.129873
+C_relaxed	1	all finite estimates	16	16	0.70917	0.738235	0.598398	0.364152
+C_default	1	all finite estimates	0	0				
+A	2	all finite estimates	16	8	0.953147	0.902941	0.147776	0.837775
+E	2	all finite estimates	16	5	0.861178	0.802652	0.221647	0.894685
+B	2	all finite estimates	16	2	0.756485	0.741176	0.711153	0.284603
+C_relaxed	2	all finite estimates	16	16	0.84627	0.835294	0.27175	0.6173
+C_default	2	all finite estimates	0	0				
+A	5	all finite estimates	16	14	0.96388	0.929412	0.0650141	0.939213
+E	5	all finite estimates	16	15	0.946488	0.876471	0.0782108	0.940173
+B	5	all finite estimates	16	5	0.875673	0.879412	0.354032	0.609836
+C_relaxed	5	all finite estimates	16	16	0.973911	0.976471	0.102027	0.79271
+C_default	5	all finite estimates	0	0				
+A	10	all finite estimates	16	14	0.962733	0.964706	0.0534061	0.931992
+E	10	all finite estimates	16	16	0.860219	0.907217	0.170196	0.761925
+B	10	all finite estimates	16	7	0.902702	0.9	0.246162	0.753547
+C_relaxed	10	all finite estimates	16	16	0.971537	0.938235	0.112846	0.813795
+C_default	10	all finite estimates	16	16	0.971537	0.938235	0.112846	0.813795
+A	0.5	default QC passed	0	0				
+E	0.5	default QC passed	0	0				
+B	0.5	default QC passed	0	0				
+C_relaxed	0.5	default QC passed	16	16				
+C_default	0.5	default QC passed	0	0				
+A	1	default QC passed	0	0				
+E	1	default QC passed	0	0				
+B	1	default QC passed	0	0				
+C_relaxed	1	default QC passed	16	16	0.70917	0.738235	0.598398	0.364152
+C_default	1	default QC passed	0	0				
+A	2	default QC passed	8	8	0.971189	1	0.0942562	0.838575
+E	2	default QC passed	5	5	0.586373	0.4	0.0597861	0.608438
+B	2	default QC passed	2	2				
+C_relaxed	2	default QC passed	16	16	0.84627	0.835294	0.27175	0.6173
+C_default	2	default QC passed	0	0				
+A	5	default QC passed	14	14	0.969753	0.925275	0.0694626	0.964267
+E	5	default QC passed	15	15	0.947046	0.860714	0.0766532	0.938708
+B	5	default QC passed	5	5	0.754891	0.8	0.199547	0.64425
+C_relaxed	5	default QC passed	16	16	0.973911	0.976471	0.102027	0.79271
+C_default	5	default QC passed	0	0				
+A	10	default QC passed	14	14	0.966996	0.973626	0.0505192	0.919521
+E	10	default QC passed	16	16	0.860219	0.907217	0.170196	0.761925
+B	10	default QC passed	7	7	0.759918	0.821429	0.182006	0.653637
+C_relaxed	10	default QC passed	16	16	0.971537	0.938235	0.112846	0.813795
+C_default	10	default QC passed	16	16	0.971537	0.938235	0.112846	0.813795

@@ -93,19 +93,27 @@ pub fn scaffold(
 ) -> ScaffoldResult {
     // Reference tag hash -> global coordinate. Multi-copy tags are dropped: a
     // repeat would vote for several incompatible placements at once.
-    let mut ref_pos: HashMap<u64, u64> = HashMap::new();
-    let mut ambiguous: Vec<u64> = Vec::new();
+    let mut ref_pos: HashMap<u64, (u16, u64)> = HashMap::new();
+    let mut ambiguous: std::collections::HashSet<u64> = std::collections::HashSet::new();
     for a in &db.anchors[db.genome_range(reference_genome_id)] {
-        let Some(gp) = db.global_position(a) else {
+        let Some(_) = db.global_position(a) else {
             continue;
         };
-        if ref_pos.insert(a.seq_hash, gp).is_some() {
-            ambiguous.push(a.seq_hash);
+        let locus = (a.contig_id, a.position);
+        match ref_pos.entry(a.seq_hash) {
+            std::collections::hash_map::Entry::Occupied(existing) => {
+                // Several enzymes can claim the same physical locus. That is
+                // repeated annotation, not a repeat: retain it for placement.
+                if *existing.get() != locus {
+                    ambiguous.insert(a.seq_hash);
+                }
+            }
+            std::collections::hash_map::Entry::Vacant(slot) => {
+                slot.insert(locus);
+            }
         }
     }
-    for h in ambiguous {
-        ref_pos.remove(&h);
-    }
+    ref_pos.retain(|hash, _| !ambiguous.contains(hash));
 
     let mut result = ScaffoldResult::default();
     for contig in &draft.contigs {
@@ -113,7 +121,7 @@ pub fn scaffold(
             .records
             .iter()
             .filter(|r| r.contig_id == contig.id)
-            .filter_map(|r| ref_pos.get(&r.tag_hash).map(|&rp| (r.position, rp)))
+            .filter_map(|r| ref_pos.get(&r.tag_hash).map(|&(_, rp)| (r.position, rp)))
             .collect();
 
         if pairs.len() < cfg.min_tags {
@@ -368,6 +376,28 @@ mod tests {
         let p = &r.placements[0];
         assert_eq!(p.n_tags, 3, "the repeated tag was counted");
         assert_eq!(p.ref_start, 100_000);
+    }
+
+    #[test]
+    fn co_located_enzyme_annotations_do_not_look_like_repeats() {
+        // The same physical locus can be annotated by two enzymes (for example
+        // Bsp24I and CjePI). This must not remove the hash from the placement
+        // map; only the same hash at different loci is ambiguous.
+        let mut db = ref_db(&[(1, 100_000), (2, 101_000), (3, 102_000)]);
+        let duplicate = crate::anchor_db::Anchor {
+            enzyme_idx: 1,
+            ..db.anchors[0]
+        };
+        db.anchors.push(duplicate);
+        db.anchors
+            .sort_by_key(|a| (a.genome_id, a.contig_id, a.position, a.enzyme_idx));
+        db.recompute_uniqueness();
+
+        let draft = draft_of(&[(0, 5_000)], &[(0, 0, 1), (0, 1_000, 2), (0, 2_000, 3)]);
+        let r = scaffold(&draft, &db, 0, &ScaffoldConfig::default());
+        assert_eq!(r.placements.len(), 1);
+        assert_eq!(r.placements[0].n_tags, 3);
+        assert_eq!(r.placements[0].ref_start, 100_000);
     }
 
     #[test]

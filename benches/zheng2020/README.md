@@ -86,24 +86,54 @@ release build of `sk2bgrow`.
 
 ## Reporting
 
-Report per coverage: Pearson r and Spearman rho against growth rate, RMSE
-against the predicted log2(PTR), the fitted slope, and **the number of
-conditions that yielded an estimate at all** — a tool that reports on 4 of 16
-conditions is not comparable to one that reports on 16, and correlation alone
-hides that.
+Report two distinct counts: how many conditions yielded a finite estimate and
+how many pass the tool's deployed QC. Also report Pearson/Spearman against
+growth rate, RMSE against the predicted log2(PTR), and the fitted slope. A
+tool that returns 16 numbers is not equivalent to one that returns 16 usable
+numbers; conversely, filtering one tool by its default gates while showing the
+other's failed rows is not a controlled comparison.
 
 Record the sk2bGrow commit, the Pilea version, and the subsampling read counts
 with any published number.
 
-## Result (2026-08-24)
+`analyze.py` writes both views to `results_qc.tsv`: all finite estimates and
+default-QC-passed estimates. Set `SK2BGROW_COMMIT` and `PILEA_VERSION` when
+running it.
 
-sk2bGrow commit at time of run: see `git log`. Pilea v1.3.8 (bioconda).
+## Current refresh (2026-09-30)
+
+The current-implementation refresh is archived in
+[`../refresh_20260930/`](../refresh_20260930/) and summarized for manuscript
+use in [`../../docs/PAPER_RESULTS.md`](../../docs/PAPER_RESULTS.md). It uses
+the 17 C1 conditions, three paired subsample seeds, depths 0.5–10×, and all
+five arms; 1,275 output rows were completed.
+
+Mean-across-seed, all-finite Pearson correlations for the principal arms are:
+
+| coverage | A: anchors + V-fit | E: FracMinHash + V-fit |
+|---:|---:|---:|
+| 0.5× | 0.911 | 0.852 |
+| 1× | 0.960 | 0.923 |
+| 2× | 0.966 | 0.962 |
+| 5× | 0.974 | 0.968 |
+| 10× | 0.967 | 0.960 |
+
+Mean default-QC passes are 0/16 A-arm media at 0.5× and 1×, 7/16 at 2×,
+12.7/16 at 5×, and 14/16 at 10×. Thus the current refresh does not license a
+deployable 0.5–1× claim. The historical section below is retained only for
+provenance.
+
+## Result (2026-08-24; QC re-read 2026-09-29)
+
+Exact sk2bGrow commit at the original run was not embedded in `results_raw.tsv`.
+Pilea v1.3.8 (bioconda).
 16 media + stationary control, 600 000 reads/run subsampled to each level.
-Full table in `RESULTS.txt`, per-run values in `results_raw.tsv`.
+Full table in `RESULTS.txt`, per-run values in `results_raw.tsv`, and the
+finite/QC split in `results_qc.tsv`.
 
 ### Correlation with measured growth rate
 
-| coverage | sk2bGrow | Pilea (defaults) | Pilea (gates off) |
+| coverage | sk2bGrow (all finite) | Pilea (defaults) | Pilea (gates off) |
 |---|---:|---:|---:|
 | 0.5x | **0.913** | no estimate (n=0) | undefined — all 16 returned PTR=1.0 |
 | 1x | **0.981** | no estimate (n=0) | 0.889 |
@@ -111,16 +141,31 @@ Full table in `RESULTS.txt`, per-run values in `results_raw.tsv`.
 | 5x | **0.979** | no estimate (n=0) | 0.954 |
 | 10x | 0.968 | 0.971 | 0.971 |
 
-n = 16 in every cell.
+n = 16 finite estimates in every sk2bGrow cell. This is an **estimator view**,
+not a deployed-QC view.
 
 Pilea's published figure on this dataset is r = 0.9764 at full depth; it reaches
 0.972 here at 10x, so the reimplementation-free comparison is consistent with its
 paper.
 
-**The gate is passed.** sk2bGrow is at or above Pilea at every coverage, and the
-margin is where the design report predicted it would be — the 1–2x band. At its
-shipped defaults (`--min-cove 5`) Pilea returns **no estimate at all** below 10x,
-which is defect D1 exactly as described.
+**The estimator gate is passed; the deployability gate is not yet.** In the
+all-finite view sk2bGrow is at or above Pilea gates-off at every coverage, and
+the margin is in the 1–2x band. At Pilea's shipped defaults it returns no
+estimate below 10x. But sk2bGrow's own default QC rejected every A-arm estimate
+at 0.5–1x, and only 8/16 at 2x:
+
+| coverage | A finite | A QC-passed | E finite | E QC-passed | Pilea default estimates |
+|---:|---:|---:|---:|---:|---:|
+| 0.5x | 16 | 0 | 16 | 0 | 0 |
+| 1x | 16 | 0 | 16 | 0 | 0 |
+| 2x | 16 | 8 | 16 | 9 | 0 |
+| 5x | 16 | 12 | 16 | 16 | 0 |
+| 10x | 16 | 12 | 16 | 16 | 16 |
+
+The correct claim is therefore: the coordinate-fit estimator has strong low-
+coverage signal, but the current production QC is too conservative to call
+0.5–1x estimates deployable. Do not compare the all-finite sk2bGrow column
+against Pilea defaults as if both used the same reporting rule.
 
 ### What is actually responsible
 

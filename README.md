@@ -5,8 +5,10 @@ anchors** instead of a random k-mer sketch.
 
 Sixteen Type IIB restriction enzymes cut a genome at motif-defined positions. The
 resulting tags are a sketch — but unlike FracMinHash, one whose loci are *known
-in advance, identical across every sample, and grouped into sixteen independent
-strata*. That difference is what this project is built on.
+in advance, identical across every sample, and grouped into sixteen strata*.
+The panel is not fully independent: every Bsp24I tag is also a CjePI tag, so it
+provides at most fifteen independent enzyme channels. That difference remains
+what this project is built on.
 
 ```
   genomes/*.fna ──digest──▶ TGT v2 ──index──▶ anchor db        (offline, once)
@@ -25,15 +27,18 @@ choice — a random, position-less, unstratified sketch:
 
 | | Pilea | sk2bGrow |
 |---|---|---|
-| **D1** low-coverage truncation bias | needs ≳5× | more observations per window; usable near 1× |
+| **D1** low-coverage truncation bias | needs ≳5× | more observations per window; estimator signal begins near 1× |
 | **D2** no window guarantee | geometric spacing, unbounded gaps | motif-defined; worst gap auditable at build time |
 | **D3** sorted regression rides on extreme order statistics | RANSAC + Tukey patches | anchors have coordinates → fit the V directly |
-| **D4** no real replicates | bootstrap over mixture components | 16 enzymes = 16 independent measurements |
+| **D4** no real replicates | bootstrap over mixture components | 16 enzyme strata; at most 15 independent channels |
 | **D6** GC correction is global and post hoc | one loess for everything | per-enzyme loess at anchor resolution |
 | **D8** multi-fork profiles are non-linear | linear fit | segmented fit, selected by BIC |
 
 The full argument, with the simulations behind it, is in
 [`docs/design/`](docs/design/).
+Claim-level wording rules and current limitations are in
+[`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md) and
+[`docs/PAPER_CLAIMS.md`](docs/PAPER_CLAIMS.md).
 
 ## Install
 
@@ -68,7 +73,13 @@ Fragmented MAG? Give it a coordinate system first:
 
 ```bash
 sk2bgrow scaffold mag.fna -d db -r close_relative -o mag.tgt
+sk2bgrow index mag.scaffolded.fna -o magdb --enzymes all
+sk2bgrow profile reads/*.fq.gz -d magdb -o magout/ --method v_shape
 ```
+
+`scaffold` also writes `mag.scaffolded.fna`, a single order-preserving
+pseudo-contig. This is the indexable path; the TGT is the detailed placement
+record.
 
 `output.tsv` keeps Pilea's column names (`coverage`, `dispersion`, `fraction`,
 `containment`, `PTR`, `log2(PTR)`) so existing benchmark scripts work unchanged,
@@ -115,15 +126,18 @@ make test          # cargo test --workspace && pytest
 
 Milestone **M1** of the plan in [`docs/design/04-roadmap.md`](docs/design/04-roadmap.md):
 the full pipeline runs end to end and recovers planted PTR values in simulation.
-86 Rust tests and 106 Python tests, plus `scripts/smoke.sh`, which builds a
+95 Rust tests and 117 Python tests, plus `scripts/smoke.sh`, which builds a
 1.5 Mb genome with a planted gradient and checks the whole stack recovers it —
-currently log2(PTR) 0.986 against a planted 1.0, origin within 417 bp of the
+currently log2(PTR) 0.985 against a planted 1.0, origin within 417 bp of the
 planted 150 kb, all 16 enzymes fitting and agreeing (I² = 0).
 
-M2 — the A/B benchmark against Pilea on the Zheng E. coli dataset — is the next
-gate, and the honest one: if sk2bGrow does not beat the Pilea baseline at 1×
-subsampling, the premise needs rethinking rather than more engineering. See
-[`benches/README.md`](benches/README.md).
+M2 — the A/B benchmark against Pilea on the Zheng E. coli dataset — has been
+refreshed with three sequencing subsamples on the current implementation. In
+the all-finite view, anchors + V-fit reach mean Pearson r=0.911 at 0.5× and
+0.960 at 1×; FracMinHash + V-fit reaches 0.852 and 0.923. Shipped default QC
+still passes 0/16 media for sk2bGrow at both depths, so these are estimator
+results, not deployed-QC results. See
+[`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md).
 
 ### Findings, and corrections to earlier ones
 
