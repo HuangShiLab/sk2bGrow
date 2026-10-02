@@ -40,3 +40,4 @@ benches/windowrate/work/
 
 # design documents are kept outside the public repo
 *.docx
+!docs/paper/microbiome_submission/*.docx

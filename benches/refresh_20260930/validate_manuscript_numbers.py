@@ -116,6 +116,76 @@ def main():
         ok = close(got, want, 0.0015)
         if not ok: errors.append(f"{name}: paper={want}, data={got}")
         lines.append(f"- {'PASS' if ok else 'FAIL'} {name}: paper={want}, data={got}")
+    # Real-community headline claims.
+    real_text = PAPER.read_text()
+    real_path = ROOT / "benches/realcommunity_20261001/remote_summaries"
+
+    c1 = pd.read_csv(real_path / "c1b_summary_pooled.tsv", sep="\t")
+    c1_checks = [
+        ("C1b evaluable cells at 0.5x", c1.loc[(c1.arm == "A_sk2bgrow") & (c1.depth == 0.5), "recall"].iloc[0], 18, 0),
+        ("C1b evaluable cells at 10x", c1.loc[(c1.arm == "A_sk2bgrow") & (c1.depth == 10.0), "recall"].iloc[0], 18, 0),
+    ]
+    for depth, want in [(0.5, 0.680), (1.0, 0.278), (2.0, 0.561), (5.0, 0.663), (10.0, 0.675)]:
+        got = c1.loc[(c1.arm == "A_sk2bgrow") & (c1.depth == depth), "pearson_mu"].iloc[0]
+        c1_checks.append((f"C1b sk2bGrow r at {depth:g}x", got, want, 0.0006))
+    for depth, want in [(1.0, 0.321), (2.0, 0.868), (5.0, 0.736), (10.0, 0.787)]:
+        got = c1.loc[(c1.arm == "C_relaxed") & (c1.depth == depth), "pearson_mu"].iloc[0]
+        c1_checks.append((f"C1b Pilea gates-off r at {depth:g}x", got, want, 0.0006))
+    for name, got, want, tol in c1_checks:
+        token = str(int(want)) if float(want).is_integer() else f"{want:.3f}"
+        ok = close(got, want, tol) and token in real_text
+        if not ok: errors.append(f"{name}: data={got}, paper_value={want}, text_present={token in real_text}")
+        lines.append(f"- {'PASS' if ok else 'FAIL'} {name}: data={got}, paper={want}")
+
+    c4 = pd.read_csv(real_path / "c4_summary.tsv", sep="\t").set_index("arm")
+    c4_checks = [
+        ("C4 sk2bGrow samples", c4.loc["A_sk2bgrow", "n_samples_ok"], 20),
+        ("C4 sk2bGrow any-estimate MAGs", c4.loc["A_sk2bgrow", "n_mags_any"], 51),
+        ("C4 Pilea any-estimate MAGs", c4.loc["C_pilea_default", "n_mags_any"], 64),
+        ("C4 sk2bGrow protocol MAGs", c4.loc["A_sk2bgrow", "n_mags_protocol"], 2),
+        ("C4 Pilea protocol MAGs", c4.loc["C_pilea_default", "n_mags_protocol"], 18),
+        ("C4 sk2bGrow protocol median r", c4.loc["A_sk2bgrow", "median_r_protocol"], 0.438),
+        ("C4 Pilea protocol median r", c4.loc["C_pilea_default", "median_r_protocol"], 0.520),
+    ]
+    for name, got, want in c4_checks:
+        ok = close(got, want, 0.0006) and (str(int(want)) in real_text if float(want).is_integer() else f"{want:.3f}" in real_text)
+        if not ok: errors.append(f"{name}: data={got}, paper={want}")
+        lines.append(f"- {'PASS' if ok else 'FAIL'} {name}: data={got}, paper={want}")
+
+    c5 = pd.read_csv(real_path / "c5_sample_summary.tsv", sep="\t")
+    c5cost = pd.read_csv(real_path / "c5_cost_per_sample.tsv", sep="\t")
+    sk = c5[c5.arm == "sk2bgrow"]
+    pilea_default = c5[c5.arm == "pilea_default"]
+    pilea_gatesoff = c5[c5.arm == "pilea_gatesoff"]
+    c5_checks = [
+        ("C5 sk2bGrow expected cells", len(sk) * 522, 4698),
+        ("C5 sk2bGrow estimates", sk.n_est.sum(), 4698),
+        ("C5 sk2bGrow QC passes", sk.n_qc_pass.sum(), 484),
+        ("C5 sk2bGrow suspicious estimates", sk.n_suspicious.sum(), 0),
+        ("C5 sk2bGrow mean recall", sk.recall.mean(), 1.0),
+        ("C5 Pilea default estimates", pilea_default.n_est.sum(), 333),
+        ("C5 Pilea default mean recall", pilea_default.recall.mean(), 0.071),
+        ("C5 Pilea gates-off estimates", pilea_gatesoff.n_est.sum(), 1432),
+        ("C5 Pilea gates-off mean recall", pilea_gatesoff.recall.mean(), 0.914),
+        ("C5 sk2bGrow mean wall seconds", c5cost.sk2bgrow_total_min.mean() * 60, 76866),
+        ("C5 Pilea default mean wall seconds", pilea_default.pilea_default_wall_s.mean(), 536),
+        ("C5 Pilea gates-off mean wall seconds", pilea_gatesoff.pilea_gatesoff_wall_s.mean(), 2379),
+    ]
+    for name, got, want in c5_checks:
+        formatted = f"{int(want):,}" if float(want).is_integer() else f"{want:.3f}"
+        ok = close(got, want, 0.7) and formatted in real_text
+        if not ok: errors.append(f"{name}: data={got}, paper={want}, text_token={formatted}")
+        lines.append(f"- {'PASS' if ok else 'FAIL'} {name}: data={got}, paper={want}")
+
+    real_expected_tokens = [
+        "275778f350b87e10c6366bf90884d965fbab45a6",
+        "PRJNA1280254", "PRJNA551656", "PRJNA974210",
+    ]
+    for token in real_expected_tokens:
+        ok = token in real_text
+        if not ok: errors.append(f"real-community provenance token absent: {token}")
+        lines.append(f"- {'PASS' if ok else 'FAIL'} real-community provenance token: {token}")
+
     out = REF / "results/claim_consistency_report.md"
     out.write_text("\n".join(lines) + "\n")
     if errors:

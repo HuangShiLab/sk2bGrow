@@ -103,3 +103,37 @@ Generated from archived TSVs against `docs/paper/manuscript.md`.
 - PASS mixed spurious: paper=0, data=0
 - PASS mixed RMSE: paper=0.14, data=0.13974091666666666
 - PASS mixed bias: paper=0.015, data=0.014872301666666667
+- PASS C1b evaluable cells at 0.5x: data=18, paper=18
+- PASS C1b evaluable cells at 10x: data=18, paper=18
+- PASS C1b sk2bGrow r at 0.5x: data=0.68, paper=0.68
+- PASS C1b sk2bGrow r at 1x: data=0.2775, paper=0.278
+- PASS C1b sk2bGrow r at 2x: data=0.5611, paper=0.561
+- PASS C1b sk2bGrow r at 5x: data=0.6632, paper=0.663
+- PASS C1b sk2bGrow r at 10x: data=0.6751, paper=0.675
+- PASS C1b Pilea gates-off r at 1x: data=0.3213, paper=0.321
+- PASS C1b Pilea gates-off r at 2x: data=0.8678, paper=0.868
+- PASS C1b Pilea gates-off r at 5x: data=0.7358, paper=0.736
+- PASS C1b Pilea gates-off r at 10x: data=0.7873, paper=0.787
+- PASS C4 sk2bGrow samples: data=20, paper=20
+- PASS C4 sk2bGrow any-estimate MAGs: data=51, paper=51
+- PASS C4 Pilea any-estimate MAGs: data=64, paper=64
+- PASS C4 sk2bGrow protocol MAGs: data=2, paper=2
+- PASS C4 Pilea protocol MAGs: data=18, paper=18
+- PASS C4 sk2bGrow protocol median r: data=0.437871281283743, paper=0.438
+- PASS C4 Pilea protocol median r: data=0.5195508219679701, paper=0.52
+- PASS C5 sk2bGrow expected cells: data=4698, paper=4698
+- PASS C5 sk2bGrow estimates: data=4698, paper=4698
+- PASS C5 sk2bGrow QC passes: data=484, paper=484
+- PASS C5 sk2bGrow suspicious estimates: data=0, paper=0
+- PASS C5 sk2bGrow mean recall: data=1.0, paper=1.0
+- PASS C5 Pilea default estimates: data=333, paper=333
+- PASS C5 Pilea default mean recall: data=0.07088122605363978, paper=0.071
+- PASS C5 Pilea gates-off estimates: data=1432, paper=1432
+- PASS C5 Pilea gates-off mean recall: data=0.9144316730523627, paper=0.914
+- PASS C5 sk2bGrow mean wall seconds: data=76865.73666666666, paper=76866
+- PASS C5 Pilea default mean wall seconds: data=536.0255555555555, paper=536
+- PASS C5 Pilea gates-off mean wall seconds: data=2379.4, paper=2379
+- PASS real-community provenance token: 275778f350b87e10c6366bf90884d965fbab45a6
+- PASS real-community provenance token: PRJNA1280254
+- PASS real-community provenance token: PRJNA551656
+- PASS real-community provenance token: PRJNA974210

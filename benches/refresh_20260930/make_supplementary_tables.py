@@ -12,6 +12,14 @@ items=[
  ("S6. R3 threshold sensitivity","results/r3_threshold_sensitivity.tsv"),
  ("S7. Mixed-strain cell-level results","../mixedstrain_20261001/results/sim_cells.tsv"),
  ("S8. Mixed-strain summary","../mixedstrain_20261001/results/sim_summary.tsv"),
+ ("S9. C1b pooled cross-species isolate summary","../realcommunity_20261001/remote_summaries/c1b_summary_pooled.tsv"),
+ ("S10. C1b species-depth cross-species isolate summary","../realcommunity_20261001/remote_summaries/c1b_summary.tsv"),
+ ("S11. C4 marine real-community summary","../realcommunity_20261001/remote_summaries/c4_summary.tsv"),
+ ("S12. C4 marine estimates and growth-rate truth","../realcommunity_20261001/remote_summaries/c4_estimates_truth.tsv"),
+ ("S13. C5 RBC sample summary","../realcommunity_20261001/remote_summaries/c5_sample_summary.tsv"),
+ ("S14. C5 RBC cost per sample","../realcommunity_20261001/remote_summaries/c5_cost_per_sample.tsv"),
+ ("S15. C5 RBC cross-sample consistency, all estimates","../realcommunity_20261001/remote_summaries/c5_cross_sample_consistency_all.tsv"),
+ ("S16. C5 RBC cross-sample consistency, QC-passed estimates","../realcommunity_20261001/remote_summaries/c5_cross_sample_consistency_qc_pass_only.tsv"),
 ]
 lines=["# Supplementary tables",""]
 for title, rel in items:

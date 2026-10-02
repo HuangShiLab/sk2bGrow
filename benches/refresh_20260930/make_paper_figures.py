@@ -11,6 +11,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 REF = Path(__file__).resolve().parent
 MIX = ROOT / "benches/mixedstrain_20261001"
+REAL = ROOT / "benches/realcommunity_20261001/remote_summaries"
 FIG = ROOT / "docs/paper/figures"
 FIG.mkdir(parents=True, exist_ok=True)
 mpl.rcParams.update({
@@ -179,9 +180,77 @@ def mixed_figure():
         ax.legend(frameon=False)
     save(fig, "fig5_mixed_strain")
 
+def realcommunity_figure():
+    c1 = pd.read_csv(REAL / "c1b_summary_pooled.tsv", sep="\t")
+    c4 = pd.read_csv(REAL / "c4_summary.tsv", sep="\t")
+    c5 = pd.read_csv(REAL / "c5_sample_summary.tsv", sep="\t")
+
+    fig, axes = plt.subplots(1, 3, figsize=(10.8, 3.15), constrained_layout=True)
+    colors = {
+        "A_sk2bgrow": "#1f77b4",
+        "C_relaxed": "#9467bd",
+        "C_default": "#8c564b",
+    }
+    labels = {
+        "A_sk2bgrow": "sk2bGrow",
+        "C_relaxed": "Pilea gates-off",
+        "C_default": "Pilea default",
+    }
+
+    ax = axes[0]
+    for arm in ["A_sk2bgrow", "C_relaxed", "C_default"]:
+        d = c1[(c1.arm == arm) & c1.pearson_mu.notna()].sort_values("depth")
+        ax.plot(d.depth, d.pearson_mu, "-o", color=colors[arm], label=labels[arm], ms=4)
+    ax.set(xscale="log", xticks=[0.5, 1, 2, 5, 10], xlabel="Sequencing coverage",
+           ylabel="Pooled Pearson r", title="A  C1b cross-species isolates")
+    ax.get_xaxis().set_major_formatter(mpl.ticker.ScalarFormatter())
+    ax.xaxis.set_minor_locator(mpl.ticker.NullLocator())
+    ax.axhline(0, color="#bbbbbb", lw=0.6)
+    ax.legend(frameon=False, loc="lower right")
+
+    ax = axes[1]
+    d = c4[c4.arm.isin(["A_sk2bgrow", "C_pilea_default"])].copy()
+    x = np.arange(len(d))
+    bars = ax.bar(x, d.n_mags_protocol, width=0.54,
+                  color=["#1f77b4", "#8c564b"])
+    for pos, (_, row) in zip(x, d.iterrows()):
+        ax.text(pos, row.n_mags_protocol + 0.35, f"n={int(row.n_mags_protocol)}",
+                ha="center", fontsize=7)
+        ax.text(pos, row.n_mags_protocol + 2.15,
+                f"median r={row.median_r_protocol:.3f}", ha="center", fontsize=7)
+    ax.set(xticks=x, xticklabels=["sk2bGrow", "Pilea default"], ylim=(0, 25),
+           ylabel="Protocol-comparable MAGs", title="B  C4 marine metagenomes")
+
+    ax = axes[2]
+    agg = (c5[c5.arm.isin(["sk2bgrow", "pilea_default"])]
+           .groupby("arm", as_index=False)
+           .agg(n_est=("n_est", "sum"), n_qc=("n_qc_pass", "sum")))
+    # C5 has arm-specific cost columns; recover each protocol's own mean.
+    wall = {
+        "sk2bgrow": c5.loc[c5.arm == "sk2bgrow", "sk2bgrow_wall_s"].mean(),
+        "pilea_default": c5.loc[c5.arm == "pilea_default", "pilea_default_wall_s"].mean(),
+    }
+    order = ["sk2bgrow", "pilea_default"]
+    agg = agg.set_index("arm").loc[order].reset_index()
+    x = np.arange(len(agg))
+    width = 0.34
+    ax.bar(x - width / 2, agg.n_est, width, label="All estimates", color="#1f77b4")
+    ax.bar(x + width / 2, agg.n_qc, width, label="Default QC passed", color="#f2a660")
+    for pos, row in zip(x, agg.itertuples()):
+        hours = wall[row.arm] / 3600
+        text = f"{hours:.1f} h" if hours >= 1 else f"{wall[row.arm] / 60:.1f} min"
+        ax.text(pos, max(row.n_est, row.n_qc) + 180,
+                f"mean wall={text}", ha="center", fontsize=7)
+    ax.set(xticks=x, xticklabels=["sk2bGrow\n9/9 samples", "Pilea default\n9/9 samples"],
+           ylim=(0, 5500), ylabel="Estimates", title="C  C5 RBC application")
+    ax.legend(frameon=False, loc="upper right")
+
+    save(fig, "fig6_real_community")
+
 pipeline_figure()
 zheng_figure()
 a4_figure()
 r3_figure()
 mixed_figure()
+realcommunity_figure()
 print(f"wrote figures to {FIG}")

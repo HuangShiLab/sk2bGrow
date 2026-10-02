@@ -1,0 +1,3461 @@
+mag	sample	tool	ptr
+PTR_bin_1	May_0	DEMIC	2.2436
+PTR_bin_1	May_0	GRiD	1.28
+PTR_bin_1	May_0	iRep	3.23724458145361
+PTR_bin_1	May_1A	DEMIC	2.43
+PTR_bin_1	May_1A	GRiD	1.38
+PTR_bin_1	May_1A	iRep	3.13957726676339
+PTR_bin_1	May_1B	DEMIC	2.3975
+PTR_bin_1	May_1B	GRiD	1.33
+PTR_bin_1	May_1B	iRep	3.08107971919979
+PTR_bin_1	May_2A	DEMIC	2.4718
+PTR_bin_1	May_2A	GRiD	1.27
+PTR_bin_1	May_2A	iRep	 
+PTR_bin_1	May_2B	DEMIC	2.0197
+PTR_bin_1	May_2B	GRiD	1.32
+PTR_bin_1	May_2B	iRep	 
+PTR_bin_1	May_3A	DEMIC	2.2846
+PTR_bin_1	May_3A	GRiD	1.26
+PTR_bin_1	May_3A	iRep	 
+PTR_bin_1	May_3B	DEMIC	2.1195
+PTR_bin_1	May_3B	GRiD	1.21
+PTR_bin_1	May_3B	iRep	 
+PTR_bin_1	Sept_0	DEMIC	 
+PTR_bin_1	Sept_0	GRiD	 
+PTR_bin_1	Sept_0	iRep	 
+PTR_bin_1	Sept_1A	DEMIC	 
+PTR_bin_1	Sept_1A	GRiD	 
+PTR_bin_1	Sept_1A	iRep	 
+PTR_bin_1	Sept_1B	DEMIC	 
+PTR_bin_1	Sept_1B	GRiD	 
+PTR_bin_1	Sept_1B	iRep	 
+PTR_bin_1	Sept_1C	DEMIC	 
+PTR_bin_1	Sept_1C	GRiD	 
+PTR_bin_1	Sept_1C	iRep	 
+PTR_bin_1	Sept_2A	DEMIC	 
+PTR_bin_1	Sept_2A	GRiD	 
+PTR_bin_1	Sept_2A	iRep	 
+PTR_bin_1	Sept_2B	DEMIC	 
+PTR_bin_1	Sept_2B	GRiD	 
+PTR_bin_1	Sept_2B	iRep	 
+PTR_bin_1	Sept_2C	DEMIC	 
+PTR_bin_1	Sept_2C	GRiD	 
+PTR_bin_1	Sept_2C	iRep	 
+PTR_bin_1	Sept_3A	DEMIC	 
+PTR_bin_1	Sept_3A	GRiD	 
+PTR_bin_1	Sept_3A	iRep	 
+PTR_bin_1	Sept_3B	DEMIC	 
+PTR_bin_1	Sept_3B	GRiD	 
+PTR_bin_1	Sept_3B	iRep	 
+PTR_bin_1	Sept_3C	DEMIC	 
+PTR_bin_1	Sept_3C	GRiD	 
+PTR_bin_1	Sept_3C	iRep	 
+PTR_bin_1	Sept_4A	DEMIC	 
+PTR_bin_1	Sept_4A	GRiD	 
+PTR_bin_1	Sept_4A	iRep	 
+PTR_bin_1	Sept_4B	DEMIC	 
+PTR_bin_1	Sept_4B	GRiD	 
+PTR_bin_1	Sept_4B	iRep	 
+PTR_bin_1	Sept_4C	DEMIC	 
+PTR_bin_1	Sept_4C	GRiD	 
+PTR_bin_1	Sept_4C	iRep	 
+PTR_bin_2	May_0	DEMIC	 
+PTR_bin_2	May_1A	DEMIC	 
+PTR_bin_2	May_1B	DEMIC	 
+PTR_bin_2	May_2A	DEMIC	 
+PTR_bin_2	May_2B	DEMIC	 
+PTR_bin_2	May_3A	DEMIC	 
+PTR_bin_2	May_3B	DEMIC	 
+PTR_bin_2	Sept_0	DEMIC	 
+PTR_bin_2	Sept_1A	DEMIC	 
+PTR_bin_2	Sept_1B	DEMIC	 
+PTR_bin_2	Sept_1C	DEMIC	 
+PTR_bin_2	Sept_2A	DEMIC	 
+PTR_bin_2	Sept_2B	DEMIC	 
+PTR_bin_2	Sept_2C	DEMIC	 
+PTR_bin_2	Sept_3A	DEMIC	 
+PTR_bin_2	Sept_3B	DEMIC	 
+PTR_bin_2	Sept_3C	DEMIC	 
+PTR_bin_2	Sept_4A	DEMIC	 
+PTR_bin_2	Sept_4B	DEMIC	 
+PTR_bin_2	Sept_4C	DEMIC	 
+PTR_bin_3	May_0	DEMIC	3.5985
+PTR_bin_3	May_1A	DEMIC	5.6199
+PTR_bin_3	May_1B	DEMIC	5.3558
+PTR_bin_3	May_2A	DEMIC	3.8475
+PTR_bin_3	May_2B	DEMIC	4.4346
+PTR_bin_3	May_3A	DEMIC	4.8229
+PTR_bin_3	May_3B	DEMIC	4.2392
+PTR_bin_3	Sept_0	DEMIC	 
+PTR_bin_3	Sept_1A	DEMIC	 
+PTR_bin_3	Sept_1B	DEMIC	 
+PTR_bin_3	Sept_1C	DEMIC	 
+PTR_bin_3	Sept_2A	DEMIC	 
+PTR_bin_3	Sept_2B	DEMIC	 
+PTR_bin_3	Sept_2C	DEMIC	 
+PTR_bin_3	Sept_3A	DEMIC	 
+PTR_bin_3	Sept_3B	DEMIC	 
+PTR_bin_3	Sept_3C	DEMIC	 
+PTR_bin_3	Sept_4A	DEMIC	 
+PTR_bin_3	Sept_4B	DEMIC	 
+PTR_bin_3	Sept_4C	DEMIC	 
+PTR_bin_4	May_0	DEMIC	2.6609
+PTR_bin_4	May_1A	DEMIC	2.4966
+PTR_bin_4	May_1B	DEMIC	2.5985
+PTR_bin_4	May_2A	DEMIC	2.8049
+PTR_bin_4	May_2B	DEMIC	2.8899
+PTR_bin_4	May_3A	DEMIC	2.4119
+PTR_bin_4	May_3B	DEMIC	2.7149
+PTR_bin_4	Sept_0	DEMIC	5.8541
+PTR_bin_4	Sept_1A	DEMIC	4.6325
+PTR_bin_4	Sept_1B	DEMIC	5.3337
+PTR_bin_4	Sept_1C	DEMIC	5.5833
+PTR_bin_4	Sept_2A	DEMIC	5.0114
+PTR_bin_4	Sept_2B	DEMIC	5.1391
+PTR_bin_4	Sept_2C	DEMIC	5.6864
+PTR_bin_4	Sept_3A	DEMIC	5.3851
+PTR_bin_4	Sept_3B	DEMIC	4.7074
+PTR_bin_4	Sept_3C	DEMIC	5.9269
+PTR_bin_4	Sept_4A	DEMIC	5.3298
+PTR_bin_4	Sept_4B	DEMIC	5.0665
+PTR_bin_4	Sept_4C	DEMIC	4.5539
+PTR_bin_5	May_0	DEMIC	 
+PTR_bin_5	May_1A	DEMIC	1.3753
+PTR_bin_5	May_1B	DEMIC	1.3468
+PTR_bin_5	May_2A	DEMIC	1.4479
+PTR_bin_5	May_2B	DEMIC	1.5623
+PTR_bin_5	May_3A	DEMIC	1.308
+PTR_bin_5	May_3B	DEMIC	1.282
+PTR_bin_5	Sept_0	DEMIC	 
+PTR_bin_5	Sept_1A	DEMIC	 
+PTR_bin_5	Sept_1B	DEMIC	 
+PTR_bin_5	Sept_1C	DEMIC	 
+PTR_bin_5	Sept_2A	DEMIC	 
+PTR_bin_5	Sept_2B	DEMIC	 
+PTR_bin_5	Sept_2C	DEMIC	 
+PTR_bin_5	Sept_3A	DEMIC	1.6133
+PTR_bin_5	Sept_3B	DEMIC	1.7296
+PTR_bin_5	Sept_3C	DEMIC	1.7218
+PTR_bin_5	Sept_4A	DEMIC	1.5653
+PTR_bin_5	Sept_4B	DEMIC	1.9323
+PTR_bin_5	Sept_4C	DEMIC	1.6234
+PTR_bin_6	May_0	DEMIC	 
+PTR_bin_6	May_0	GRiD	1.34
+PTR_bin_6	May_0	iRep	 
+PTR_bin_6	May_1A	DEMIC	 
+PTR_bin_6	May_1A	GRiD	1.42
+PTR_bin_6	May_1A	iRep	4.36575430880591
+PTR_bin_6	May_1B	DEMIC	 
+PTR_bin_6	May_1B	GRiD	1.48
+PTR_bin_6	May_1B	iRep	4.1178849829959
+PTR_bin_6	May_2A	DEMIC	 
+PTR_bin_6	May_2A	GRiD	1.32
+PTR_bin_6	May_2A	iRep	4.18808868408231
+PTR_bin_6	May_2B	DEMIC	 
+PTR_bin_6	May_2B	GRiD	1.38
+PTR_bin_6	May_2B	iRep	4.1973534315482
+PTR_bin_6	May_3A	DEMIC	 
+PTR_bin_6	May_3A	GRiD	1.31
+PTR_bin_6	May_3A	iRep	4.02506011616869
+PTR_bin_6	May_3B	DEMIC	 
+PTR_bin_6	May_3B	GRiD	1.42
+PTR_bin_6	May_3B	iRep	4.16771947817107
+PTR_bin_6	Sept_0	DEMIC	 
+PTR_bin_6	Sept_0	GRiD	1.32
+PTR_bin_6	Sept_0	iRep	 
+PTR_bin_6	Sept_1A	DEMIC	 
+PTR_bin_6	Sept_1A	GRiD	1.35
+PTR_bin_6	Sept_1A	iRep	 
+PTR_bin_6	Sept_1B	DEMIC	 
+PTR_bin_6	Sept_1B	GRiD	1.24
+PTR_bin_6	Sept_1B	iRep	 
+PTR_bin_6	Sept_1C	DEMIC	 
+PTR_bin_6	Sept_1C	GRiD	1.28
+PTR_bin_6	Sept_1C	iRep	 
+PTR_bin_6	Sept_2A	DEMIC	 
+PTR_bin_6	Sept_2A	GRiD	1.36
+PTR_bin_6	Sept_2A	iRep	 
+PTR_bin_6	Sept_2B	DEMIC	 
+PTR_bin_6	Sept_2B	GRiD	1.57
+PTR_bin_6	Sept_2B	iRep	 
+PTR_bin_6	Sept_2C	DEMIC	 
+PTR_bin_6	Sept_2C	GRiD	1.26
+PTR_bin_6	Sept_2C	iRep	 
+PTR_bin_6	Sept_3A	DEMIC	 
+PTR_bin_6	Sept_3A	GRiD	1.28
+PTR_bin_6	Sept_3A	iRep	 
+PTR_bin_6	Sept_3B	DEMIC	 
+PTR_bin_6	Sept_3B	GRiD	1.3
+PTR_bin_6	Sept_3B	iRep	 
+PTR_bin_6	Sept_3C	DEMIC	 
+PTR_bin_6	Sept_3C	GRiD	1.18
+PTR_bin_6	Sept_3C	iRep	 
+PTR_bin_6	Sept_4A	DEMIC	 
+PTR_bin_6	Sept_4A	GRiD	1.24
+PTR_bin_6	Sept_4A	iRep	 
+PTR_bin_6	Sept_4B	DEMIC	 
+PTR_bin_6	Sept_4B	GRiD	1.3
+PTR_bin_6	Sept_4B	iRep	 
+PTR_bin_6	Sept_4C	DEMIC	 
+PTR_bin_6	Sept_4C	GRiD	1.23
+PTR_bin_6	Sept_4C	iRep	 
+PTR_bin_7	May_0	DEMIC	1.5556
+PTR_bin_7	May_1A	DEMIC	1.6774
+PTR_bin_7	May_1B	DEMIC	1.6511
+PTR_bin_7	May_2A	DEMIC	1.5815
+PTR_bin_7	May_2B	DEMIC	1.6037
+PTR_bin_7	May_3A	DEMIC	1.4827
+PTR_bin_7	May_3B	DEMIC	1.4781
+PTR_bin_7	Sept_0	DEMIC	1.5934
+PTR_bin_7	Sept_1A	DEMIC	1.7307
+PTR_bin_7	Sept_1B	DEMIC	1.6563
+PTR_bin_7	Sept_1C	DEMIC	1.626
+PTR_bin_7	Sept_2A	DEMIC	1.6734
+PTR_bin_7	Sept_2B	DEMIC	1.7309
+PTR_bin_7	Sept_2C	DEMIC	1.6324
+PTR_bin_7	Sept_3A	DEMIC	1.6241
+PTR_bin_7	Sept_3B	DEMIC	1.6451
+PTR_bin_7	Sept_3C	DEMIC	1.624
+PTR_bin_7	Sept_4A	DEMIC	1.6204
+PTR_bin_7	Sept_4B	DEMIC	1.6402
+PTR_bin_7	Sept_4C	DEMIC	1.6096
+PTR_bin_8	May_0	DEMIC	 
+PTR_bin_8	May_1A	DEMIC	 
+PTR_bin_8	May_1B	DEMIC	 
+PTR_bin_8	May_2A	DEMIC	 
+PTR_bin_8	May_2B	DEMIC	 
+PTR_bin_8	May_3A	DEMIC	 
+PTR_bin_8	May_3B	DEMIC	 
+PTR_bin_8	Sept_0	DEMIC	 
+PTR_bin_8	Sept_1A	DEMIC	 
+PTR_bin_8	Sept_1B	DEMIC	 
+PTR_bin_8	Sept_1C	DEMIC	 
+PTR_bin_8	Sept_2A	DEMIC	 
+PTR_bin_8	Sept_2B	DEMIC	 
+PTR_bin_8	Sept_2C	DEMIC	 
+PTR_bin_8	Sept_3A	DEMIC	 
+PTR_bin_8	Sept_3B	DEMIC	 
+PTR_bin_8	Sept_3C	DEMIC	 
+PTR_bin_8	Sept_4A	DEMIC	 
+PTR_bin_8	Sept_4B	DEMIC	 
+PTR_bin_8	Sept_4C	DEMIC	 
+PTR_bin_9	May_0	DEMIC	4.2508
+PTR_bin_9	May_1A	DEMIC	4.6289
+PTR_bin_9	May_1B	DEMIC	4.6266
+PTR_bin_9	May_2A	DEMIC	4.5626
+PTR_bin_9	May_2B	DEMIC	4.206
+PTR_bin_9	May_3A	DEMIC	4.5195
+PTR_bin_9	May_3B	DEMIC	4.4298
+PTR_bin_9	Sept_0	DEMIC	7.6703
+PTR_bin_9	Sept_1A	DEMIC	7.9165
+PTR_bin_9	Sept_1B	DEMIC	6.8687
+PTR_bin_9	Sept_1C	DEMIC	7.6444
+PTR_bin_9	Sept_2A	DEMIC	7.7959
+PTR_bin_9	Sept_2B	DEMIC	6.4706
+PTR_bin_9	Sept_2C	DEMIC	8.4932
+PTR_bin_9	Sept_3A	DEMIC	6.8003
+PTR_bin_9	Sept_3B	DEMIC	6.6486
+PTR_bin_9	Sept_3C	DEMIC	7.4584
+PTR_bin_9	Sept_4A	DEMIC	5.9767
+PTR_bin_9	Sept_4B	DEMIC	6.7014
+PTR_bin_9	Sept_4C	DEMIC	6.911
+PTR_bin_10	May_0	DEMIC	 
+PTR_bin_10	May_1A	DEMIC	 
+PTR_bin_10	May_1B	DEMIC	 
+PTR_bin_10	May_2A	DEMIC	 
+PTR_bin_10	May_2B	DEMIC	 
+PTR_bin_10	May_3A	DEMIC	 
+PTR_bin_10	May_3B	DEMIC	 
+PTR_bin_10	Sept_0	DEMIC	 
+PTR_bin_10	Sept_1A	DEMIC	 
+PTR_bin_10	Sept_1B	DEMIC	 
+PTR_bin_10	Sept_1C	DEMIC	 
+PTR_bin_10	Sept_2A	DEMIC	 
+PTR_bin_10	Sept_2B	DEMIC	 
+PTR_bin_10	Sept_2C	DEMIC	 
+PTR_bin_10	Sept_3A	DEMIC	 
+PTR_bin_10	Sept_3B	DEMIC	 
+PTR_bin_10	Sept_3C	DEMIC	 
+PTR_bin_10	Sept_4A	DEMIC	 
+PTR_bin_10	Sept_4B	DEMIC	 
+PTR_bin_10	Sept_4C	DEMIC	 
+PTR_bin_11	May_0	DEMIC	1.9737
+PTR_bin_11	May_0	GRiD	1.72
+PTR_bin_11	May_0	iRep	3.90449672173883
+PTR_bin_11	May_1A	DEMIC	2.1672
+PTR_bin_11	May_1A	GRiD	1.64
+PTR_bin_11	May_1A	iRep	3.91102587567398
+PTR_bin_11	May_1B	DEMIC	2.273
+PTR_bin_11	May_1B	GRiD	1.67
+PTR_bin_11	May_1B	iRep	3.98750012208237
+PTR_bin_11	May_2A	DEMIC	2.2641
+PTR_bin_11	May_2A	GRiD	1.78
+PTR_bin_11	May_2A	iRep	4.00902390519811
+PTR_bin_11	May_2B	DEMIC	2.0988
+PTR_bin_11	May_2B	GRiD	1.82
+PTR_bin_11	May_2B	iRep	3.88044993785517
+PTR_bin_11	May_3A	DEMIC	2.2774
+PTR_bin_11	May_3A	GRiD	1.79
+PTR_bin_11	May_3A	iRep	3.93414776769998
+PTR_bin_11	May_3B	DEMIC	2.1628
+PTR_bin_11	May_3B	GRiD	1.86
+PTR_bin_11	May_3B	iRep	3.85983348939632
+PTR_bin_11	Sept_0	DEMIC	2.0935
+PTR_bin_11	Sept_0	GRiD	2.5
+PTR_bin_11	Sept_0	iRep	 
+PTR_bin_11	Sept_1A	DEMIC	2.7307
+PTR_bin_11	Sept_1A	GRiD	2.07
+PTR_bin_11	Sept_1A	iRep	 
+PTR_bin_11	Sept_1B	DEMIC	2.1728
+PTR_bin_11	Sept_1B	GRiD	2.28
+PTR_bin_11	Sept_1B	iRep	 
+PTR_bin_11	Sept_1C	DEMIC	2.5453
+PTR_bin_11	Sept_1C	GRiD	2.34
+PTR_bin_11	Sept_1C	iRep	 
+PTR_bin_11	Sept_2A	DEMIC	2.455
+PTR_bin_11	Sept_2A	GRiD	2.19
+PTR_bin_11	Sept_2A	iRep	 
+PTR_bin_11	Sept_2B	DEMIC	2.4785
+PTR_bin_11	Sept_2B	GRiD	1.85
+PTR_bin_11	Sept_2B	iRep	 
+PTR_bin_11	Sept_2C	DEMIC	2.4133
+PTR_bin_11	Sept_2C	GRiD	2.52
+PTR_bin_11	Sept_2C	iRep	 
+PTR_bin_11	Sept_3A	DEMIC	2.6223
+PTR_bin_11	Sept_3A	GRiD	2.62
+PTR_bin_11	Sept_3A	iRep	 
+PTR_bin_11	Sept_3B	DEMIC	2.4428
+PTR_bin_11	Sept_3B	GRiD	2.28
+PTR_bin_11	Sept_3B	iRep	 
+PTR_bin_11	Sept_3C	DEMIC	2.6323
+PTR_bin_11	Sept_3C	GRiD	2.45
+PTR_bin_11	Sept_3C	iRep	 
+PTR_bin_11	Sept_4A	DEMIC	2.9883
+PTR_bin_11	Sept_4A	GRiD	2.55
+PTR_bin_11	Sept_4A	iRep	 
+PTR_bin_11	Sept_4B	DEMIC	2.9451
+PTR_bin_11	Sept_4B	GRiD	2.63
+PTR_bin_11	Sept_4B	iRep	 
+PTR_bin_11	Sept_4C	DEMIC	2.8469
+PTR_bin_11	Sept_4C	GRiD	2.67
+PTR_bin_11	Sept_4C	iRep	 
+PTR_bin_12	May_0	DEMIC	1.3748
+PTR_bin_12	May_1A	DEMIC	1.5087
+PTR_bin_12	May_1B	DEMIC	1.5005
+PTR_bin_12	May_2A	DEMIC	1.5187
+PTR_bin_12	May_2B	DEMIC	1.5068
+PTR_bin_12	May_3A	DEMIC	1.4952
+PTR_bin_12	May_3B	DEMIC	1.5108
+PTR_bin_12	Sept_0	DEMIC	 
+PTR_bin_12	Sept_1A	DEMIC	 
+PTR_bin_12	Sept_1B	DEMIC	 
+PTR_bin_12	Sept_1C	DEMIC	 
+PTR_bin_12	Sept_2A	DEMIC	 
+PTR_bin_12	Sept_2B	DEMIC	 
+PTR_bin_12	Sept_2C	DEMIC	 
+PTR_bin_12	Sept_3A	DEMIC	 
+PTR_bin_12	Sept_3B	DEMIC	 
+PTR_bin_12	Sept_3C	DEMIC	 
+PTR_bin_12	Sept_4A	DEMIC	 
+PTR_bin_12	Sept_4B	DEMIC	 
+PTR_bin_12	Sept_4C	DEMIC	 
+PTR_bin_13	May_0	DEMIC	1.2868
+PTR_bin_13	May_1A	DEMIC	1.2975
+PTR_bin_13	May_1B	DEMIC	1.3369
+PTR_bin_13	May_2A	DEMIC	1.2645
+PTR_bin_13	May_2B	DEMIC	1.2422
+PTR_bin_13	May_3A	DEMIC	1.2376
+PTR_bin_13	May_3B	DEMIC	1.2461
+PTR_bin_13	Sept_0	DEMIC	 
+PTR_bin_13	Sept_1A	DEMIC	 
+PTR_bin_13	Sept_1B	DEMIC	 
+PTR_bin_13	Sept_1C	DEMIC	 
+PTR_bin_13	Sept_2A	DEMIC	 
+PTR_bin_13	Sept_2B	DEMIC	 
+PTR_bin_13	Sept_2C	DEMIC	 
+PTR_bin_13	Sept_3A	DEMIC	1.4582
+PTR_bin_13	Sept_3B	DEMIC	1.2709
+PTR_bin_13	Sept_3C	DEMIC	 
+PTR_bin_13	Sept_4A	DEMIC	 
+PTR_bin_13	Sept_4B	DEMIC	 
+PTR_bin_13	Sept_4C	DEMIC	 
+PTR_bin_14	May_0	DEMIC	1.4526
+PTR_bin_14	May_1A	DEMIC	1.491
+PTR_bin_14	May_1B	DEMIC	1.2311
+PTR_bin_14	May_2A	DEMIC	1.3331
+PTR_bin_14	May_2B	DEMIC	1.488
+PTR_bin_14	May_3A	DEMIC	1.6813
+PTR_bin_14	May_3B	DEMIC	1.5945
+PTR_bin_14	Sept_0	DEMIC	1.9474
+PTR_bin_14	Sept_1A	DEMIC	1.8445
+PTR_bin_14	Sept_1B	DEMIC	2.2589
+PTR_bin_14	Sept_1C	DEMIC	2.9991
+PTR_bin_14	Sept_2A	DEMIC	2.0653
+PTR_bin_14	Sept_2B	DEMIC	2.1394
+PTR_bin_14	Sept_2C	DEMIC	2.2598
+PTR_bin_14	Sept_3A	DEMIC	2.108
+PTR_bin_14	Sept_3B	DEMIC	2.5507
+PTR_bin_14	Sept_3C	DEMIC	2.1465
+PTR_bin_14	Sept_4A	DEMIC	2.8335
+PTR_bin_14	Sept_4B	DEMIC	2.6488
+PTR_bin_14	Sept_4C	DEMIC	1.8825
+PTR_bin_15	May_0	DEMIC	1.8954
+PTR_bin_15	May_1A	DEMIC	2.0941
+PTR_bin_15	May_1B	DEMIC	2.1254
+PTR_bin_15	May_2A	DEMIC	1.9469
+PTR_bin_15	May_2B	DEMIC	1.9045
+PTR_bin_15	May_3A	DEMIC	1.7913
+PTR_bin_15	May_3B	DEMIC	1.8854
+PTR_bin_15	Sept_0	DEMIC	 
+PTR_bin_15	Sept_1A	DEMIC	 
+PTR_bin_15	Sept_1B	DEMIC	 
+PTR_bin_15	Sept_1C	DEMIC	 
+PTR_bin_15	Sept_2A	DEMIC	 
+PTR_bin_15	Sept_2B	DEMIC	 
+PTR_bin_15	Sept_2C	DEMIC	 
+PTR_bin_15	Sept_3A	DEMIC	 
+PTR_bin_15	Sept_3B	DEMIC	 
+PTR_bin_15	Sept_3C	DEMIC	 
+PTR_bin_15	Sept_4A	DEMIC	 
+PTR_bin_15	Sept_4B	DEMIC	 
+PTR_bin_15	Sept_4C	DEMIC	 
+PTR_bin_16	May_0	DEMIC	1.5025
+PTR_bin_16	May_0	GRiD	1.33
+PTR_bin_16	May_0	iRep	1.91653210513082
+PTR_bin_16	May_1A	DEMIC	1.3919
+PTR_bin_16	May_1A	GRiD	1.34
+PTR_bin_16	May_1A	iRep	2.19751025138576
+PTR_bin_16	May_1B	DEMIC	1.4291
+PTR_bin_16	May_1B	GRiD	1.39
+PTR_bin_16	May_1B	iRep	2.06179356213237
+PTR_bin_16	May_2A	DEMIC	1.4621
+PTR_bin_16	May_2A	GRiD	1.27
+PTR_bin_16	May_2A	iRep	 
+PTR_bin_16	May_2B	DEMIC	2.0923
+PTR_bin_16	May_2B	GRiD	1.38
+PTR_bin_16	May_2B	iRep	 
+PTR_bin_16	May_3A	DEMIC	1.304
+PTR_bin_16	May_3A	GRiD	1.27
+PTR_bin_16	May_3A	iRep	 
+PTR_bin_16	May_3B	DEMIC	1.5807
+PTR_bin_16	May_3B	GRiD	1.32
+PTR_bin_16	May_3B	iRep	 
+PTR_bin_16	Sept_0	DEMIC	1.4619
+PTR_bin_16	Sept_0	GRiD	1.23
+PTR_bin_16	Sept_0	iRep	 
+PTR_bin_16	Sept_1A	DEMIC	1.4133
+PTR_bin_16	Sept_1A	GRiD	1.27
+PTR_bin_16	Sept_1A	iRep	 
+PTR_bin_16	Sept_1B	DEMIC	1.2076
+PTR_bin_16	Sept_1B	GRiD	1.27
+PTR_bin_16	Sept_1B	iRep	 
+PTR_bin_16	Sept_1C	DEMIC	1.2596
+PTR_bin_16	Sept_1C	GRiD	1.24
+PTR_bin_16	Sept_1C	iRep	 
+PTR_bin_16	Sept_2A	DEMIC	 
+PTR_bin_16	Sept_2A	GRiD	1.23
+PTR_bin_16	Sept_2A	iRep	 
+PTR_bin_16	Sept_2B	DEMIC	1.5675
+PTR_bin_16	Sept_2B	GRiD	1.27
+PTR_bin_16	Sept_2B	iRep	 
+PTR_bin_16	Sept_2C	DEMIC	1.2885
+PTR_bin_16	Sept_2C	GRiD	1.41
+PTR_bin_16	Sept_2C	iRep	 
+PTR_bin_16	Sept_3A	DEMIC	 
+PTR_bin_16	Sept_3A	GRiD	1.49
+PTR_bin_16	Sept_3A	iRep	 
+PTR_bin_16	Sept_3B	DEMIC	 
+PTR_bin_16	Sept_3B	GRiD	1.78
+PTR_bin_16	Sept_3B	iRep	 
+PTR_bin_16	Sept_3C	DEMIC	 
+PTR_bin_16	Sept_3C	GRiD	1.37
+PTR_bin_16	Sept_3C	iRep	 
+PTR_bin_16	Sept_4A	DEMIC	 
+PTR_bin_16	Sept_4A	GRiD	1.67
+PTR_bin_16	Sept_4A	iRep	 
+PTR_bin_16	Sept_4B	DEMIC	 
+PTR_bin_16	Sept_4B	GRiD	1.48
+PTR_bin_16	Sept_4B	iRep	 
+PTR_bin_16	Sept_4C	DEMIC	 
+PTR_bin_16	Sept_4C	GRiD	1.84
+PTR_bin_16	Sept_4C	iRep	 
+PTR_bin_17	May_0	DEMIC	 
+PTR_bin_17	May_0	GRiD	1.92
+PTR_bin_17	May_0	iRep	2.27595421045493
+PTR_bin_17	May_1A	DEMIC	 
+PTR_bin_17	May_1A	GRiD	1.56
+PTR_bin_17	May_1A	iRep	 
+PTR_bin_17	May_1B	DEMIC	 
+PTR_bin_17	May_1B	GRiD	1.36
+PTR_bin_17	May_1B	iRep	2.60109827208977
+PTR_bin_17	May_2A	DEMIC	 
+PTR_bin_17	May_2A	GRiD	1.46
+PTR_bin_17	May_2A	iRep	 
+PTR_bin_17	May_2B	DEMIC	 
+PTR_bin_17	May_2B	GRiD	2.15
+PTR_bin_17	May_2B	iRep	 
+PTR_bin_17	May_3A	DEMIC	 
+PTR_bin_17	May_3A	GRiD	1.88
+PTR_bin_17	May_3A	iRep	 
+PTR_bin_17	May_3B	DEMIC	 
+PTR_bin_17	May_3B	GRiD	1.59
+PTR_bin_17	May_3B	iRep	 
+PTR_bin_17	Sept_0	DEMIC	 
+PTR_bin_17	Sept_0	GRiD	1.38
+PTR_bin_17	Sept_0	iRep	 
+PTR_bin_17	Sept_1A	DEMIC	 
+PTR_bin_17	Sept_1A	GRiD	1.29
+PTR_bin_17	Sept_1A	iRep	 
+PTR_bin_17	Sept_1B	DEMIC	 
+PTR_bin_17	Sept_1B	GRiD	1.52
+PTR_bin_17	Sept_1B	iRep	 
+PTR_bin_17	Sept_1C	DEMIC	 
+PTR_bin_17	Sept_1C	GRiD	1.36
+PTR_bin_17	Sept_1C	iRep	 
+PTR_bin_17	Sept_2A	DEMIC	 
+PTR_bin_17	Sept_2A	GRiD	1.26
+PTR_bin_17	Sept_2A	iRep	 
+PTR_bin_17	Sept_2B	DEMIC	 
+PTR_bin_17	Sept_2B	GRiD	1.38
+PTR_bin_17	Sept_2B	iRep	 
+PTR_bin_17	Sept_2C	DEMIC	 
+PTR_bin_17	Sept_2C	GRiD	1.54
+PTR_bin_17	Sept_2C	iRep	 
+PTR_bin_17	Sept_3A	DEMIC	 
+PTR_bin_17	Sept_3A	GRiD	1.61
+PTR_bin_17	Sept_3A	iRep	 
+PTR_bin_17	Sept_3B	DEMIC	 
+PTR_bin_17	Sept_3B	GRiD	1.63
+PTR_bin_17	Sept_3B	iRep	 
+PTR_bin_17	Sept_3C	DEMIC	 
+PTR_bin_17	Sept_3C	GRiD	1.55
+PTR_bin_17	Sept_3C	iRep	 
+PTR_bin_17	Sept_4A	DEMIC	 
+PTR_bin_17	Sept_4A	GRiD	1.78
+PTR_bin_17	Sept_4A	iRep	 
+PTR_bin_17	Sept_4B	DEMIC	 
+PTR_bin_17	Sept_4B	GRiD	1.91
+PTR_bin_17	Sept_4B	iRep	 
+PTR_bin_17	Sept_4C	DEMIC	 
+PTR_bin_17	Sept_4C	GRiD	1.88
+PTR_bin_17	Sept_4C	iRep	 
+PTR_bin_18	May_0	DEMIC	1.4208
+PTR_bin_18	May_1A	DEMIC	1.4095
+PTR_bin_18	May_1B	DEMIC	1.4411
+PTR_bin_18	May_2A	DEMIC	1.3198
+PTR_bin_18	May_2B	DEMIC	1.3103
+PTR_bin_18	May_3A	DEMIC	1.367
+PTR_bin_18	May_3B	DEMIC	1.4308
+PTR_bin_18	Sept_0	DEMIC	1.6958
+PTR_bin_18	Sept_1A	DEMIC	1.2459
+PTR_bin_18	Sept_1B	DEMIC	1.5006
+PTR_bin_18	Sept_1C	DEMIC	1.4027
+PTR_bin_18	Sept_2A	DEMIC	1.4682
+PTR_bin_18	Sept_2B	DEMIC	1.3766
+PTR_bin_18	Sept_2C	DEMIC	1.5807
+PTR_bin_18	Sept_3A	DEMIC	1.4254
+PTR_bin_18	Sept_3B	DEMIC	1.31
+PTR_bin_18	Sept_3C	DEMIC	1.3032
+PTR_bin_18	Sept_4A	DEMIC	1.3785
+PTR_bin_18	Sept_4B	DEMIC	1.3082
+PTR_bin_18	Sept_4C	DEMIC	1.2544
+PTR_bin_19	May_0	DEMIC	 
+PTR_bin_19	May_1A	DEMIC	 
+PTR_bin_19	May_1B	DEMIC	 
+PTR_bin_19	May_2A	DEMIC	 
+PTR_bin_19	May_2B	DEMIC	 
+PTR_bin_19	May_3A	DEMIC	 
+PTR_bin_19	May_3B	DEMIC	 
+PTR_bin_19	Sept_0	DEMIC	 
+PTR_bin_19	Sept_1A	DEMIC	 
+PTR_bin_19	Sept_1B	DEMIC	 
+PTR_bin_19	Sept_1C	DEMIC	 
+PTR_bin_19	Sept_2A	DEMIC	 
+PTR_bin_19	Sept_2B	DEMIC	 
+PTR_bin_19	Sept_2C	DEMIC	 
+PTR_bin_19	Sept_3A	DEMIC	 
+PTR_bin_19	Sept_3B	DEMIC	 
+PTR_bin_19	Sept_3C	DEMIC	 
+PTR_bin_19	Sept_4A	DEMIC	 
+PTR_bin_19	Sept_4B	DEMIC	 
+PTR_bin_19	Sept_4C	DEMIC	 
+PTR_bin_20	May_0	DEMIC	 
+PTR_bin_20	May_1A	DEMIC	1.3869
+PTR_bin_20	May_1B	DEMIC	1.3945
+PTR_bin_20	May_2A	DEMIC	1.5856
+PTR_bin_20	May_2B	DEMIC	1.5647
+PTR_bin_20	May_3A	DEMIC	1.3295
+PTR_bin_20	May_3B	DEMIC	1.3885
+PTR_bin_20	Sept_0	DEMIC	 
+PTR_bin_20	Sept_1A	DEMIC	 
+PTR_bin_20	Sept_1B	DEMIC	 
+PTR_bin_20	Sept_1C	DEMIC	 
+PTR_bin_20	Sept_2A	DEMIC	 
+PTR_bin_20	Sept_2B	DEMIC	 
+PTR_bin_20	Sept_2C	DEMIC	 
+PTR_bin_20	Sept_3A	DEMIC	 
+PTR_bin_20	Sept_3B	DEMIC	 
+PTR_bin_20	Sept_3C	DEMIC	 
+PTR_bin_20	Sept_4A	DEMIC	 
+PTR_bin_20	Sept_4B	DEMIC	 
+PTR_bin_20	Sept_4C	DEMIC	 
+PTR_bin_21	May_0	DEMIC	 
+PTR_bin_21	May_1A	DEMIC	 
+PTR_bin_21	May_1B	DEMIC	 
+PTR_bin_21	May_2A	DEMIC	 
+PTR_bin_21	May_2B	DEMIC	 
+PTR_bin_21	May_3A	DEMIC	 
+PTR_bin_21	May_3B	DEMIC	 
+PTR_bin_21	Sept_0	DEMIC	 
+PTR_bin_21	Sept_1A	DEMIC	 
+PTR_bin_21	Sept_1B	DEMIC	 
+PTR_bin_21	Sept_1C	DEMIC	 
+PTR_bin_21	Sept_2A	DEMIC	1.6552
+PTR_bin_21	Sept_2B	DEMIC	2.0102
+PTR_bin_21	Sept_2C	DEMIC	2.431
+PTR_bin_21	Sept_3A	DEMIC	2.0458
+PTR_bin_21	Sept_3B	DEMIC	2.0186
+PTR_bin_21	Sept_3C	DEMIC	2.0261
+PTR_bin_21	Sept_4A	DEMIC	1.3402
+PTR_bin_21	Sept_4B	DEMIC	1.3464
+PTR_bin_21	Sept_4C	DEMIC	1.3993
+PTR_bin_22	May_0	DEMIC	10.0391
+PTR_bin_22	May_1A	DEMIC	11.4994
+PTR_bin_22	May_1B	DEMIC	11.8274
+PTR_bin_22	May_2A	DEMIC	9.0866
+PTR_bin_22	May_2B	DEMIC	9.8936
+PTR_bin_22	May_3A	DEMIC	10.8168
+PTR_bin_22	May_3B	DEMIC	9.9533
+PTR_bin_22	Sept_0	DEMIC	9.9817
+PTR_bin_22	Sept_1A	DEMIC	11.8813
+PTR_bin_22	Sept_1B	DEMIC	10.9153
+PTR_bin_22	Sept_1C	DEMIC	12.0368
+PTR_bin_22	Sept_2A	DEMIC	11.8932
+PTR_bin_22	Sept_2B	DEMIC	11.2487
+PTR_bin_22	Sept_2C	DEMIC	12.1135
+PTR_bin_22	Sept_3A	DEMIC	10.2283
+PTR_bin_22	Sept_3B	DEMIC	12.8232
+PTR_bin_22	Sept_3C	DEMIC	11.9154
+PTR_bin_22	Sept_4A	DEMIC	11.5755
+PTR_bin_22	Sept_4B	DEMIC	9.1389
+PTR_bin_22	Sept_4C	DEMIC	11.0472
+PTR_bin_23	May_0	DEMIC	 
+PTR_bin_23	May_1A	DEMIC	2.0611
+PTR_bin_23	May_1B	DEMIC	2.1393
+PTR_bin_23	May_2A	DEMIC	2.3519
+PTR_bin_23	May_2B	DEMIC	2.3161
+PTR_bin_23	May_3A	DEMIC	1.734
+PTR_bin_23	May_3B	DEMIC	1.9453
+PTR_bin_23	Sept_0	DEMIC	 
+PTR_bin_23	Sept_1A	DEMIC	 
+PTR_bin_23	Sept_1B	DEMIC	 
+PTR_bin_23	Sept_1C	DEMIC	 
+PTR_bin_23	Sept_2A	DEMIC	 
+PTR_bin_23	Sept_2B	DEMIC	 
+PTR_bin_23	Sept_2C	DEMIC	 
+PTR_bin_23	Sept_3A	DEMIC	 
+PTR_bin_23	Sept_3B	DEMIC	 
+PTR_bin_23	Sept_3C	DEMIC	 
+PTR_bin_23	Sept_4A	DEMIC	 
+PTR_bin_23	Sept_4B	DEMIC	 
+PTR_bin_23	Sept_4C	DEMIC	 
+PTR_bin_24	May_0	DEMIC	 
+PTR_bin_24	May_1A	DEMIC	 
+PTR_bin_24	May_1B	DEMIC	 
+PTR_bin_24	May_2A	DEMIC	 
+PTR_bin_24	May_2B	DEMIC	 
+PTR_bin_24	May_3A	DEMIC	 
+PTR_bin_24	May_3B	DEMIC	 
+PTR_bin_24	Sept_0	DEMIC	1.3343
+PTR_bin_24	Sept_1A	DEMIC	1.1488
+PTR_bin_24	Sept_1B	DEMIC	1.1984
+PTR_bin_24	Sept_1C	DEMIC	1.1945
+PTR_bin_24	Sept_2A	DEMIC	1.1944
+PTR_bin_24	Sept_2B	DEMIC	1.2074
+PTR_bin_24	Sept_2C	DEMIC	1.0837
+PTR_bin_24	Sept_3A	DEMIC	1.4174
+PTR_bin_24	Sept_3B	DEMIC	1.3289
+PTR_bin_24	Sept_3C	DEMIC	1.1059
+PTR_bin_24	Sept_4A	DEMIC	 
+PTR_bin_24	Sept_4B	DEMIC	 
+PTR_bin_24	Sept_4C	DEMIC	1.2896
+PTR_bin_25	May_0	DEMIC	 
+PTR_bin_25	May_1A	DEMIC	 
+PTR_bin_25	May_1B	DEMIC	 
+PTR_bin_25	May_2A	DEMIC	 
+PTR_bin_25	May_2B	DEMIC	 
+PTR_bin_25	May_3A	DEMIC	 
+PTR_bin_25	May_3B	DEMIC	 
+PTR_bin_25	Sept_0	DEMIC	2.1842
+PTR_bin_25	Sept_1A	DEMIC	2.0856
+PTR_bin_25	Sept_1B	DEMIC	2.1943
+PTR_bin_25	Sept_1C	DEMIC	2.3337
+PTR_bin_25	Sept_2A	DEMIC	2.2103
+PTR_bin_25	Sept_2B	DEMIC	2.1142
+PTR_bin_25	Sept_2C	DEMIC	2.2396
+PTR_bin_25	Sept_3A	DEMIC	2.174
+PTR_bin_25	Sept_3B	DEMIC	2.0907
+PTR_bin_25	Sept_3C	DEMIC	2.1542
+PTR_bin_25	Sept_4A	DEMIC	2.5673
+PTR_bin_25	Sept_4B	DEMIC	2.1907
+PTR_bin_25	Sept_4C	DEMIC	2.1507
+PTR_bin_26	May_0	DEMIC	1.9503
+PTR_bin_26	May_0	GRiD	1.29
+PTR_bin_26	May_0	iRep	2.7956440352124
+PTR_bin_26	May_1A	DEMIC	1.7838
+PTR_bin_26	May_1A	GRiD	1.32
+PTR_bin_26	May_1A	iRep	 
+PTR_bin_26	May_1B	DEMIC	1.8331
+PTR_bin_26	May_1B	GRiD	1.56
+PTR_bin_26	May_1B	iRep	3.65972044729345
+PTR_bin_26	May_2A	DEMIC	1.5677
+PTR_bin_26	May_2A	GRiD	1.44
+PTR_bin_26	May_2A	iRep	 
+PTR_bin_26	May_2B	DEMIC	1.6811
+PTR_bin_26	May_2B	GRiD	1.39
+PTR_bin_26	May_2B	iRep	 
+PTR_bin_26	May_3A	DEMIC	1.8062
+PTR_bin_26	May_3A	GRiD	1.38
+PTR_bin_26	May_3A	iRep	 
+PTR_bin_26	May_3B	DEMIC	1.8009
+PTR_bin_26	May_3B	GRiD	1.38
+PTR_bin_26	May_3B	iRep	 
+PTR_bin_26	Sept_0	DEMIC	1.6187
+PTR_bin_26	Sept_0	GRiD	1.36
+PTR_bin_26	Sept_0	iRep	 
+PTR_bin_26	Sept_1A	DEMIC	1.8776
+PTR_bin_26	Sept_1A	GRiD	1.47
+PTR_bin_26	Sept_1A	iRep	2.70942479633768
+PTR_bin_26	Sept_1B	DEMIC	1.795
+PTR_bin_26	Sept_1B	GRiD	1.41
+PTR_bin_26	Sept_1B	iRep	3.32020140917021
+PTR_bin_26	Sept_1C	DEMIC	1.7891
+PTR_bin_26	Sept_1C	GRiD	1.36
+PTR_bin_26	Sept_1C	iRep	2.98701856180377
+PTR_bin_26	Sept_2A	DEMIC	1.8622
+PTR_bin_26	Sept_2A	GRiD	1.48
+PTR_bin_26	Sept_2A	iRep	 
+PTR_bin_26	Sept_2B	DEMIC	1.7872
+PTR_bin_26	Sept_2B	GRiD	1.4
+PTR_bin_26	Sept_2B	iRep	 
+PTR_bin_26	Sept_2C	DEMIC	1.8531
+PTR_bin_26	Sept_2C	GRiD	1.42
+PTR_bin_26	Sept_2C	iRep	 
+PTR_bin_26	Sept_3A	DEMIC	1.96
+PTR_bin_26	Sept_3A	GRiD	1.42
+PTR_bin_26	Sept_3A	iRep	 
+PTR_bin_26	Sept_3B	DEMIC	1.979
+PTR_bin_26	Sept_3B	GRiD	1.34
+PTR_bin_26	Sept_3B	iRep	 
+PTR_bin_26	Sept_3C	DEMIC	1.8757
+PTR_bin_26	Sept_3C	GRiD	1.39
+PTR_bin_26	Sept_3C	iRep	 
+PTR_bin_26	Sept_4A	DEMIC	2.1695
+PTR_bin_26	Sept_4A	GRiD	1.4
+PTR_bin_26	Sept_4A	iRep	 
+PTR_bin_26	Sept_4B	DEMIC	1.8344
+PTR_bin_26	Sept_4B	GRiD	1.53
+PTR_bin_26	Sept_4B	iRep	 
+PTR_bin_26	Sept_4C	DEMIC	1.8016
+PTR_bin_26	Sept_4C	GRiD	1.39
+PTR_bin_26	Sept_4C	iRep	 
+PTR_bin_27	May_0	DEMIC	 
+PTR_bin_27	May_0	GRiD	 
+PTR_bin_27	May_0	iRep	 
+PTR_bin_27	May_1A	DEMIC	 
+PTR_bin_27	May_1A	GRiD	 
+PTR_bin_27	May_1A	iRep	 
+PTR_bin_27	May_1B	DEMIC	 
+PTR_bin_27	May_1B	GRiD	 
+PTR_bin_27	May_1B	iRep	 
+PTR_bin_27	May_2A	DEMIC	 
+PTR_bin_27	May_2A	GRiD	 
+PTR_bin_27	May_2A	iRep	 
+PTR_bin_27	May_2B	DEMIC	 
+PTR_bin_27	May_2B	GRiD	 
+PTR_bin_27	May_2B	iRep	 
+PTR_bin_27	May_3A	DEMIC	 
+PTR_bin_27	May_3A	GRiD	 
+PTR_bin_27	May_3A	iRep	 
+PTR_bin_27	May_3B	DEMIC	 
+PTR_bin_27	May_3B	GRiD	 
+PTR_bin_27	May_3B	iRep	 
+PTR_bin_27	Sept_0	DEMIC	 
+PTR_bin_27	Sept_0	GRiD	 
+PTR_bin_27	Sept_0	iRep	 
+PTR_bin_27	Sept_1A	DEMIC	 
+PTR_bin_27	Sept_1A	GRiD	 
+PTR_bin_27	Sept_1A	iRep	 
+PTR_bin_27	Sept_1B	DEMIC	 
+PTR_bin_27	Sept_1B	GRiD	 
+PTR_bin_27	Sept_1B	iRep	 
+PTR_bin_27	Sept_1C	DEMIC	 
+PTR_bin_27	Sept_1C	GRiD	 
+PTR_bin_27	Sept_1C	iRep	 
+PTR_bin_27	Sept_2A	DEMIC	 
+PTR_bin_27	Sept_2A	GRiD	2.42
+PTR_bin_27	Sept_2A	iRep	 
+PTR_bin_27	Sept_2B	DEMIC	 
+PTR_bin_27	Sept_2B	GRiD	1.28
+PTR_bin_27	Sept_2B	iRep	 
+PTR_bin_27	Sept_2C	DEMIC	 
+PTR_bin_27	Sept_2C	GRiD	2.01
+PTR_bin_27	Sept_2C	iRep	 
+PTR_bin_27	Sept_3A	DEMIC	1.8042
+PTR_bin_27	Sept_3A	GRiD	1.82
+PTR_bin_27	Sept_3A	iRep	2.61482298644828
+PTR_bin_27	Sept_3B	DEMIC	1.7213
+PTR_bin_27	Sept_3B	GRiD	2
+PTR_bin_27	Sept_3B	iRep	 
+PTR_bin_27	Sept_3C	DEMIC	1.8204
+PTR_bin_27	Sept_3C	GRiD	1.72
+PTR_bin_27	Sept_3C	iRep	2.57953533736114
+PTR_bin_27	Sept_4A	DEMIC	1.4603
+PTR_bin_27	Sept_4A	GRiD	1.48
+PTR_bin_27	Sept_4A	iRep	2.63154972075333
+PTR_bin_27	Sept_4B	DEMIC	1.3173
+PTR_bin_27	Sept_4B	GRiD	1.45
+PTR_bin_27	Sept_4B	iRep	 
+PTR_bin_27	Sept_4C	DEMIC	1.4618
+PTR_bin_27	Sept_4C	GRiD	1.48
+PTR_bin_27	Sept_4C	iRep	2.39034819286632
+PTR_bin_28	May_0	DEMIC	2.4975
+PTR_bin_28	May_1A	DEMIC	2.3173
+PTR_bin_28	May_1B	DEMIC	2.3174
+PTR_bin_28	May_2A	DEMIC	2.392
+PTR_bin_28	May_2B	DEMIC	2.3395
+PTR_bin_28	May_3A	DEMIC	2.3534
+PTR_bin_28	May_3B	DEMIC	2.4537
+PTR_bin_28	Sept_0	DEMIC	1.3815
+PTR_bin_28	Sept_1A	DEMIC	1.3413
+PTR_bin_28	Sept_1B	DEMIC	1.5201
+PTR_bin_28	Sept_1C	DEMIC	1.3338
+PTR_bin_28	Sept_2A	DEMIC	1.2723
+PTR_bin_28	Sept_2B	DEMIC	1.381
+PTR_bin_28	Sept_2C	DEMIC	1.4977
+PTR_bin_28	Sept_3A	DEMIC	1.358
+PTR_bin_28	Sept_3B	DEMIC	1.3326
+PTR_bin_28	Sept_3C	DEMIC	1.3309
+PTR_bin_28	Sept_4A	DEMIC	1.1723
+PTR_bin_28	Sept_4B	DEMIC	1.3557
+PTR_bin_28	Sept_4C	DEMIC	1.2301
+PTR_bin_29	May_0	DEMIC	1.2945
+PTR_bin_29	May_1A	DEMIC	1.1934
+PTR_bin_29	May_1B	DEMIC	1.1946
+PTR_bin_29	May_2A	DEMIC	2.1847
+PTR_bin_29	May_2B	DEMIC	1.9612
+PTR_bin_29	May_3A	DEMIC	1.2485
+PTR_bin_29	May_3B	DEMIC	1.2513
+PTR_bin_29	Sept_0	DEMIC	 
+PTR_bin_29	Sept_1A	DEMIC	 
+PTR_bin_29	Sept_1B	DEMIC	 
+PTR_bin_29	Sept_1C	DEMIC	 
+PTR_bin_29	Sept_2A	DEMIC	 
+PTR_bin_29	Sept_2B	DEMIC	 
+PTR_bin_29	Sept_2C	DEMIC	 
+PTR_bin_29	Sept_3A	DEMIC	 
+PTR_bin_29	Sept_3B	DEMIC	 
+PTR_bin_29	Sept_3C	DEMIC	 
+PTR_bin_29	Sept_4A	DEMIC	 
+PTR_bin_29	Sept_4B	DEMIC	 
+PTR_bin_29	Sept_4C	DEMIC	 
+PTR_bin_30	May_0	DEMIC	1.4735
+PTR_bin_30	May_0	GRiD	1.24
+PTR_bin_30	May_0	iRep	2.84791268010681
+PTR_bin_30	May_1A	DEMIC	1.5074
+PTR_bin_30	May_1A	GRiD	1.25
+PTR_bin_30	May_1A	iRep	2.99141101366485
+PTR_bin_30	May_1B	DEMIC	1.5034
+PTR_bin_30	May_1B	GRiD	1.3
+PTR_bin_30	May_1B	iRep	2.68378810319576
+PTR_bin_30	May_2A	DEMIC	1.4563
+PTR_bin_30	May_2A	GRiD	1.22
+PTR_bin_30	May_2A	iRep	 
+PTR_bin_30	May_2B	DEMIC	1.4101
+PTR_bin_30	May_2B	GRiD	1.27
+PTR_bin_30	May_2B	iRep	 
+PTR_bin_30	May_3A	DEMIC	1.4679
+PTR_bin_30	May_3A	GRiD	1.29
+PTR_bin_30	May_3A	iRep	2.8546513398758
+PTR_bin_30	May_3B	DEMIC	1.4567
+PTR_bin_30	May_3B	GRiD	1.29
+PTR_bin_30	May_3B	iRep	2.72508927447011
+PTR_bin_30	Sept_0	DEMIC	1.459
+PTR_bin_30	Sept_0	GRiD	1.15
+PTR_bin_30	Sept_0	iRep	 
+PTR_bin_30	Sept_1A	DEMIC	1.4756
+PTR_bin_30	Sept_1A	GRiD	1.23
+PTR_bin_30	Sept_1A	iRep	 
+PTR_bin_30	Sept_1B	DEMIC	1.4515
+PTR_bin_30	Sept_1B	GRiD	1.26
+PTR_bin_30	Sept_1B	iRep	 
+PTR_bin_30	Sept_1C	DEMIC	1.4275
+PTR_bin_30	Sept_1C	GRiD	1.3
+PTR_bin_30	Sept_1C	iRep	 
+PTR_bin_30	Sept_2A	DEMIC	1.4108
+PTR_bin_30	Sept_2A	GRiD	1.19
+PTR_bin_30	Sept_2A	iRep	 
+PTR_bin_30	Sept_2B	DEMIC	1.4003
+PTR_bin_30	Sept_2B	GRiD	1.25
+PTR_bin_30	Sept_2B	iRep	 
+PTR_bin_30	Sept_2C	DEMIC	1.4326
+PTR_bin_30	Sept_2C	GRiD	1.26
+PTR_bin_30	Sept_2C	iRep	 
+PTR_bin_30	Sept_3A	DEMIC	1.4302
+PTR_bin_30	Sept_3A	GRiD	1.2
+PTR_bin_30	Sept_3A	iRep	 
+PTR_bin_30	Sept_3B	DEMIC	1.5859
+PTR_bin_30	Sept_3B	GRiD	1.31
+PTR_bin_30	Sept_3B	iRep	 
+PTR_bin_30	Sept_3C	DEMIC	1.4663
+PTR_bin_30	Sept_3C	GRiD	1.25
+PTR_bin_30	Sept_3C	iRep	 
+PTR_bin_30	Sept_4A	DEMIC	1.4891
+PTR_bin_30	Sept_4A	GRiD	1.29
+PTR_bin_30	Sept_4A	iRep	 
+PTR_bin_30	Sept_4B	DEMIC	1.5396
+PTR_bin_30	Sept_4B	GRiD	1.33
+PTR_bin_30	Sept_4B	iRep	 
+PTR_bin_30	Sept_4C	DEMIC	1.4515
+PTR_bin_30	Sept_4C	GRiD	1.23
+PTR_bin_30	Sept_4C	iRep	 
+PTR_bin_31	May_0	DEMIC	1.0442
+PTR_bin_31	May_1A	DEMIC	1.7946
+PTR_bin_31	May_1B	DEMIC	2.0587
+PTR_bin_31	May_2A	DEMIC	2.2418
+PTR_bin_31	May_2B	DEMIC	1.1933
+PTR_bin_31	May_3A	DEMIC	1.6715
+PTR_bin_31	May_3B	DEMIC	2.3091
+PTR_bin_31	Sept_0	DEMIC	 
+PTR_bin_31	Sept_1A	DEMIC	 
+PTR_bin_31	Sept_1B	DEMIC	 
+PTR_bin_31	Sept_1C	DEMIC	 
+PTR_bin_31	Sept_2A	DEMIC	 
+PTR_bin_31	Sept_2B	DEMIC	 
+PTR_bin_31	Sept_2C	DEMIC	 
+PTR_bin_31	Sept_3A	DEMIC	 
+PTR_bin_31	Sept_3B	DEMIC	 
+PTR_bin_31	Sept_3C	DEMIC	 
+PTR_bin_31	Sept_4A	DEMIC	 
+PTR_bin_31	Sept_4B	DEMIC	 
+PTR_bin_31	Sept_4C	DEMIC	 
+PTR_bin_32	May_0	DEMIC	1.6969
+PTR_bin_32	May_0	GRiD	1.5
+PTR_bin_32	May_0	iRep	 
+PTR_bin_32	May_1A	DEMIC	1.3487
+PTR_bin_32	May_1A	GRiD	1.25
+PTR_bin_32	May_1A	iRep	 
+PTR_bin_32	May_1B	DEMIC	1.3873
+PTR_bin_32	May_1B	GRiD	1.63
+PTR_bin_32	May_1B	iRep	2.41361918786048
+PTR_bin_32	May_2A	DEMIC	1.3128
+PTR_bin_32	May_2A	GRiD	1.36
+PTR_bin_32	May_2A	iRep	2.40284647304859
+PTR_bin_32	May_2B	DEMIC	1.3307
+PTR_bin_32	May_2B	GRiD	1.4
+PTR_bin_32	May_2B	iRep	2.34998011772832
+PTR_bin_32	May_3A	DEMIC	1.2899
+PTR_bin_32	May_3A	GRiD	1.23
+PTR_bin_32	May_3A	iRep	2.32583291802383
+PTR_bin_32	May_3B	DEMIC	1.2696
+PTR_bin_32	May_3B	GRiD	1.27
+PTR_bin_32	May_3B	iRep	2.40505531742423
+PTR_bin_32	Sept_0	DEMIC	 
+PTR_bin_32	Sept_0	GRiD	 
+PTR_bin_32	Sept_0	iRep	 
+PTR_bin_32	Sept_1A	DEMIC	 
+PTR_bin_32	Sept_1A	GRiD	1
+PTR_bin_32	Sept_1A	iRep	 
+PTR_bin_32	Sept_1B	DEMIC	 
+PTR_bin_32	Sept_1B	GRiD	1
+PTR_bin_32	Sept_1B	iRep	 
+PTR_bin_32	Sept_1C	DEMIC	 
+PTR_bin_32	Sept_1C	GRiD	1.03
+PTR_bin_32	Sept_1C	iRep	 
+PTR_bin_32	Sept_2A	DEMIC	 
+PTR_bin_32	Sept_2A	GRiD	 
+PTR_bin_32	Sept_2A	iRep	 
+PTR_bin_32	Sept_2B	DEMIC	 
+PTR_bin_32	Sept_2B	GRiD	1
+PTR_bin_32	Sept_2B	iRep	 
+PTR_bin_32	Sept_2C	DEMIC	 
+PTR_bin_32	Sept_2C	GRiD	1
+PTR_bin_32	Sept_2C	iRep	 
+PTR_bin_32	Sept_3A	DEMIC	 
+PTR_bin_32	Sept_3A	GRiD	1
+PTR_bin_32	Sept_3A	iRep	 
+PTR_bin_32	Sept_3B	DEMIC	 
+PTR_bin_32	Sept_3B	GRiD	1
+PTR_bin_32	Sept_3B	iRep	 
+PTR_bin_32	Sept_3C	DEMIC	 
+PTR_bin_32	Sept_3C	GRiD	1
+PTR_bin_32	Sept_3C	iRep	 
+PTR_bin_32	Sept_4A	DEMIC	 
+PTR_bin_32	Sept_4A	GRiD	 
+PTR_bin_32	Sept_4A	iRep	 
+PTR_bin_32	Sept_4B	DEMIC	 
+PTR_bin_32	Sept_4B	GRiD	 
+PTR_bin_32	Sept_4B	iRep	 
+PTR_bin_32	Sept_4C	DEMIC	 
+PTR_bin_32	Sept_4C	GRiD	1
+PTR_bin_32	Sept_4C	iRep	 
+PTR_bin_33	May_0	DEMIC	 
+PTR_bin_33	May_1A	DEMIC	 
+PTR_bin_33	May_1B	DEMIC	 
+PTR_bin_33	May_2A	DEMIC	 
+PTR_bin_33	May_2B	DEMIC	 
+PTR_bin_33	May_3A	DEMIC	 
+PTR_bin_33	May_3B	DEMIC	 
+PTR_bin_33	Sept_0	DEMIC	 
+PTR_bin_33	Sept_1A	DEMIC	 
+PTR_bin_33	Sept_1B	DEMIC	 
+PTR_bin_33	Sept_1C	DEMIC	 
+PTR_bin_33	Sept_2A	DEMIC	 
+PTR_bin_33	Sept_2B	DEMIC	 
+PTR_bin_33	Sept_2C	DEMIC	 
+PTR_bin_33	Sept_3A	DEMIC	 
+PTR_bin_33	Sept_3B	DEMIC	 
+PTR_bin_33	Sept_3C	DEMIC	 
+PTR_bin_33	Sept_4A	DEMIC	 
+PTR_bin_33	Sept_4B	DEMIC	 
+PTR_bin_33	Sept_4C	DEMIC	 
+PTR_bin_34	May_0	DEMIC	 
+PTR_bin_34	May_0	GRiD	1.52
+PTR_bin_34	May_0	iRep	 
+PTR_bin_34	May_1A	DEMIC	1.2566
+PTR_bin_34	May_1A	GRiD	1.73
+PTR_bin_34	May_1A	iRep	 
+PTR_bin_34	May_1B	DEMIC	1.1642
+PTR_bin_34	May_1B	GRiD	1.18
+PTR_bin_34	May_1B	iRep	 
+PTR_bin_34	May_2A	DEMIC	1.2009
+PTR_bin_34	May_2A	GRiD	1.11
+PTR_bin_34	May_2A	iRep	1.93198554282117
+PTR_bin_34	May_2B	DEMIC	1.2202
+PTR_bin_34	May_2B	GRiD	1.17
+PTR_bin_34	May_2B	iRep	1.99370486259478
+PTR_bin_34	May_3A	DEMIC	1.1662
+PTR_bin_34	May_3A	GRiD	1.06
+PTR_bin_34	May_3A	iRep	1.92224118590296
+PTR_bin_34	May_3B	DEMIC	1.0595
+PTR_bin_34	May_3B	GRiD	1.08
+PTR_bin_34	May_3B	iRep	 
+PTR_bin_34	Sept_0	DEMIC	 
+PTR_bin_34	Sept_0	GRiD	 
+PTR_bin_34	Sept_0	iRep	 
+PTR_bin_34	Sept_1A	DEMIC	 
+PTR_bin_34	Sept_1A	GRiD	 
+PTR_bin_34	Sept_1A	iRep	 
+PTR_bin_34	Sept_1B	DEMIC	 
+PTR_bin_34	Sept_1B	GRiD	 
+PTR_bin_34	Sept_1B	iRep	 
+PTR_bin_34	Sept_1C	DEMIC	 
+PTR_bin_34	Sept_1C	GRiD	 
+PTR_bin_34	Sept_1C	iRep	 
+PTR_bin_34	Sept_2A	DEMIC	 
+PTR_bin_34	Sept_2A	GRiD	 
+PTR_bin_34	Sept_2A	iRep	 
+PTR_bin_34	Sept_2B	DEMIC	 
+PTR_bin_34	Sept_2B	GRiD	 
+PTR_bin_34	Sept_2B	iRep	 
+PTR_bin_34	Sept_2C	DEMIC	 
+PTR_bin_34	Sept_2C	GRiD	 
+PTR_bin_34	Sept_2C	iRep	 
+PTR_bin_34	Sept_3A	DEMIC	 
+PTR_bin_34	Sept_3A	GRiD	 
+PTR_bin_34	Sept_3A	iRep	 
+PTR_bin_34	Sept_3B	DEMIC	 
+PTR_bin_34	Sept_3B	GRiD	 
+PTR_bin_34	Sept_3B	iRep	 
+PTR_bin_34	Sept_3C	DEMIC	2.1197
+PTR_bin_34	Sept_3C	GRiD	1.54
+PTR_bin_34	Sept_3C	iRep	 
+PTR_bin_34	Sept_4A	DEMIC	 
+PTR_bin_34	Sept_4A	GRiD	 
+PTR_bin_34	Sept_4A	iRep	 
+PTR_bin_34	Sept_4B	DEMIC	 
+PTR_bin_34	Sept_4B	GRiD	 
+PTR_bin_34	Sept_4B	iRep	 
+PTR_bin_34	Sept_4C	DEMIC	1.3913
+PTR_bin_34	Sept_4C	GRiD	1.15
+PTR_bin_34	Sept_4C	iRep	 
+PTR_bin_35	May_0	DEMIC	1.3424
+PTR_bin_35	May_1A	DEMIC	1.5774
+PTR_bin_35	May_1B	DEMIC	1.4536
+PTR_bin_35	May_2A	DEMIC	1.5649
+PTR_bin_35	May_2B	DEMIC	1.7507
+PTR_bin_35	May_3A	DEMIC	1.3882
+PTR_bin_35	May_3B	DEMIC	1.6563
+PTR_bin_35	Sept_0	DEMIC	1.2848
+PTR_bin_35	Sept_1A	DEMIC	1.3178
+PTR_bin_35	Sept_1B	DEMIC	1.3643
+PTR_bin_35	Sept_1C	DEMIC	1.2765
+PTR_bin_35	Sept_2A	DEMIC	1.2656
+PTR_bin_35	Sept_2B	DEMIC	1.32
+PTR_bin_35	Sept_2C	DEMIC	1.1949
+PTR_bin_35	Sept_3A	DEMIC	1.6065
+PTR_bin_35	Sept_3B	DEMIC	1.4694
+PTR_bin_35	Sept_3C	DEMIC	1.1818
+PTR_bin_35	Sept_4A	DEMIC	1.2927
+PTR_bin_35	Sept_4B	DEMIC	 
+PTR_bin_35	Sept_4C	DEMIC	1.2202
+PTR_bin_36	May_0	DEMIC	1.8237
+PTR_bin_36	May_1A	DEMIC	1.6409
+PTR_bin_36	May_1B	DEMIC	1.7212
+PTR_bin_36	May_2A	DEMIC	1.3587
+PTR_bin_36	May_2B	DEMIC	1.9422
+PTR_bin_36	May_3A	DEMIC	1.4231
+PTR_bin_36	May_3B	DEMIC	1.3836
+PTR_bin_36	Sept_0	DEMIC	 
+PTR_bin_36	Sept_1A	DEMIC	 
+PTR_bin_36	Sept_1B	DEMIC	 
+PTR_bin_36	Sept_1C	DEMIC	 
+PTR_bin_36	Sept_2A	DEMIC	 
+PTR_bin_36	Sept_2B	DEMIC	 
+PTR_bin_36	Sept_2C	DEMIC	 
+PTR_bin_36	Sept_3A	DEMIC	 
+PTR_bin_36	Sept_3B	DEMIC	 
+PTR_bin_36	Sept_3C	DEMIC	 
+PTR_bin_36	Sept_4A	DEMIC	 
+PTR_bin_36	Sept_4B	DEMIC	 
+PTR_bin_36	Sept_4C	DEMIC	 
+PTR_bin_37	May_0	DEMIC	1.3367
+PTR_bin_37	May_0	GRiD	1.75
+PTR_bin_37	May_0	iRep	 
+PTR_bin_37	May_1A	DEMIC	1.8723
+PTR_bin_37	May_1A	GRiD	2
+PTR_bin_37	May_1A	iRep	 
+PTR_bin_37	May_1B	DEMIC	1.392
+PTR_bin_37	May_1B	GRiD	1.59
+PTR_bin_37	May_1B	iRep	 
+PTR_bin_37	May_2A	DEMIC	1.2618
+PTR_bin_37	May_2A	GRiD	1.46
+PTR_bin_37	May_2A	iRep	 
+PTR_bin_37	May_2B	DEMIC	1.2577
+PTR_bin_37	May_2B	GRiD	1.44
+PTR_bin_37	May_2B	iRep	 
+PTR_bin_37	May_3A	DEMIC	1.3701
+PTR_bin_37	May_3A	GRiD	1.41
+PTR_bin_37	May_3A	iRep	 
+PTR_bin_37	May_3B	DEMIC	1.2893
+PTR_bin_37	May_3B	GRiD	1.45
+PTR_bin_37	May_3B	iRep	 
+PTR_bin_37	Sept_0	DEMIC	 
+PTR_bin_37	Sept_0	GRiD	 
+PTR_bin_37	Sept_0	iRep	 
+PTR_bin_37	Sept_1A	DEMIC	 
+PTR_bin_37	Sept_1A	GRiD	 
+PTR_bin_37	Sept_1A	iRep	 
+PTR_bin_37	Sept_1B	DEMIC	 
+PTR_bin_37	Sept_1B	GRiD	 
+PTR_bin_37	Sept_1B	iRep	 
+PTR_bin_37	Sept_1C	DEMIC	 
+PTR_bin_37	Sept_1C	GRiD	 
+PTR_bin_37	Sept_1C	iRep	 
+PTR_bin_37	Sept_2A	DEMIC	 
+PTR_bin_37	Sept_2A	GRiD	 
+PTR_bin_37	Sept_2A	iRep	 
+PTR_bin_37	Sept_2B	DEMIC	 
+PTR_bin_37	Sept_2B	GRiD	 
+PTR_bin_37	Sept_2B	iRep	 
+PTR_bin_37	Sept_2C	DEMIC	 
+PTR_bin_37	Sept_2C	GRiD	 
+PTR_bin_37	Sept_2C	iRep	 
+PTR_bin_37	Sept_3A	DEMIC	 
+PTR_bin_37	Sept_3A	GRiD	2.08
+PTR_bin_37	Sept_3A	iRep	 
+PTR_bin_37	Sept_3B	DEMIC	 
+PTR_bin_37	Sept_3B	GRiD	1.53
+PTR_bin_37	Sept_3B	iRep	 
+PTR_bin_37	Sept_3C	DEMIC	 
+PTR_bin_37	Sept_3C	GRiD	1.5
+PTR_bin_37	Sept_3C	iRep	 
+PTR_bin_37	Sept_4A	DEMIC	 
+PTR_bin_37	Sept_4A	GRiD	1.93
+PTR_bin_37	Sept_4A	iRep	 
+PTR_bin_37	Sept_4B	DEMIC	 
+PTR_bin_37	Sept_4B	GRiD	 
+PTR_bin_37	Sept_4B	iRep	 
+PTR_bin_37	Sept_4C	DEMIC	 
+PTR_bin_37	Sept_4C	GRiD	2.41
+PTR_bin_37	Sept_4C	iRep	 
+PTR_bin_38	May_0	DEMIC	1.465
+PTR_bin_38	May_1A	DEMIC	1.3338
+PTR_bin_38	May_1B	DEMIC	1.5259
+PTR_bin_38	May_2A	DEMIC	1.3211
+PTR_bin_38	May_2B	DEMIC	1.5117
+PTR_bin_38	May_3A	DEMIC	1.3642
+PTR_bin_38	May_3B	DEMIC	1.3769
+PTR_bin_38	Sept_0	DEMIC	 
+PTR_bin_38	Sept_1A	DEMIC	 
+PTR_bin_38	Sept_1B	DEMIC	 
+PTR_bin_38	Sept_1C	DEMIC	 
+PTR_bin_38	Sept_2A	DEMIC	 
+PTR_bin_38	Sept_2B	DEMIC	 
+PTR_bin_38	Sept_2C	DEMIC	 
+PTR_bin_38	Sept_3A	DEMIC	 
+PTR_bin_38	Sept_3B	DEMIC	 
+PTR_bin_38	Sept_3C	DEMIC	 
+PTR_bin_38	Sept_4A	DEMIC	 
+PTR_bin_38	Sept_4B	DEMIC	 
+PTR_bin_38	Sept_4C	DEMIC	 
+PTR_bin_39	May_0	DEMIC	1.4577
+PTR_bin_39	May_1A	DEMIC	1.4651
+PTR_bin_39	May_1B	DEMIC	1.4856
+PTR_bin_39	May_2A	DEMIC	1.6266
+PTR_bin_39	May_2B	DEMIC	1.4834
+PTR_bin_39	May_3A	DEMIC	1.3897
+PTR_bin_39	May_3B	DEMIC	1.4508
+PTR_bin_39	Sept_0	DEMIC	1.7654
+PTR_bin_39	Sept_1A	DEMIC	1.768
+PTR_bin_39	Sept_1B	DEMIC	1.4863
+PTR_bin_39	Sept_1C	DEMIC	1.715
+PTR_bin_39	Sept_2A	DEMIC	1.5209
+PTR_bin_39	Sept_2B	DEMIC	1.2247
+PTR_bin_39	Sept_2C	DEMIC	1.5837
+PTR_bin_39	Sept_3A	DEMIC	1.6719
+PTR_bin_39	Sept_3B	DEMIC	 
+PTR_bin_39	Sept_3C	DEMIC	 
+PTR_bin_39	Sept_4A	DEMIC	 
+PTR_bin_39	Sept_4B	DEMIC	 
+PTR_bin_39	Sept_4C	DEMIC	 
+PTR_bin_40	May_0	DEMIC	2.4991
+PTR_bin_40	May_1A	DEMIC	1.1263
+PTR_bin_40	May_1B	DEMIC	1.3278
+PTR_bin_40	May_2A	DEMIC	3.6786
+PTR_bin_40	May_2B	DEMIC	 
+PTR_bin_40	May_3A	DEMIC	 
+PTR_bin_40	May_3B	DEMIC	 
+PTR_bin_40	Sept_0	DEMIC	1.9113
+PTR_bin_40	Sept_1A	DEMIC	1.6212
+PTR_bin_40	Sept_1B	DEMIC	2.23
+PTR_bin_40	Sept_1C	DEMIC	2.349
+PTR_bin_40	Sept_2A	DEMIC	1.8384
+PTR_bin_40	Sept_2B	DEMIC	1.8798
+PTR_bin_40	Sept_2C	DEMIC	2.3684
+PTR_bin_40	Sept_3A	DEMIC	1.9014
+PTR_bin_40	Sept_3B	DEMIC	3.9972
+PTR_bin_40	Sept_3C	DEMIC	1.5343
+PTR_bin_40	Sept_4A	DEMIC	 
+PTR_bin_40	Sept_4B	DEMIC	 
+PTR_bin_40	Sept_4C	DEMIC	2.4728
+PTR_bin_41	May_0	DEMIC	 
+PTR_bin_41	May_1A	DEMIC	 
+PTR_bin_41	May_1B	DEMIC	 
+PTR_bin_41	May_2A	DEMIC	 
+PTR_bin_41	May_2B	DEMIC	 
+PTR_bin_41	May_3A	DEMIC	 
+PTR_bin_41	May_3B	DEMIC	 
+PTR_bin_41	Sept_0	DEMIC	 
+PTR_bin_41	Sept_1A	DEMIC	 
+PTR_bin_41	Sept_1B	DEMIC	 
+PTR_bin_41	Sept_1C	DEMIC	 
+PTR_bin_41	Sept_2A	DEMIC	 
+PTR_bin_41	Sept_2B	DEMIC	 
+PTR_bin_41	Sept_2C	DEMIC	2.0768
+PTR_bin_41	Sept_3A	DEMIC	1.5346
+PTR_bin_41	Sept_3B	DEMIC	1.749
+PTR_bin_41	Sept_3C	DEMIC	1.5591
+PTR_bin_41	Sept_4A	DEMIC	1.411
+PTR_bin_41	Sept_4B	DEMIC	1.454
+PTR_bin_41	Sept_4C	DEMIC	1.6088
+PTR_bin_42	May_0	DEMIC	1.9356
+PTR_bin_42	May_0	GRiD	1.68
+PTR_bin_42	May_0	iRep	 
+PTR_bin_42	May_1A	DEMIC	1.9267
+PTR_bin_42	May_1A	GRiD	1.64
+PTR_bin_42	May_1A	iRep	 
+PTR_bin_42	May_1B	DEMIC	1.9564
+PTR_bin_42	May_1B	GRiD	1.68
+PTR_bin_42	May_1B	iRep	 
+PTR_bin_42	May_2A	DEMIC	 
+PTR_bin_42	May_2A	GRiD	1.94
+PTR_bin_42	May_2A	iRep	 
+PTR_bin_42	May_2B	DEMIC	2.1532
+PTR_bin_42	May_2B	GRiD	1.88
+PTR_bin_42	May_2B	iRep	 
+PTR_bin_42	May_3A	DEMIC	2.0684
+PTR_bin_42	May_3A	GRiD	1.86
+PTR_bin_42	May_3A	iRep	 
+PTR_bin_42	May_3B	DEMIC	1.6788
+PTR_bin_42	May_3B	GRiD	1.98
+PTR_bin_42	May_3B	iRep	 
+PTR_bin_42	Sept_0	DEMIC	1.4375
+PTR_bin_42	Sept_0	GRiD	1.55
+PTR_bin_42	Sept_0	iRep	 
+PTR_bin_42	Sept_1A	DEMIC	1.4446
+PTR_bin_42	Sept_1A	GRiD	1.44
+PTR_bin_42	Sept_1A	iRep	 
+PTR_bin_42	Sept_1B	DEMIC	1.4037
+PTR_bin_42	Sept_1B	GRiD	1.48
+PTR_bin_42	Sept_1B	iRep	 
+PTR_bin_42	Sept_1C	DEMIC	1.4009
+PTR_bin_42	Sept_1C	GRiD	1.46
+PTR_bin_42	Sept_1C	iRep	 
+PTR_bin_42	Sept_2A	DEMIC	1.4866
+PTR_bin_42	Sept_2A	GRiD	1.44
+PTR_bin_42	Sept_2A	iRep	 
+PTR_bin_42	Sept_2B	DEMIC	1.5903
+PTR_bin_42	Sept_2B	GRiD	1.55
+PTR_bin_42	Sept_2B	iRep	 
+PTR_bin_42	Sept_2C	DEMIC	1.5315
+PTR_bin_42	Sept_2C	GRiD	1.43
+PTR_bin_42	Sept_2C	iRep	 
+PTR_bin_42	Sept_3A	DEMIC	1.2845
+PTR_bin_42	Sept_3A	GRiD	1.49
+PTR_bin_42	Sept_3A	iRep	 
+PTR_bin_42	Sept_3B	DEMIC	1.4899
+PTR_bin_42	Sept_3B	GRiD	1.56
+PTR_bin_42	Sept_3B	iRep	 
+PTR_bin_42	Sept_3C	DEMIC	1.3281
+PTR_bin_42	Sept_3C	GRiD	1.51
+PTR_bin_42	Sept_3C	iRep	 
+PTR_bin_42	Sept_4A	DEMIC	 
+PTR_bin_42	Sept_4A	GRiD	1.98
+PTR_bin_42	Sept_4A	iRep	 
+PTR_bin_42	Sept_4B	DEMIC	 
+PTR_bin_42	Sept_4B	GRiD	2
+PTR_bin_42	Sept_4B	iRep	 
+PTR_bin_42	Sept_4C	DEMIC	1.3344
+PTR_bin_42	Sept_4C	GRiD	1.84
+PTR_bin_42	Sept_4C	iRep	 
+PTR_bin_43	May_0	DEMIC	1.4471
+PTR_bin_43	May_0	GRiD	1.56
+PTR_bin_43	May_0	iRep	1.69253039803806
+PTR_bin_43	May_1A	DEMIC	1.8177
+PTR_bin_43	May_1A	GRiD	1.87
+PTR_bin_43	May_1A	iRep	 
+PTR_bin_43	May_1B	DEMIC	 
+PTR_bin_43	May_1B	GRiD	1.79
+PTR_bin_43	May_1B	iRep	 
+PTR_bin_43	May_2A	DEMIC	 
+PTR_bin_43	May_2A	GRiD	2.53
+PTR_bin_43	May_2A	iRep	 
+PTR_bin_43	May_2B	DEMIC	 
+PTR_bin_43	May_2B	GRiD	3
+PTR_bin_43	May_2B	iRep	 
+PTR_bin_43	May_3A	DEMIC	 
+PTR_bin_43	May_3A	GRiD	3.07
+PTR_bin_43	May_3A	iRep	 
+PTR_bin_43	May_3B	DEMIC	 
+PTR_bin_43	May_3B	GRiD	5.14
+PTR_bin_43	May_3B	iRep	 
+PTR_bin_43	Sept_0	DEMIC	 
+PTR_bin_43	Sept_0	GRiD	 
+PTR_bin_43	Sept_0	iRep	 
+PTR_bin_43	Sept_1A	DEMIC	 
+PTR_bin_43	Sept_1A	GRiD	 
+PTR_bin_43	Sept_1A	iRep	 
+PTR_bin_43	Sept_1B	DEMIC	 
+PTR_bin_43	Sept_1B	GRiD	 
+PTR_bin_43	Sept_1B	iRep	 
+PTR_bin_43	Sept_1C	DEMIC	 
+PTR_bin_43	Sept_1C	GRiD	 
+PTR_bin_43	Sept_1C	iRep	 
+PTR_bin_43	Sept_2A	DEMIC	 
+PTR_bin_43	Sept_2A	GRiD	 
+PTR_bin_43	Sept_2A	iRep	 
+PTR_bin_43	Sept_2B	DEMIC	 
+PTR_bin_43	Sept_2B	GRiD	 
+PTR_bin_43	Sept_2B	iRep	 
+PTR_bin_43	Sept_2C	DEMIC	 
+PTR_bin_43	Sept_2C	GRiD	 
+PTR_bin_43	Sept_2C	iRep	 
+PTR_bin_43	Sept_3A	DEMIC	 
+PTR_bin_43	Sept_3A	GRiD	 
+PTR_bin_43	Sept_3A	iRep	 
+PTR_bin_43	Sept_3B	DEMIC	 
+PTR_bin_43	Sept_3B	GRiD	 
+PTR_bin_43	Sept_3B	iRep	 
+PTR_bin_43	Sept_3C	DEMIC	 
+PTR_bin_43	Sept_3C	GRiD	 
+PTR_bin_43	Sept_3C	iRep	 
+PTR_bin_43	Sept_4A	DEMIC	 
+PTR_bin_43	Sept_4A	GRiD	 
+PTR_bin_43	Sept_4A	iRep	 
+PTR_bin_43	Sept_4B	DEMIC	 
+PTR_bin_43	Sept_4B	GRiD	 
+PTR_bin_43	Sept_4B	iRep	 
+PTR_bin_43	Sept_4C	DEMIC	 
+PTR_bin_43	Sept_4C	GRiD	 
+PTR_bin_43	Sept_4C	iRep	 
+PTR_bin_44	May_0	DEMIC	1.7961
+PTR_bin_44	May_1A	DEMIC	1.804
+PTR_bin_44	May_1B	DEMIC	1.6559
+PTR_bin_44	May_2A	DEMIC	1.5717
+PTR_bin_44	May_2B	DEMIC	1.7018
+PTR_bin_44	May_3A	DEMIC	1.5211
+PTR_bin_44	May_3B	DEMIC	1.5669
+PTR_bin_44	Sept_0	DEMIC	 
+PTR_bin_44	Sept_1A	DEMIC	 
+PTR_bin_44	Sept_1B	DEMIC	 
+PTR_bin_44	Sept_1C	DEMIC	 
+PTR_bin_44	Sept_2A	DEMIC	 
+PTR_bin_44	Sept_2B	DEMIC	 
+PTR_bin_44	Sept_2C	DEMIC	 
+PTR_bin_44	Sept_3A	DEMIC	 
+PTR_bin_44	Sept_3B	DEMIC	 
+PTR_bin_44	Sept_3C	DEMIC	 
+PTR_bin_44	Sept_4A	DEMIC	 
+PTR_bin_44	Sept_4B	DEMIC	 
+PTR_bin_44	Sept_4C	DEMIC	 
+PTR_bin_45	May_0	DEMIC	2.4348
+PTR_bin_45	May_1A	DEMIC	2.1405
+PTR_bin_45	May_1B	DEMIC	2.1495
+PTR_bin_45	May_2A	DEMIC	2.0836
+PTR_bin_45	May_2B	DEMIC	2.1231
+PTR_bin_45	May_3A	DEMIC	2.1814
+PTR_bin_45	May_3B	DEMIC	2.1336
+PTR_bin_45	Sept_0	DEMIC	 
+PTR_bin_45	Sept_1A	DEMIC	 
+PTR_bin_45	Sept_1B	DEMIC	 
+PTR_bin_45	Sept_1C	DEMIC	 
+PTR_bin_45	Sept_2A	DEMIC	 
+PTR_bin_45	Sept_2B	DEMIC	 
+PTR_bin_45	Sept_2C	DEMIC	 
+PTR_bin_45	Sept_3A	DEMIC	2.5108
+PTR_bin_45	Sept_3B	DEMIC	2.4571
+PTR_bin_45	Sept_3C	DEMIC	2.438
+PTR_bin_45	Sept_4A	DEMIC	3.4239
+PTR_bin_45	Sept_4B	DEMIC	1.7344
+PTR_bin_45	Sept_4C	DEMIC	2.4896
+PTR_bin_46	May_0	DEMIC	 
+PTR_bin_46	May_1A	DEMIC	 
+PTR_bin_46	May_1B	DEMIC	 
+PTR_bin_46	May_2A	DEMIC	 
+PTR_bin_46	May_2B	DEMIC	 
+PTR_bin_46	May_3A	DEMIC	 
+PTR_bin_46	May_3B	DEMIC	 
+PTR_bin_46	Sept_0	DEMIC	 
+PTR_bin_46	Sept_1A	DEMIC	 
+PTR_bin_46	Sept_1B	DEMIC	 
+PTR_bin_46	Sept_1C	DEMIC	 
+PTR_bin_46	Sept_2A	DEMIC	 
+PTR_bin_46	Sept_2B	DEMIC	 
+PTR_bin_46	Sept_2C	DEMIC	 
+PTR_bin_46	Sept_3A	DEMIC	 
+PTR_bin_46	Sept_3B	DEMIC	 
+PTR_bin_46	Sept_3C	DEMIC	 
+PTR_bin_46	Sept_4A	DEMIC	 
+PTR_bin_46	Sept_4B	DEMIC	 
+PTR_bin_46	Sept_4C	DEMIC	 
+PTR_bin_47	May_0	DEMIC	1.8625
+PTR_bin_47	May_1A	DEMIC	1.8771
+PTR_bin_47	May_1B	DEMIC	1.9591
+PTR_bin_47	May_2A	DEMIC	1.8066
+PTR_bin_47	May_2B	DEMIC	1.9471
+PTR_bin_47	May_3A	DEMIC	1.6787
+PTR_bin_47	May_3B	DEMIC	1.9622
+PTR_bin_47	Sept_0	DEMIC	1.6201
+PTR_bin_47	Sept_1A	DEMIC	1.5862
+PTR_bin_47	Sept_1B	DEMIC	1.6186
+PTR_bin_47	Sept_1C	DEMIC	1.5999
+PTR_bin_47	Sept_2A	DEMIC	1.8738
+PTR_bin_47	Sept_2B	DEMIC	1.7883
+PTR_bin_47	Sept_2C	DEMIC	1.6735
+PTR_bin_47	Sept_3A	DEMIC	1.6654
+PTR_bin_47	Sept_3B	DEMIC	1.6853
+PTR_bin_47	Sept_3C	DEMIC	1.7434
+PTR_bin_47	Sept_4A	DEMIC	1.623
+PTR_bin_47	Sept_4B	DEMIC	1.7797
+PTR_bin_47	Sept_4C	DEMIC	1.3684
+PTR_bin_48	May_0	DEMIC	4.7747
+PTR_bin_48	May_1A	DEMIC	5.51
+PTR_bin_48	May_1B	DEMIC	3.7395
+PTR_bin_48	May_2A	DEMIC	4.6943
+PTR_bin_48	May_2B	DEMIC	4.0763
+PTR_bin_48	May_3A	DEMIC	4.3103
+PTR_bin_48	May_3B	DEMIC	4.2903
+PTR_bin_48	Sept_0	DEMIC	1.9314
+PTR_bin_48	Sept_1A	DEMIC	1.785
+PTR_bin_48	Sept_1B	DEMIC	1.7286
+PTR_bin_48	Sept_1C	DEMIC	1.4875
+PTR_bin_48	Sept_2A	DEMIC	1.5877
+PTR_bin_48	Sept_2B	DEMIC	1.6955
+PTR_bin_48	Sept_2C	DEMIC	1.9826
+PTR_bin_48	Sept_3A	DEMIC	1.7234
+PTR_bin_48	Sept_3B	DEMIC	1.8169
+PTR_bin_48	Sept_3C	DEMIC	1.6949
+PTR_bin_48	Sept_4A	DEMIC	1.5162
+PTR_bin_48	Sept_4B	DEMIC	1.6494
+PTR_bin_48	Sept_4C	DEMIC	1.7275
+PTR_bin_49	May_0	DEMIC	1.5867
+PTR_bin_49	May_1A	DEMIC	1.6546
+PTR_bin_49	May_1B	DEMIC	1.6289
+PTR_bin_49	May_2A	DEMIC	1.6268
+PTR_bin_49	May_2B	DEMIC	1.6436
+PTR_bin_49	May_3A	DEMIC	1.6065
+PTR_bin_49	May_3B	DEMIC	1.6056
+PTR_bin_49	Sept_0	DEMIC	 
+PTR_bin_49	Sept_1A	DEMIC	 
+PTR_bin_49	Sept_1B	DEMIC	 
+PTR_bin_49	Sept_1C	DEMIC	 
+PTR_bin_49	Sept_2A	DEMIC	 
+PTR_bin_49	Sept_2B	DEMIC	 
+PTR_bin_49	Sept_2C	DEMIC	 
+PTR_bin_49	Sept_3A	DEMIC	 
+PTR_bin_49	Sept_3B	DEMIC	 
+PTR_bin_49	Sept_3C	DEMIC	 
+PTR_bin_49	Sept_4A	DEMIC	 
+PTR_bin_49	Sept_4B	DEMIC	 
+PTR_bin_49	Sept_4C	DEMIC	 
+PTR_bin_50	May_0	DEMIC	2.2693
+PTR_bin_50	May_1A	DEMIC	2.5388
+PTR_bin_50	May_1B	DEMIC	2.6896
+PTR_bin_50	May_2A	DEMIC	3.0094
+PTR_bin_50	May_2B	DEMIC	2.6188
+PTR_bin_50	May_3A	DEMIC	2.9485
+PTR_bin_50	May_3B	DEMIC	2.0965
+PTR_bin_50	Sept_0	DEMIC	1.5196
+PTR_bin_50	Sept_1A	DEMIC	1.9938
+PTR_bin_50	Sept_1B	DEMIC	1.662
+PTR_bin_50	Sept_1C	DEMIC	1.653
+PTR_bin_50	Sept_2A	DEMIC	2.1077
+PTR_bin_50	Sept_2B	DEMIC	1.8408
+PTR_bin_50	Sept_2C	DEMIC	1.9018
+PTR_bin_50	Sept_3A	DEMIC	2.2086
+PTR_bin_50	Sept_3B	DEMIC	2.3668
+PTR_bin_50	Sept_3C	DEMIC	1.9748
+PTR_bin_50	Sept_4A	DEMIC	2.4441
+PTR_bin_50	Sept_4B	DEMIC	2.3917
+PTR_bin_50	Sept_4C	DEMIC	2.1806
+PTR_bin_51	May_0	DEMIC	1.3279
+PTR_bin_51	May_0	GRiD	1.36
+PTR_bin_51	May_0	iRep	 
+PTR_bin_51	May_1A	DEMIC	1.4473
+PTR_bin_51	May_1A	GRiD	1.39
+PTR_bin_51	May_1A	iRep	 
+PTR_bin_51	May_1B	DEMIC	1.4323
+PTR_bin_51	May_1B	GRiD	1.33
+PTR_bin_51	May_1B	iRep	2.75061658983402
+PTR_bin_51	May_2A	DEMIC	1.441
+PTR_bin_51	May_2A	GRiD	1.39
+PTR_bin_51	May_2A	iRep	 
+PTR_bin_51	May_2B	DEMIC	1.4512
+PTR_bin_51	May_2B	GRiD	1.38
+PTR_bin_51	May_2B	iRep	 
+PTR_bin_51	May_3A	DEMIC	1.3624
+PTR_bin_51	May_3A	GRiD	1.31
+PTR_bin_51	May_3A	iRep	2.85291446549846
+PTR_bin_51	May_3B	DEMIC	1.3876
+PTR_bin_51	May_3B	GRiD	1.31
+PTR_bin_51	May_3B	iRep	2.89400425440698
+PTR_bin_51	Sept_0	DEMIC	 
+PTR_bin_51	Sept_0	GRiD	1.78
+PTR_bin_51	Sept_0	iRep	 
+PTR_bin_51	Sept_1A	DEMIC	 
+PTR_bin_51	Sept_1A	GRiD	1.63
+PTR_bin_51	Sept_1A	iRep	 
+PTR_bin_51	Sept_1B	DEMIC	 
+PTR_bin_51	Sept_1B	GRiD	1.99
+PTR_bin_51	Sept_1B	iRep	 
+PTR_bin_51	Sept_1C	DEMIC	 
+PTR_bin_51	Sept_1C	GRiD	1.8
+PTR_bin_51	Sept_1C	iRep	 
+PTR_bin_51	Sept_2A	DEMIC	 
+PTR_bin_51	Sept_2A	GRiD	1.6
+PTR_bin_51	Sept_2A	iRep	 
+PTR_bin_51	Sept_2B	DEMIC	 
+PTR_bin_51	Sept_2B	GRiD	1.55
+PTR_bin_51	Sept_2B	iRep	 
+PTR_bin_51	Sept_2C	DEMIC	 
+PTR_bin_51	Sept_2C	GRiD	1.62
+PTR_bin_51	Sept_2C	iRep	 
+PTR_bin_51	Sept_3A	DEMIC	1.7612
+PTR_bin_51	Sept_3A	GRiD	1.42
+PTR_bin_51	Sept_3A	iRep	 
+PTR_bin_51	Sept_3B	DEMIC	1.9875
+PTR_bin_51	Sept_3B	GRiD	1.45
+PTR_bin_51	Sept_3B	iRep	 
+PTR_bin_51	Sept_3C	DEMIC	1.82
+PTR_bin_51	Sept_3C	GRiD	1.46
+PTR_bin_51	Sept_3C	iRep	 
+PTR_bin_51	Sept_4A	DEMIC	1.8916
+PTR_bin_51	Sept_4A	GRiD	1.46
+PTR_bin_51	Sept_4A	iRep	 
+PTR_bin_51	Sept_4B	DEMIC	 
+PTR_bin_51	Sept_4B	GRiD	1.64
+PTR_bin_51	Sept_4B	iRep	 
+PTR_bin_51	Sept_4C	DEMIC	2.0175
+PTR_bin_51	Sept_4C	GRiD	1.57
+PTR_bin_51	Sept_4C	iRep	 
+PTR_bin_52	May_0	DEMIC	 
+PTR_bin_52	May_1A	DEMIC	 
+PTR_bin_52	May_1B	DEMIC	 
+PTR_bin_52	May_2A	DEMIC	 
+PTR_bin_52	May_2B	DEMIC	 
+PTR_bin_52	May_3A	DEMIC	 
+PTR_bin_52	May_3B	DEMIC	 
+PTR_bin_52	Sept_0	DEMIC	 
+PTR_bin_52	Sept_1A	DEMIC	 
+PTR_bin_52	Sept_1B	DEMIC	 
+PTR_bin_52	Sept_1C	DEMIC	 
+PTR_bin_52	Sept_2A	DEMIC	 
+PTR_bin_52	Sept_2B	DEMIC	 
+PTR_bin_52	Sept_2C	DEMIC	 
+PTR_bin_52	Sept_3A	DEMIC	 
+PTR_bin_52	Sept_3B	DEMIC	 
+PTR_bin_52	Sept_3C	DEMIC	 
+PTR_bin_52	Sept_4A	DEMIC	 
+PTR_bin_52	Sept_4B	DEMIC	 
+PTR_bin_52	Sept_4C	DEMIC	 
+PTR_bin_53	May_0	DEMIC	1.3007
+PTR_bin_53	May_1A	DEMIC	1.7918
+PTR_bin_53	May_1B	DEMIC	1.8911
+PTR_bin_53	May_2A	DEMIC	2.2141
+PTR_bin_53	May_2B	DEMIC	2.0845
+PTR_bin_53	May_3A	DEMIC	1.7675
+PTR_bin_53	May_3B	DEMIC	2.0049
+PTR_bin_53	Sept_0	DEMIC	 
+PTR_bin_53	Sept_1A	DEMIC	 
+PTR_bin_53	Sept_1B	DEMIC	 
+PTR_bin_53	Sept_1C	DEMIC	 
+PTR_bin_53	Sept_2A	DEMIC	 
+PTR_bin_53	Sept_2B	DEMIC	 
+PTR_bin_53	Sept_2C	DEMIC	 
+PTR_bin_53	Sept_3A	DEMIC	 
+PTR_bin_53	Sept_3B	DEMIC	 
+PTR_bin_53	Sept_3C	DEMIC	 
+PTR_bin_53	Sept_4A	DEMIC	 
+PTR_bin_53	Sept_4B	DEMIC	 
+PTR_bin_53	Sept_4C	DEMIC	 
+PTR_bin_54	May_0	DEMIC	1.2902
+PTR_bin_54	May_1A	DEMIC	1.5604
+PTR_bin_54	May_1B	DEMIC	1.5225
+PTR_bin_54	May_2A	DEMIC	1.7229
+PTR_bin_54	May_2B	DEMIC	1.4915
+PTR_bin_54	May_3A	DEMIC	1.688
+PTR_bin_54	May_3B	DEMIC	1.5642
+PTR_bin_54	Sept_0	DEMIC	1.0812
+PTR_bin_54	Sept_1A	DEMIC	1.1425
+PTR_bin_54	Sept_1B	DEMIC	1.0426
+PTR_bin_54	Sept_1C	DEMIC	1.1768
+PTR_bin_54	Sept_2A	DEMIC	1.2072
+PTR_bin_54	Sept_2B	DEMIC	1.2175
+PTR_bin_54	Sept_2C	DEMIC	1.1343
+PTR_bin_54	Sept_3A	DEMIC	1.189
+PTR_bin_54	Sept_3B	DEMIC	1.3451
+PTR_bin_54	Sept_3C	DEMIC	1.2418
+PTR_bin_54	Sept_4A	DEMIC	1.2257
+PTR_bin_54	Sept_4B	DEMIC	 
+PTR_bin_54	Sept_4C	DEMIC	1.4325
+PTR_bin_55	May_0	DEMIC	3.8143
+PTR_bin_55	May_1A	DEMIC	 
+PTR_bin_55	May_1B	DEMIC	 
+PTR_bin_55	May_2A	DEMIC	 
+PTR_bin_55	May_2B	DEMIC	 
+PTR_bin_55	May_3A	DEMIC	 
+PTR_bin_55	May_3B	DEMIC	 
+PTR_bin_55	Sept_0	DEMIC	2.5896
+PTR_bin_55	Sept_1A	DEMIC	2.0471
+PTR_bin_55	Sept_1B	DEMIC	2.6777
+PTR_bin_55	Sept_1C	DEMIC	2.0021
+PTR_bin_55	Sept_2A	DEMIC	1.8847
+PTR_bin_55	Sept_2B	DEMIC	2.0717
+PTR_bin_55	Sept_2C	DEMIC	2.0703
+PTR_bin_55	Sept_3A	DEMIC	1.7921
+PTR_bin_55	Sept_3B	DEMIC	1.8434
+PTR_bin_55	Sept_3C	DEMIC	2.5036
+PTR_bin_55	Sept_4A	DEMIC	2.7054
+PTR_bin_55	Sept_4B	DEMIC	 
+PTR_bin_55	Sept_4C	DEMIC	1.3141
+PTR_bin_56	May_0	DEMIC	1.163
+PTR_bin_56	May_1A	DEMIC	1.4437
+PTR_bin_56	May_1B	DEMIC	1.6564
+PTR_bin_56	May_2A	DEMIC	 
+PTR_bin_56	May_2B	DEMIC	 
+PTR_bin_56	May_3A	DEMIC	1.4382
+PTR_bin_56	May_3B	DEMIC	3.6276
+PTR_bin_56	Sept_0	DEMIC	 
+PTR_bin_56	Sept_1A	DEMIC	 
+PTR_bin_56	Sept_1B	DEMIC	 
+PTR_bin_56	Sept_1C	DEMIC	 
+PTR_bin_56	Sept_2A	DEMIC	 
+PTR_bin_56	Sept_2B	DEMIC	 
+PTR_bin_56	Sept_2C	DEMIC	 
+PTR_bin_56	Sept_3A	DEMIC	 
+PTR_bin_56	Sept_3B	DEMIC	 
+PTR_bin_56	Sept_3C	DEMIC	 
+PTR_bin_56	Sept_4A	DEMIC	 
+PTR_bin_56	Sept_4B	DEMIC	 
+PTR_bin_56	Sept_4C	DEMIC	 
+PTR_bin_57	May_0	DEMIC	1.8267
+PTR_bin_57	May_1A	DEMIC	1.9436
+PTR_bin_57	May_1B	DEMIC	1.902
+PTR_bin_57	May_2A	DEMIC	1.97
+PTR_bin_57	May_2B	DEMIC	1.9424
+PTR_bin_57	May_3A	DEMIC	1.8511
+PTR_bin_57	May_3B	DEMIC	2.0689
+PTR_bin_57	Sept_0	DEMIC	1.8809
+PTR_bin_57	Sept_1A	DEMIC	1.6645
+PTR_bin_57	Sept_1B	DEMIC	1.6467
+PTR_bin_57	Sept_1C	DEMIC	1.7544
+PTR_bin_57	Sept_2A	DEMIC	1.6549
+PTR_bin_57	Sept_2B	DEMIC	1.6712
+PTR_bin_57	Sept_2C	DEMIC	1.7073
+PTR_bin_57	Sept_3A	DEMIC	1.8079
+PTR_bin_57	Sept_3B	DEMIC	1.7515
+PTR_bin_57	Sept_3C	DEMIC	2.0563
+PTR_bin_57	Sept_4A	DEMIC	2.1055
+PTR_bin_57	Sept_4B	DEMIC	1.9256
+PTR_bin_57	Sept_4C	DEMIC	1.6818
+PTR_bin_58	May_0	DEMIC	1.1282
+PTR_bin_58	May_1A	DEMIC	1.0318
+PTR_bin_58	May_1B	DEMIC	1.0453
+PTR_bin_58	May_2A	DEMIC	1.7176
+PTR_bin_58	May_2B	DEMIC	1.6887
+PTR_bin_58	May_3A	DEMIC	1.453
+PTR_bin_58	May_3B	DEMIC	1.0616
+PTR_bin_58	Sept_0	DEMIC	 
+PTR_bin_58	Sept_1A	DEMIC	 
+PTR_bin_58	Sept_1B	DEMIC	 
+PTR_bin_58	Sept_1C	DEMIC	 
+PTR_bin_58	Sept_2A	DEMIC	 
+PTR_bin_58	Sept_2B	DEMIC	 
+PTR_bin_58	Sept_2C	DEMIC	 
+PTR_bin_58	Sept_3A	DEMIC	 
+PTR_bin_58	Sept_3B	DEMIC	 
+PTR_bin_58	Sept_3C	DEMIC	 
+PTR_bin_58	Sept_4A	DEMIC	 
+PTR_bin_58	Sept_4B	DEMIC	 
+PTR_bin_58	Sept_4C	DEMIC	 
+PTR_bin_59	May_0	DEMIC	1.4149
+PTR_bin_59	May_1A	DEMIC	1.4618
+PTR_bin_59	May_1B	DEMIC	1.4173
+PTR_bin_59	May_2A	DEMIC	1.4901
+PTR_bin_59	May_2B	DEMIC	1.3677
+PTR_bin_59	May_3A	DEMIC	1.2934
+PTR_bin_59	May_3B	DEMIC	1.3109
+PTR_bin_59	Sept_0	DEMIC	 
+PTR_bin_59	Sept_1A	DEMIC	 
+PTR_bin_59	Sept_1B	DEMIC	 
+PTR_bin_59	Sept_1C	DEMIC	 
+PTR_bin_59	Sept_2A	DEMIC	 
+PTR_bin_59	Sept_2B	DEMIC	 
+PTR_bin_59	Sept_2C	DEMIC	 
+PTR_bin_59	Sept_3A	DEMIC	 
+PTR_bin_59	Sept_3B	DEMIC	 
+PTR_bin_59	Sept_3C	DEMIC	 
+PTR_bin_59	Sept_4A	DEMIC	 
+PTR_bin_59	Sept_4B	DEMIC	 
+PTR_bin_59	Sept_4C	DEMIC	 
+PTR_bin_60	May_0	DEMIC	 
+PTR_bin_60	May_1A	DEMIC	 
+PTR_bin_60	May_1B	DEMIC	 
+PTR_bin_60	May_2A	DEMIC	 
+PTR_bin_60	May_2B	DEMIC	 
+PTR_bin_60	May_3A	DEMIC	 
+PTR_bin_60	May_3B	DEMIC	 
+PTR_bin_60	Sept_0	DEMIC	 
+PTR_bin_60	Sept_1A	DEMIC	 
+PTR_bin_60	Sept_1B	DEMIC	 
+PTR_bin_60	Sept_1C	DEMIC	 
+PTR_bin_60	Sept_2A	DEMIC	 
+PTR_bin_60	Sept_2B	DEMIC	 
+PTR_bin_60	Sept_2C	DEMIC	 
+PTR_bin_60	Sept_3A	DEMIC	 
+PTR_bin_60	Sept_3B	DEMIC	 
+PTR_bin_60	Sept_3C	DEMIC	 
+PTR_bin_60	Sept_4A	DEMIC	 
+PTR_bin_60	Sept_4B	DEMIC	 
+PTR_bin_60	Sept_4C	DEMIC	 
+PTR_bin_61	May_0	DEMIC	 
+PTR_bin_61	May_0	GRiD	1.62
+PTR_bin_61	May_0	iRep	 
+PTR_bin_61	May_1A	DEMIC	 
+PTR_bin_61	May_1A	GRiD	1.5
+PTR_bin_61	May_1A	iRep	 
+PTR_bin_61	May_1B	DEMIC	 
+PTR_bin_61	May_1B	GRiD	1.58
+PTR_bin_61	May_1B	iRep	 
+PTR_bin_61	May_2A	DEMIC	 
+PTR_bin_61	May_2A	GRiD	1.75
+PTR_bin_61	May_2A	iRep	 
+PTR_bin_61	May_2B	DEMIC	 
+PTR_bin_61	May_2B	GRiD	1.92
+PTR_bin_61	May_2B	iRep	 
+PTR_bin_61	May_3A	DEMIC	 
+PTR_bin_61	May_3A	GRiD	1.7
+PTR_bin_61	May_3A	iRep	 
+PTR_bin_61	May_3B	DEMIC	 
+PTR_bin_61	May_3B	GRiD	1.81
+PTR_bin_61	May_3B	iRep	 
+PTR_bin_61	Sept_0	DEMIC	 
+PTR_bin_61	Sept_0	GRiD	2.19
+PTR_bin_61	Sept_0	iRep	 
+PTR_bin_61	Sept_1A	DEMIC	 
+PTR_bin_61	Sept_1A	GRiD	2.15
+PTR_bin_61	Sept_1A	iRep	 
+PTR_bin_61	Sept_1B	DEMIC	 
+PTR_bin_61	Sept_1B	GRiD	2.24
+PTR_bin_61	Sept_1B	iRep	 
+PTR_bin_61	Sept_1C	DEMIC	 
+PTR_bin_61	Sept_1C	GRiD	2.12
+PTR_bin_61	Sept_1C	iRep	 
+PTR_bin_61	Sept_2A	DEMIC	 
+PTR_bin_61	Sept_2A	GRiD	2.13
+PTR_bin_61	Sept_2A	iRep	 
+PTR_bin_61	Sept_2B	DEMIC	 
+PTR_bin_61	Sept_2B	GRiD	1.89
+PTR_bin_61	Sept_2B	iRep	 
+PTR_bin_61	Sept_2C	DEMIC	 
+PTR_bin_61	Sept_2C	GRiD	2.07
+PTR_bin_61	Sept_2C	iRep	 
+PTR_bin_61	Sept_3A	DEMIC	 
+PTR_bin_61	Sept_3A	GRiD	1.95
+PTR_bin_61	Sept_3A	iRep	 
+PTR_bin_61	Sept_3B	DEMIC	 
+PTR_bin_61	Sept_3B	GRiD	1.89
+PTR_bin_61	Sept_3B	iRep	 
+PTR_bin_61	Sept_3C	DEMIC	 
+PTR_bin_61	Sept_3C	GRiD	2.06
+PTR_bin_61	Sept_3C	iRep	 
+PTR_bin_61	Sept_4A	DEMIC	 
+PTR_bin_61	Sept_4A	GRiD	2.73
+PTR_bin_61	Sept_4A	iRep	 
+PTR_bin_61	Sept_4B	DEMIC	 
+PTR_bin_61	Sept_4B	GRiD	3.08
+PTR_bin_61	Sept_4B	iRep	 
+PTR_bin_61	Sept_4C	DEMIC	 
+PTR_bin_61	Sept_4C	GRiD	2.51
+PTR_bin_61	Sept_4C	iRep	 
+PTR_bin_62	May_0	DEMIC	2.0253
+PTR_bin_62	May_1A	DEMIC	2.101
+PTR_bin_62	May_1B	DEMIC	2.2065
+PTR_bin_62	May_2A	DEMIC	 
+PTR_bin_62	May_2B	DEMIC	 
+PTR_bin_62	May_3A	DEMIC	 
+PTR_bin_62	May_3B	DEMIC	 
+PTR_bin_62	Sept_0	DEMIC	1.7761
+PTR_bin_62	Sept_1A	DEMIC	1.4807
+PTR_bin_62	Sept_1B	DEMIC	1.5113
+PTR_bin_62	Sept_1C	DEMIC	1.259
+PTR_bin_62	Sept_2A	DEMIC	1.658
+PTR_bin_62	Sept_2B	DEMIC	1.6293
+PTR_bin_62	Sept_2C	DEMIC	1.5631
+PTR_bin_62	Sept_3A	DEMIC	1.7901
+PTR_bin_62	Sept_3B	DEMIC	1.08
+PTR_bin_62	Sept_3C	DEMIC	1.8492
+PTR_bin_62	Sept_4A	DEMIC	 
+PTR_bin_62	Sept_4B	DEMIC	 
+PTR_bin_62	Sept_4C	DEMIC	 
+PTR_bin_63	May_0	DEMIC	1.4253
+PTR_bin_63	May_0	GRiD	1.8
+PTR_bin_63	May_0	iRep	 
+PTR_bin_63	May_1A	DEMIC	1.492
+PTR_bin_63	May_1A	GRiD	1.75
+PTR_bin_63	May_1A	iRep	 
+PTR_bin_63	May_1B	DEMIC	1.3763
+PTR_bin_63	May_1B	GRiD	1.67
+PTR_bin_63	May_1B	iRep	 
+PTR_bin_63	May_2A	DEMIC	 
+PTR_bin_63	May_2A	GRiD	2.09
+PTR_bin_63	May_2A	iRep	 
+PTR_bin_63	May_2B	DEMIC	1.87
+PTR_bin_63	May_2B	GRiD	2.07
+PTR_bin_63	May_2B	iRep	 
+PTR_bin_63	May_3A	DEMIC	1.5299
+PTR_bin_63	May_3A	GRiD	1.82
+PTR_bin_63	May_3A	iRep	 
+PTR_bin_63	May_3B	DEMIC	 
+PTR_bin_63	May_3B	GRiD	1.93
+PTR_bin_63	May_3B	iRep	 
+PTR_bin_63	Sept_0	DEMIC	1.4765
+PTR_bin_63	Sept_0	GRiD	1.36
+PTR_bin_63	Sept_0	iRep	 
+PTR_bin_63	Sept_1A	DEMIC	1.4177
+PTR_bin_63	Sept_1A	GRiD	1.37
+PTR_bin_63	Sept_1A	iRep	 
+PTR_bin_63	Sept_1B	DEMIC	1.5131
+PTR_bin_63	Sept_1B	GRiD	1.38
+PTR_bin_63	Sept_1B	iRep	 
+PTR_bin_63	Sept_1C	DEMIC	1.2971
+PTR_bin_63	Sept_1C	GRiD	1.36
+PTR_bin_63	Sept_1C	iRep	2.91196880931326
+PTR_bin_63	Sept_2A	DEMIC	1.3309
+PTR_bin_63	Sept_2A	GRiD	1.41
+PTR_bin_63	Sept_2A	iRep	 
+PTR_bin_63	Sept_2B	DEMIC	1.3169
+PTR_bin_63	Sept_2B	GRiD	1.43
+PTR_bin_63	Sept_2B	iRep	 
+PTR_bin_63	Sept_2C	DEMIC	1.3367
+PTR_bin_63	Sept_2C	GRiD	1.36
+PTR_bin_63	Sept_2C	iRep	 
+PTR_bin_63	Sept_3A	DEMIC	1.4078
+PTR_bin_63	Sept_3A	GRiD	1.39
+PTR_bin_63	Sept_3A	iRep	 
+PTR_bin_63	Sept_3B	DEMIC	1.3519
+PTR_bin_63	Sept_3B	GRiD	1.4
+PTR_bin_63	Sept_3B	iRep	 
+PTR_bin_63	Sept_3C	DEMIC	1.1942
+PTR_bin_63	Sept_3C	GRiD	1.4
+PTR_bin_63	Sept_3C	iRep	 
+PTR_bin_63	Sept_4A	DEMIC	 
+PTR_bin_63	Sept_4A	GRiD	1.63
+PTR_bin_63	Sept_4A	iRep	 
+PTR_bin_63	Sept_4B	DEMIC	1.6604
+PTR_bin_63	Sept_4B	GRiD	1.75
+PTR_bin_63	Sept_4B	iRep	 
+PTR_bin_63	Sept_4C	DEMIC	1.3036
+PTR_bin_63	Sept_4C	GRiD	1.42
+PTR_bin_63	Sept_4C	iRep	 
+PTR_bin_64	May_0	DEMIC	 
+PTR_bin_64	May_0	GRiD	 
+PTR_bin_64	May_0	iRep	 
+PTR_bin_64	May_1A	DEMIC	 
+PTR_bin_64	May_1A	GRiD	 
+PTR_bin_64	May_1A	iRep	 
+PTR_bin_64	May_1B	DEMIC	 
+PTR_bin_64	May_1B	GRiD	 
+PTR_bin_64	May_1B	iRep	 
+PTR_bin_64	May_2A	DEMIC	 
+PTR_bin_64	May_2A	GRiD	 
+PTR_bin_64	May_2A	iRep	 
+PTR_bin_64	May_2B	DEMIC	 
+PTR_bin_64	May_2B	GRiD	 
+PTR_bin_64	May_2B	iRep	 
+PTR_bin_64	May_3A	DEMIC	 
+PTR_bin_64	May_3A	GRiD	 
+PTR_bin_64	May_3A	iRep	 
+PTR_bin_64	May_3B	DEMIC	 
+PTR_bin_64	May_3B	GRiD	 
+PTR_bin_64	May_3B	iRep	 
+PTR_bin_64	Sept_0	DEMIC	1.0771
+PTR_bin_64	Sept_0	GRiD	1.38
+PTR_bin_64	Sept_0	iRep	 
+PTR_bin_64	Sept_1A	DEMIC	1.0692
+PTR_bin_64	Sept_1A	GRiD	1.41
+PTR_bin_64	Sept_1A	iRep	1.77518893537559
+PTR_bin_64	Sept_1B	DEMIC	1.1264
+PTR_bin_64	Sept_1B	GRiD	1.44
+PTR_bin_64	Sept_1B	iRep	 
+PTR_bin_64	Sept_1C	DEMIC	1.0045
+PTR_bin_64	Sept_1C	GRiD	1.46
+PTR_bin_64	Sept_1C	iRep	 
+PTR_bin_64	Sept_2A	DEMIC	1.063
+PTR_bin_64	Sept_2A	GRiD	1.28
+PTR_bin_64	Sept_2A	iRep	 
+PTR_bin_64	Sept_2B	DEMIC	1.1259
+PTR_bin_64	Sept_2B	GRiD	1.34
+PTR_bin_64	Sept_2B	iRep	 
+PTR_bin_64	Sept_2C	DEMIC	2.0323
+PTR_bin_64	Sept_2C	GRiD	1.53
+PTR_bin_64	Sept_2C	iRep	 
+PTR_bin_64	Sept_3A	DEMIC	1.1961
+PTR_bin_64	Sept_3A	GRiD	1.54
+PTR_bin_64	Sept_3A	iRep	 
+PTR_bin_64	Sept_3B	DEMIC	1.2903
+PTR_bin_64	Sept_3B	GRiD	1.54
+PTR_bin_64	Sept_3B	iRep	 
+PTR_bin_64	Sept_3C	DEMIC	 
+PTR_bin_64	Sept_3C	GRiD	1.53
+PTR_bin_64	Sept_3C	iRep	 
+PTR_bin_64	Sept_4A	DEMIC	 
+PTR_bin_64	Sept_4A	GRiD	2.1
+PTR_bin_64	Sept_4A	iRep	 
+PTR_bin_64	Sept_4B	DEMIC	 
+PTR_bin_64	Sept_4B	GRiD	2.06
+PTR_bin_64	Sept_4B	iRep	 
+PTR_bin_64	Sept_4C	DEMIC	 
+PTR_bin_64	Sept_4C	GRiD	1.9
+PTR_bin_64	Sept_4C	iRep	 
+PTR_bin_65	May_0	DEMIC	1.4981
+PTR_bin_65	May_1A	DEMIC	1.6756
+PTR_bin_65	May_1B	DEMIC	1.5952
+PTR_bin_65	May_2A	DEMIC	1.808
+PTR_bin_65	May_2B	DEMIC	1.5296
+PTR_bin_65	May_3A	DEMIC	1.5198
+PTR_bin_65	May_3B	DEMIC	1.4248
+PTR_bin_65	Sept_0	DEMIC	1.2309
+PTR_bin_65	Sept_1A	DEMIC	1.2895
+PTR_bin_65	Sept_1B	DEMIC	1.318
+PTR_bin_65	Sept_1C	DEMIC	1.4871
+PTR_bin_65	Sept_2A	DEMIC	1.3691
+PTR_bin_65	Sept_2B	DEMIC	1.4215
+PTR_bin_65	Sept_2C	DEMIC	1.2646
+PTR_bin_65	Sept_3A	DEMIC	1.4205
+PTR_bin_65	Sept_3B	DEMIC	1.4618
+PTR_bin_65	Sept_3C	DEMIC	1.2953
+PTR_bin_65	Sept_4A	DEMIC	1.4852
+PTR_bin_65	Sept_4B	DEMIC	1.4908
+PTR_bin_65	Sept_4C	DEMIC	1.4705
+PTR_bin_66	May_0	DEMIC	1.6638
+PTR_bin_66	May_0	GRiD	1.29
+PTR_bin_66	May_0	iRep	2.86910506699511
+PTR_bin_66	May_1A	DEMIC	1.6752
+PTR_bin_66	May_1A	GRiD	1.23
+PTR_bin_66	May_1A	iRep	3.45332325075081
+PTR_bin_66	May_1B	DEMIC	1.7574
+PTR_bin_66	May_1B	GRiD	1.26
+PTR_bin_66	May_1B	iRep	3.44005623493586
+PTR_bin_66	May_2A	DEMIC	1.7584
+PTR_bin_66	May_2A	GRiD	1.29
+PTR_bin_66	May_2A	iRep	 
+PTR_bin_66	May_2B	DEMIC	1.5374
+PTR_bin_66	May_2B	GRiD	1.21
+PTR_bin_66	May_2B	iRep	 
+PTR_bin_66	May_3A	DEMIC	1.6616
+PTR_bin_66	May_3A	GRiD	1.21
+PTR_bin_66	May_3A	iRep	 
+PTR_bin_66	May_3B	DEMIC	1.7695
+PTR_bin_66	May_3B	GRiD	1.28
+PTR_bin_66	May_3B	iRep	 
+PTR_bin_66	Sept_0	DEMIC	1.7657
+PTR_bin_66	Sept_0	GRiD	1.24
+PTR_bin_66	Sept_0	iRep	 
+PTR_bin_66	Sept_1A	DEMIC	1.9391
+PTR_bin_66	Sept_1A	GRiD	1.27
+PTR_bin_66	Sept_1A	iRep	 
+PTR_bin_66	Sept_1B	DEMIC	1.8659
+PTR_bin_66	Sept_1B	GRiD	1.22
+PTR_bin_66	Sept_1B	iRep	 
+PTR_bin_66	Sept_1C	DEMIC	1.6586
+PTR_bin_66	Sept_1C	GRiD	1.23
+PTR_bin_66	Sept_1C	iRep	 
+PTR_bin_66	Sept_2A	DEMIC	2.0087
+PTR_bin_66	Sept_2A	GRiD	1.42
+PTR_bin_66	Sept_2A	iRep	 
+PTR_bin_66	Sept_2B	DEMIC	1.8252
+PTR_bin_66	Sept_2B	GRiD	1.32
+PTR_bin_66	Sept_2B	iRep	 
+PTR_bin_66	Sept_2C	DEMIC	1.644
+PTR_bin_66	Sept_2C	GRiD	1.25
+PTR_bin_66	Sept_2C	iRep	 
+PTR_bin_66	Sept_3A	DEMIC	1.7103
+PTR_bin_66	Sept_3A	GRiD	1.34
+PTR_bin_66	Sept_3A	iRep	 
+PTR_bin_66	Sept_3B	DEMIC	2.039
+PTR_bin_66	Sept_3B	GRiD	1.35
+PTR_bin_66	Sept_3B	iRep	 
+PTR_bin_66	Sept_3C	DEMIC	2.0317
+PTR_bin_66	Sept_3C	GRiD	1.39
+PTR_bin_66	Sept_3C	iRep	 
+PTR_bin_66	Sept_4A	DEMIC	1.6944
+PTR_bin_66	Sept_4A	GRiD	1.34
+PTR_bin_66	Sept_4A	iRep	 
+PTR_bin_66	Sept_4B	DEMIC	1.9507
+PTR_bin_66	Sept_4B	GRiD	1.3
+PTR_bin_66	Sept_4B	iRep	 
+PTR_bin_66	Sept_4C	DEMIC	1.9052
+PTR_bin_66	Sept_4C	GRiD	1.31
+PTR_bin_66	Sept_4C	iRep	 
+PTR_bin_67	May_0	DEMIC	 
+PTR_bin_67	May_1A	DEMIC	 
+PTR_bin_67	May_1B	DEMIC	 
+PTR_bin_67	May_2A	DEMIC	 
+PTR_bin_67	May_2B	DEMIC	 
+PTR_bin_67	May_3A	DEMIC	 
+PTR_bin_67	May_3B	DEMIC	 
+PTR_bin_67	Sept_0	DEMIC	 
+PTR_bin_67	Sept_1A	DEMIC	 
+PTR_bin_67	Sept_1B	DEMIC	 
+PTR_bin_67	Sept_1C	DEMIC	 
+PTR_bin_67	Sept_2A	DEMIC	 
+PTR_bin_67	Sept_2B	DEMIC	 
+PTR_bin_67	Sept_2C	DEMIC	 
+PTR_bin_67	Sept_3A	DEMIC	 
+PTR_bin_67	Sept_3B	DEMIC	 
+PTR_bin_67	Sept_3C	DEMIC	 
+PTR_bin_67	Sept_4A	DEMIC	 
+PTR_bin_67	Sept_4B	DEMIC	 
+PTR_bin_67	Sept_4C	DEMIC	 
+PTR_bin_68	May_0	DEMIC	 
+PTR_bin_68	May_0	GRiD	2.04
+PTR_bin_68	May_0	iRep	 
+PTR_bin_68	May_1A	DEMIC	 
+PTR_bin_68	May_1A	GRiD	1.71
+PTR_bin_68	May_1A	iRep	 
+PTR_bin_68	May_1B	DEMIC	 
+PTR_bin_68	May_1B	GRiD	1.49
+PTR_bin_68	May_1B	iRep	 
+PTR_bin_68	May_2A	DEMIC	 
+PTR_bin_68	May_2A	GRiD	1.74
+PTR_bin_68	May_2A	iRep	 
+PTR_bin_68	May_2B	DEMIC	 
+PTR_bin_68	May_2B	GRiD	1.9
+PTR_bin_68	May_2B	iRep	 
+PTR_bin_68	May_3A	DEMIC	 
+PTR_bin_68	May_3A	GRiD	2.03
+PTR_bin_68	May_3A	iRep	 
+PTR_bin_68	May_3B	DEMIC	 
+PTR_bin_68	May_3B	GRiD	2.29
+PTR_bin_68	May_3B	iRep	 
+PTR_bin_68	Sept_0	DEMIC	1.1785
+PTR_bin_68	Sept_0	GRiD	1.22
+PTR_bin_68	Sept_0	iRep	 
+PTR_bin_68	Sept_1A	DEMIC	1.3064
+PTR_bin_68	Sept_1A	GRiD	1.27
+PTR_bin_68	Sept_1A	iRep	 
+PTR_bin_68	Sept_1B	DEMIC	1.216
+PTR_bin_68	Sept_1B	GRiD	1.32
+PTR_bin_68	Sept_1B	iRep	 
+PTR_bin_68	Sept_1C	DEMIC	1.3362
+PTR_bin_68	Sept_1C	GRiD	1.4
+PTR_bin_68	Sept_1C	iRep	 
+PTR_bin_68	Sept_2A	DEMIC	1.3409
+PTR_bin_68	Sept_2A	GRiD	1.28
+PTR_bin_68	Sept_2A	iRep	 
+PTR_bin_68	Sept_2B	DEMIC	1.2781
+PTR_bin_68	Sept_2B	GRiD	1.26
+PTR_bin_68	Sept_2B	iRep	 
+PTR_bin_68	Sept_2C	DEMIC	1.2968
+PTR_bin_68	Sept_2C	GRiD	1.27
+PTR_bin_68	Sept_2C	iRep	 
+PTR_bin_68	Sept_3A	DEMIC	1.3308
+PTR_bin_68	Sept_3A	GRiD	1.21
+PTR_bin_68	Sept_3A	iRep	 
+PTR_bin_68	Sept_3B	DEMIC	1.183
+PTR_bin_68	Sept_3B	GRiD	1.25
+PTR_bin_68	Sept_3B	iRep	 
+PTR_bin_68	Sept_3C	DEMIC	1.4556
+PTR_bin_68	Sept_3C	GRiD	1.33
+PTR_bin_68	Sept_3C	iRep	 
+PTR_bin_68	Sept_4A	DEMIC	1.4185
+PTR_bin_68	Sept_4A	GRiD	1.44
+PTR_bin_68	Sept_4A	iRep	 
+PTR_bin_68	Sept_4B	DEMIC	 
+PTR_bin_68	Sept_4B	GRiD	1.41
+PTR_bin_68	Sept_4B	iRep	 
+PTR_bin_68	Sept_4C	DEMIC	1.3893
+PTR_bin_68	Sept_4C	GRiD	1.45
+PTR_bin_68	Sept_4C	iRep	 
+PTR_bin_69	May_0	DEMIC	 
+PTR_bin_69	May_1A	DEMIC	 
+PTR_bin_69	May_1B	DEMIC	 
+PTR_bin_69	May_2A	DEMIC	 
+PTR_bin_69	May_2B	DEMIC	 
+PTR_bin_69	May_3A	DEMIC	 
+PTR_bin_69	May_3B	DEMIC	 
+PTR_bin_69	Sept_0	DEMIC	 
+PTR_bin_69	Sept_1A	DEMIC	 
+PTR_bin_69	Sept_1B	DEMIC	 
+PTR_bin_69	Sept_1C	DEMIC	 
+PTR_bin_69	Sept_2A	DEMIC	 
+PTR_bin_69	Sept_2B	DEMIC	 
+PTR_bin_69	Sept_2C	DEMIC	 
+PTR_bin_69	Sept_3A	DEMIC	 
+PTR_bin_69	Sept_3B	DEMIC	 
+PTR_bin_69	Sept_3C	DEMIC	 
+PTR_bin_69	Sept_4A	DEMIC	 
+PTR_bin_69	Sept_4B	DEMIC	 
+PTR_bin_69	Sept_4C	DEMIC	 
+PTR_bin_70	May_0	DEMIC	 
+PTR_bin_70	May_1A	DEMIC	1.3499
+PTR_bin_70	May_1B	DEMIC	1.2674
+PTR_bin_70	May_2A	DEMIC	1.3037
+PTR_bin_70	May_2B	DEMIC	1.4051
+PTR_bin_70	May_3A	DEMIC	1.2734
+PTR_bin_70	May_3B	DEMIC	1.1645
+PTR_bin_70	Sept_0	DEMIC	 
+PTR_bin_70	Sept_1A	DEMIC	 
+PTR_bin_70	Sept_1B	DEMIC	 
+PTR_bin_70	Sept_1C	DEMIC	 
+PTR_bin_70	Sept_2A	DEMIC	 
+PTR_bin_70	Sept_2B	DEMIC	 
+PTR_bin_70	Sept_2C	DEMIC	 
+PTR_bin_70	Sept_3A	DEMIC	 
+PTR_bin_70	Sept_3B	DEMIC	 
+PTR_bin_70	Sept_3C	DEMIC	 
+PTR_bin_70	Sept_4A	DEMIC	 
+PTR_bin_70	Sept_4B	DEMIC	 
+PTR_bin_70	Sept_4C	DEMIC	 
+PTR_bin_71	May_0	DEMIC	 
+PTR_bin_71	May_1A	DEMIC	 
+PTR_bin_71	May_1B	DEMIC	 
+PTR_bin_71	May_2A	DEMIC	 
+PTR_bin_71	May_2B	DEMIC	 
+PTR_bin_71	May_3A	DEMIC	 
+PTR_bin_71	May_3B	DEMIC	 
+PTR_bin_71	Sept_0	DEMIC	 
+PTR_bin_71	Sept_1A	DEMIC	 
+PTR_bin_71	Sept_1B	DEMIC	 
+PTR_bin_71	Sept_1C	DEMIC	 
+PTR_bin_71	Sept_2A	DEMIC	 
+PTR_bin_71	Sept_2B	DEMIC	 
+PTR_bin_71	Sept_2C	DEMIC	 
+PTR_bin_71	Sept_3A	DEMIC	 
+PTR_bin_71	Sept_3B	DEMIC	 
+PTR_bin_71	Sept_3C	DEMIC	 
+PTR_bin_71	Sept_4A	DEMIC	 
+PTR_bin_71	Sept_4B	DEMIC	 
+PTR_bin_71	Sept_4C	DEMIC	 
+PTR_bin_72	May_0	DEMIC	1.8115
+PTR_bin_72	May_0	GRiD	1.49
+PTR_bin_72	May_0	iRep	3.51629496305456
+PTR_bin_72	May_1A	DEMIC	1.9505
+PTR_bin_72	May_1A	GRiD	1.44
+PTR_bin_72	May_1A	iRep	4.9937969121716
+PTR_bin_72	May_1B	DEMIC	2.0597
+PTR_bin_72	May_1B	GRiD	1.46
+PTR_bin_72	May_1B	iRep	4.55661570958548
+PTR_bin_72	May_2A	DEMIC	1.8571
+PTR_bin_72	May_2A	GRiD	1.42
+PTR_bin_72	May_2A	iRep	 
+PTR_bin_72	May_2B	DEMIC	1.9691
+PTR_bin_72	May_2B	GRiD	1.44
+PTR_bin_72	May_2B	iRep	 
+PTR_bin_72	May_3A	DEMIC	1.9137
+PTR_bin_72	May_3A	GRiD	1.41
+PTR_bin_72	May_3A	iRep	 
+PTR_bin_72	May_3B	DEMIC	1.798
+PTR_bin_72	May_3B	GRiD	1.43
+PTR_bin_72	May_3B	iRep	 
+PTR_bin_72	Sept_0	DEMIC	 
+PTR_bin_72	Sept_0	GRiD	2.47
+PTR_bin_72	Sept_0	iRep	 
+PTR_bin_72	Sept_1A	DEMIC	 
+PTR_bin_72	Sept_1A	GRiD	2.85
+PTR_bin_72	Sept_1A	iRep	 
+PTR_bin_72	Sept_1B	DEMIC	 
+PTR_bin_72	Sept_1B	GRiD	2.9
+PTR_bin_72	Sept_1B	iRep	 
+PTR_bin_72	Sept_1C	DEMIC	 
+PTR_bin_72	Sept_1C	GRiD	2.43
+PTR_bin_72	Sept_1C	iRep	 
+PTR_bin_72	Sept_2A	DEMIC	 
+PTR_bin_72	Sept_2A	GRiD	2.7
+PTR_bin_72	Sept_2A	iRep	 
+PTR_bin_72	Sept_2B	DEMIC	 
+PTR_bin_72	Sept_2B	GRiD	2.66
+PTR_bin_72	Sept_2B	iRep	 
+PTR_bin_72	Sept_2C	DEMIC	 
+PTR_bin_72	Sept_2C	GRiD	2.4
+PTR_bin_72	Sept_2C	iRep	 
+PTR_bin_72	Sept_3A	DEMIC	 
+PTR_bin_72	Sept_3A	GRiD	2.8
+PTR_bin_72	Sept_3A	iRep	 
+PTR_bin_72	Sept_3B	DEMIC	 
+PTR_bin_72	Sept_3B	GRiD	2.88
+PTR_bin_72	Sept_3B	iRep	 
+PTR_bin_72	Sept_3C	DEMIC	 
+PTR_bin_72	Sept_3C	GRiD	2.56
+PTR_bin_72	Sept_3C	iRep	 
+PTR_bin_72	Sept_4A	DEMIC	 
+PTR_bin_72	Sept_4A	GRiD	2.55
+PTR_bin_72	Sept_4A	iRep	 
+PTR_bin_72	Sept_4B	DEMIC	 
+PTR_bin_72	Sept_4B	GRiD	2.29
+PTR_bin_72	Sept_4B	iRep	 
+PTR_bin_72	Sept_4C	DEMIC	 
+PTR_bin_72	Sept_4C	GRiD	2.45
+PTR_bin_72	Sept_4C	iRep	 
+PTR_bin_74	May_0	DEMIC	 
+PTR_bin_74	May_1A	DEMIC	1.2824
+PTR_bin_74	May_1B	DEMIC	1.2122
+PTR_bin_74	May_2A	DEMIC	1.1713
+PTR_bin_74	May_2B	DEMIC	1.1478
+PTR_bin_74	May_3A	DEMIC	1.2582
+PTR_bin_74	May_3B	DEMIC	1.1738
+PTR_bin_74	Sept_0	DEMIC	 
+PTR_bin_74	Sept_1A	DEMIC	 
+PTR_bin_74	Sept_1B	DEMIC	 
+PTR_bin_74	Sept_1C	DEMIC	 
+PTR_bin_74	Sept_2A	DEMIC	 
+PTR_bin_74	Sept_2B	DEMIC	 
+PTR_bin_74	Sept_2C	DEMIC	 
+PTR_bin_74	Sept_3A	DEMIC	 
+PTR_bin_74	Sept_3B	DEMIC	 
+PTR_bin_74	Sept_3C	DEMIC	 
+PTR_bin_74	Sept_4A	DEMIC	 
+PTR_bin_74	Sept_4B	DEMIC	 
+PTR_bin_74	Sept_4C	DEMIC	 
+PTR_bin_75	May_0	DEMIC	 
+PTR_bin_75	May_1A	DEMIC	1.2602
+PTR_bin_75	May_1B	DEMIC	1.1916
+PTR_bin_75	May_2A	DEMIC	1.2629
+PTR_bin_75	May_2B	DEMIC	1.3187
+PTR_bin_75	May_3A	DEMIC	1.2278
+PTR_bin_75	May_3B	DEMIC	1.3574
+PTR_bin_75	Sept_0	DEMIC	 
+PTR_bin_75	Sept_1A	DEMIC	1.7662
+PTR_bin_75	Sept_1B	DEMIC	 
+PTR_bin_75	Sept_1C	DEMIC	1.3308
+PTR_bin_75	Sept_2A	DEMIC	1.4772
+PTR_bin_75	Sept_2B	DEMIC	1.303
+PTR_bin_75	Sept_2C	DEMIC	1.3634
+PTR_bin_75	Sept_3A	DEMIC	1.4463
+PTR_bin_75	Sept_3B	DEMIC	1.2896
+PTR_bin_75	Sept_3C	DEMIC	1.2397
+PTR_bin_75	Sept_4A	DEMIC	1.2314
+PTR_bin_75	Sept_4B	DEMIC	1.4423
+PTR_bin_75	Sept_4C	DEMIC	1.2187
+PTR_bin_76	May_0	DEMIC	1.5341
+PTR_bin_76	May_1A	DEMIC	1.6031
+PTR_bin_76	May_1B	DEMIC	1.583
+PTR_bin_76	May_2A	DEMIC	1.6377
+PTR_bin_76	May_2B	DEMIC	1.5287
+PTR_bin_76	May_3A	DEMIC	1.5951
+PTR_bin_76	May_3B	DEMIC	1.4983
+PTR_bin_76	Sept_0	DEMIC	1.501
+PTR_bin_76	Sept_1A	DEMIC	1.6213
+PTR_bin_76	Sept_1B	DEMIC	1.4333
+PTR_bin_76	Sept_1C	DEMIC	1.4973
+PTR_bin_76	Sept_2A	DEMIC	1.6818
+PTR_bin_76	Sept_2B	DEMIC	1.4437
+PTR_bin_76	Sept_2C	DEMIC	1.4472
+PTR_bin_76	Sept_3A	DEMIC	1.5624
+PTR_bin_76	Sept_3B	DEMIC	1.3717
+PTR_bin_76	Sept_3C	DEMIC	1.3189
+PTR_bin_76	Sept_4A	DEMIC	 
+PTR_bin_76	Sept_4B	DEMIC	 
+PTR_bin_76	Sept_4C	DEMIC	1.6162
+PTR_bin_77	May_0	DEMIC	1.4055
+PTR_bin_77	May_0	GRiD	1.42
+PTR_bin_77	May_0	iRep	2.46717186519626
+PTR_bin_77	May_1A	DEMIC	1.4778
+PTR_bin_77	May_1A	GRiD	1.42
+PTR_bin_77	May_1A	iRep	3.26007405672726
+PTR_bin_77	May_1B	DEMIC	1.5482
+PTR_bin_77	May_1B	GRiD	1.44
+PTR_bin_77	May_1B	iRep	3.156709482317
+PTR_bin_77	May_2A	DEMIC	1.4075
+PTR_bin_77	May_2A	GRiD	1.34
+PTR_bin_77	May_2A	iRep	 
+PTR_bin_77	May_2B	DEMIC	1.4462
+PTR_bin_77	May_2B	GRiD	1.35
+PTR_bin_77	May_2B	iRep	 
+PTR_bin_77	May_3A	DEMIC	1.3126
+PTR_bin_77	May_3A	GRiD	1.33
+PTR_bin_77	May_3A	iRep	 
+PTR_bin_77	May_3B	DEMIC	1.2362
+PTR_bin_77	May_3B	GRiD	1.24
+PTR_bin_77	May_3B	iRep	 
+PTR_bin_77	Sept_0	DEMIC	1.5465
+PTR_bin_77	Sept_0	GRiD	1.51
+PTR_bin_77	Sept_0	iRep	 
+PTR_bin_77	Sept_1A	DEMIC	1.8318
+PTR_bin_77	Sept_1A	GRiD	1.66
+PTR_bin_77	Sept_1A	iRep	 
+PTR_bin_77	Sept_1B	DEMIC	1.739
+PTR_bin_77	Sept_1B	GRiD	1.48
+PTR_bin_77	Sept_1B	iRep	 
+PTR_bin_77	Sept_1C	DEMIC	1.6245
+PTR_bin_77	Sept_1C	GRiD	1.47
+PTR_bin_77	Sept_1C	iRep	 
+PTR_bin_77	Sept_2A	DEMIC	1.4925
+PTR_bin_77	Sept_2A	GRiD	1.19
+PTR_bin_77	Sept_2A	iRep	 
+PTR_bin_77	Sept_2B	DEMIC	1.4169
+PTR_bin_77	Sept_2B	GRiD	1.4
+PTR_bin_77	Sept_2B	iRep	 
+PTR_bin_77	Sept_2C	DEMIC	1.5182
+PTR_bin_77	Sept_2C	GRiD	1.37
+PTR_bin_77	Sept_2C	iRep	 
+PTR_bin_77	Sept_3A	DEMIC	1.4964
+PTR_bin_77	Sept_3A	GRiD	1.38
+PTR_bin_77	Sept_3A	iRep	 
+PTR_bin_77	Sept_3B	DEMIC	1.4177
+PTR_bin_77	Sept_3B	GRiD	1.32
+PTR_bin_77	Sept_3B	iRep	 
+PTR_bin_77	Sept_3C	DEMIC	1.5808
+PTR_bin_77	Sept_3C	GRiD	1.51
+PTR_bin_77	Sept_3C	iRep	 
+PTR_bin_77	Sept_4A	DEMIC	1.347
+PTR_bin_77	Sept_4A	GRiD	1.53
+PTR_bin_77	Sept_4A	iRep	 
+PTR_bin_77	Sept_4B	DEMIC	1.9017
+PTR_bin_77	Sept_4B	GRiD	1.34
+PTR_bin_77	Sept_4B	iRep	 
+PTR_bin_77	Sept_4C	DEMIC	1.4966
+PTR_bin_77	Sept_4C	GRiD	1.32
+PTR_bin_77	Sept_4C	iRep	 
+PTR_bin_78	May_0	DEMIC	1.1931
+PTR_bin_78	May_1A	DEMIC	1.3675
+PTR_bin_78	May_1B	DEMIC	1.4091
+PTR_bin_78	May_2A	DEMIC	1.3381
+PTR_bin_78	May_2B	DEMIC	1.1624
+PTR_bin_78	May_3A	DEMIC	2.056
+PTR_bin_78	May_3B	DEMIC	1.4902
+PTR_bin_78	Sept_0	DEMIC	 
+PTR_bin_78	Sept_1A	DEMIC	 
+PTR_bin_78	Sept_1B	DEMIC	 
+PTR_bin_78	Sept_1C	DEMIC	 
+PTR_bin_78	Sept_2A	DEMIC	 
+PTR_bin_78	Sept_2B	DEMIC	 
+PTR_bin_78	Sept_2C	DEMIC	 
+PTR_bin_78	Sept_3A	DEMIC	 
+PTR_bin_78	Sept_3B	DEMIC	 
+PTR_bin_78	Sept_3C	DEMIC	 
+PTR_bin_78	Sept_4A	DEMIC	 
+PTR_bin_78	Sept_4B	DEMIC	 
+PTR_bin_78	Sept_4C	DEMIC	 
+PTR_bin_79	May_0	DEMIC	 
+PTR_bin_79	May_1A	DEMIC	1.0387
+PTR_bin_79	May_1B	DEMIC	1.037
+PTR_bin_79	May_2A	DEMIC	1.043
+PTR_bin_79	May_2B	DEMIC	1.0329
+PTR_bin_79	May_3A	DEMIC	1.0304
+PTR_bin_79	May_3B	DEMIC	1.0247
+PTR_bin_79	Sept_0	DEMIC	 
+PTR_bin_79	Sept_1A	DEMIC	 
+PTR_bin_79	Sept_1B	DEMIC	 
+PTR_bin_79	Sept_1C	DEMIC	 
+PTR_bin_79	Sept_2A	DEMIC	 
+PTR_bin_79	Sept_2B	DEMIC	 
+PTR_bin_79	Sept_2C	DEMIC	 
+PTR_bin_79	Sept_3A	DEMIC	1.9742
+PTR_bin_79	Sept_3B	DEMIC	1.9911
+PTR_bin_79	Sept_3C	DEMIC	1.9733
+PTR_bin_79	Sept_4A	DEMIC	1.1723
+PTR_bin_79	Sept_4B	DEMIC	1.2494
+PTR_bin_79	Sept_4C	DEMIC	1.2758
+PTR_bin_80	May_0	DEMIC	1.5253
+PTR_bin_80	May_0	GRiD	1.27
+PTR_bin_80	May_0	iRep	2.7887776275006
+PTR_bin_80	May_1A	DEMIC	1.585
+PTR_bin_80	May_1A	GRiD	1.28
+PTR_bin_80	May_1A	iRep	3.54769283145587
+PTR_bin_80	May_1B	DEMIC	1.5235
+PTR_bin_80	May_1B	GRiD	1.37
+PTR_bin_80	May_1B	iRep	3.1589706730289
+PTR_bin_80	May_2A	DEMIC	1.418
+PTR_bin_80	May_2A	GRiD	1.35
+PTR_bin_80	May_2A	iRep	 
+PTR_bin_80	May_2B	DEMIC	1.4986
+PTR_bin_80	May_2B	GRiD	1.26
+PTR_bin_80	May_2B	iRep	 
+PTR_bin_80	May_3A	DEMIC	1.5054
+PTR_bin_80	May_3A	GRiD	1.37
+PTR_bin_80	May_3A	iRep	 
+PTR_bin_80	May_3B	DEMIC	1.5061
+PTR_bin_80	May_3B	GRiD	1.34
+PTR_bin_80	May_3B	iRep	 
+PTR_bin_80	Sept_0	DEMIC	 
+PTR_bin_80	Sept_0	GRiD	1.2
+PTR_bin_80	Sept_0	iRep	 
+PTR_bin_80	Sept_1A	DEMIC	 
+PTR_bin_80	Sept_1A	GRiD	1.67
+PTR_bin_80	Sept_1A	iRep	 
+PTR_bin_80	Sept_1B	DEMIC	 
+PTR_bin_80	Sept_1B	GRiD	1.62
+PTR_bin_80	Sept_1B	iRep	 
+PTR_bin_80	Sept_1C	DEMIC	 
+PTR_bin_80	Sept_1C	GRiD	1.51
+PTR_bin_80	Sept_1C	iRep	 
+PTR_bin_80	Sept_2A	DEMIC	 
+PTR_bin_80	Sept_2A	GRiD	1.86
+PTR_bin_80	Sept_2A	iRep	 
+PTR_bin_80	Sept_2B	DEMIC	 
+PTR_bin_80	Sept_2B	GRiD	1.8
+PTR_bin_80	Sept_2B	iRep	 
+PTR_bin_80	Sept_2C	DEMIC	 
+PTR_bin_80	Sept_2C	GRiD	1.61
+PTR_bin_80	Sept_2C	iRep	 
+PTR_bin_80	Sept_3A	DEMIC	 
+PTR_bin_80	Sept_3A	GRiD	1.51
+PTR_bin_80	Sept_3A	iRep	 
+PTR_bin_80	Sept_3B	DEMIC	 
+PTR_bin_80	Sept_3B	GRiD	1.26
+PTR_bin_80	Sept_3B	iRep	 
+PTR_bin_80	Sept_3C	DEMIC	 
+PTR_bin_80	Sept_3C	GRiD	1.82
+PTR_bin_80	Sept_3C	iRep	 
+PTR_bin_80	Sept_4A	DEMIC	 
+PTR_bin_80	Sept_4A	GRiD	1.66
+PTR_bin_80	Sept_4A	iRep	 
+PTR_bin_80	Sept_4B	DEMIC	 
+PTR_bin_80	Sept_4B	GRiD	1.85
+PTR_bin_80	Sept_4B	iRep	 
+PTR_bin_80	Sept_4C	DEMIC	 
+PTR_bin_80	Sept_4C	GRiD	1.73
+PTR_bin_80	Sept_4C	iRep	 
+PTR_bin_81	May_0	DEMIC	1.1951
+PTR_bin_81	May_0	GRiD	1.49
+PTR_bin_81	May_0	iRep	 
+PTR_bin_81	May_1A	DEMIC	1.1705
+PTR_bin_81	May_1A	GRiD	1.39
+PTR_bin_81	May_1A	iRep	 
+PTR_bin_81	May_1B	DEMIC	1.1192
+PTR_bin_81	May_1B	GRiD	1.47
+PTR_bin_81	May_1B	iRep	 
+PTR_bin_81	May_2A	DEMIC	1.8217
+PTR_bin_81	May_2A	GRiD	1.84
+PTR_bin_81	May_2A	iRep	 
+PTR_bin_81	May_2B	DEMIC	1.1639
+PTR_bin_81	May_2B	GRiD	1.7
+PTR_bin_81	May_2B	iRep	 
+PTR_bin_81	May_3A	DEMIC	1.3461
+PTR_bin_81	May_3A	GRiD	1.61
+PTR_bin_81	May_3A	iRep	 
+PTR_bin_81	May_3B	DEMIC	1.5005
+PTR_bin_81	May_3B	GRiD	1.75
+PTR_bin_81	May_3B	iRep	 
+PTR_bin_81	Sept_0	DEMIC	1.4469
+PTR_bin_81	Sept_0	GRiD	1.73
+PTR_bin_81	Sept_0	iRep	 
+PTR_bin_81	Sept_1A	DEMIC	1.2194
+PTR_bin_81	Sept_1A	GRiD	1.64
+PTR_bin_81	Sept_1A	iRep	 
+PTR_bin_81	Sept_1B	DEMIC	 
+PTR_bin_81	Sept_1B	GRiD	1.73
+PTR_bin_81	Sept_1B	iRep	 
+PTR_bin_81	Sept_1C	DEMIC	1.5311
+PTR_bin_81	Sept_1C	GRiD	1.76
+PTR_bin_81	Sept_1C	iRep	 
+PTR_bin_81	Sept_2A	DEMIC	1.5799
+PTR_bin_81	Sept_2A	GRiD	1.87
+PTR_bin_81	Sept_2A	iRep	 
+PTR_bin_81	Sept_2B	DEMIC	 
+PTR_bin_81	Sept_2B	GRiD	1.96
+PTR_bin_81	Sept_2B	iRep	 
+PTR_bin_81	Sept_2C	DEMIC	 
+PTR_bin_81	Sept_2C	GRiD	1.92
+PTR_bin_81	Sept_2C	iRep	 
+PTR_bin_81	Sept_3A	DEMIC	1.3857
+PTR_bin_81	Sept_3A	GRiD	1.8
+PTR_bin_81	Sept_3A	iRep	 
+PTR_bin_81	Sept_3B	DEMIC	 
+PTR_bin_81	Sept_3B	GRiD	1.88
+PTR_bin_81	Sept_3B	iRep	 
+PTR_bin_81	Sept_3C	DEMIC	 
+PTR_bin_81	Sept_3C	GRiD	1.78
+PTR_bin_81	Sept_3C	iRep	 
+PTR_bin_81	Sept_4A	DEMIC	 
+PTR_bin_81	Sept_4A	GRiD	2.33
+PTR_bin_81	Sept_4A	iRep	 
+PTR_bin_81	Sept_4B	DEMIC	 
+PTR_bin_81	Sept_4B	GRiD	2.89
+PTR_bin_81	Sept_4B	iRep	 
+PTR_bin_81	Sept_4C	DEMIC	 
+PTR_bin_81	Sept_4C	GRiD	2.22
+PTR_bin_81	Sept_4C	iRep	 
+PTR_bin_82	May_0	DEMIC	1.3269
+PTR_bin_82	May_1A	DEMIC	1.2481
+PTR_bin_82	May_1B	DEMIC	1.4331
+PTR_bin_82	May_2A	DEMIC	 
+PTR_bin_82	May_2B	DEMIC	1.2399
+PTR_bin_82	May_3A	DEMIC	1.9288
+PTR_bin_82	May_3B	DEMIC	 
+PTR_bin_82	Sept_0	DEMIC	1.273
+PTR_bin_82	Sept_1A	DEMIC	1.5707
+PTR_bin_82	Sept_1B	DEMIC	1.2874
+PTR_bin_82	Sept_1C	DEMIC	1.2009
+PTR_bin_82	Sept_2A	DEMIC	1.3213
+PTR_bin_82	Sept_2B	DEMIC	1.3291
+PTR_bin_82	Sept_2C	DEMIC	1.121
+PTR_bin_82	Sept_3A	DEMIC	1.6951
+PTR_bin_82	Sept_3B	DEMIC	1.1309
+PTR_bin_82	Sept_3C	DEMIC	1.2855
+PTR_bin_82	Sept_4A	DEMIC	 
+PTR_bin_82	Sept_4B	DEMIC	 
+PTR_bin_82	Sept_4C	DEMIC	 
+PTR_bin_83	May_0	DEMIC	1.0507
+PTR_bin_83	May_0	GRiD	1.33
+PTR_bin_83	May_0	iRep	1.90325198565748
+PTR_bin_83	May_1A	DEMIC	1.3748
+PTR_bin_83	May_1A	GRiD	1.38
+PTR_bin_83	May_1A	iRep	 
+PTR_bin_83	May_1B	DEMIC	1.0697
+PTR_bin_83	May_1B	GRiD	1.4
+PTR_bin_83	May_1B	iRep	 
+PTR_bin_83	May_2A	DEMIC	 
+PTR_bin_83	May_2A	GRiD	1.67
+PTR_bin_83	May_2A	iRep	 
+PTR_bin_83	May_2B	DEMIC	 
+PTR_bin_83	May_2B	GRiD	1.83
+PTR_bin_83	May_2B	iRep	 
+PTR_bin_83	May_3A	DEMIC	1.8691
+PTR_bin_83	May_3A	GRiD	1.58
+PTR_bin_83	May_3A	iRep	 
+PTR_bin_83	May_3B	DEMIC	 
+PTR_bin_83	May_3B	GRiD	1.78
+PTR_bin_83	May_3B	iRep	 
+PTR_bin_83	Sept_0	DEMIC	 
+PTR_bin_83	Sept_0	GRiD	 
+PTR_bin_83	Sept_0	iRep	 
+PTR_bin_83	Sept_1A	DEMIC	 
+PTR_bin_83	Sept_1A	GRiD	 
+PTR_bin_83	Sept_1A	iRep	 
+PTR_bin_83	Sept_1B	DEMIC	 
+PTR_bin_83	Sept_1B	GRiD	 
+PTR_bin_83	Sept_1B	iRep	 
+PTR_bin_83	Sept_1C	DEMIC	 
+PTR_bin_83	Sept_1C	GRiD	 
+PTR_bin_83	Sept_1C	iRep	 
+PTR_bin_83	Sept_2A	DEMIC	 
+PTR_bin_83	Sept_2A	GRiD	 
+PTR_bin_83	Sept_2A	iRep	 
+PTR_bin_83	Sept_2B	DEMIC	 
+PTR_bin_83	Sept_2B	GRiD	 
+PTR_bin_83	Sept_2B	iRep	 
+PTR_bin_83	Sept_2C	DEMIC	 
+PTR_bin_83	Sept_2C	GRiD	 
+PTR_bin_83	Sept_2C	iRep	 
+PTR_bin_83	Sept_3A	DEMIC	 
+PTR_bin_83	Sept_3A	GRiD	 
+PTR_bin_83	Sept_3A	iRep	 
+PTR_bin_83	Sept_3B	DEMIC	 
+PTR_bin_83	Sept_3B	GRiD	 
+PTR_bin_83	Sept_3B	iRep	 
+PTR_bin_83	Sept_3C	DEMIC	 
+PTR_bin_83	Sept_3C	GRiD	 
+PTR_bin_83	Sept_3C	iRep	 
+PTR_bin_83	Sept_4A	DEMIC	 
+PTR_bin_83	Sept_4A	GRiD	 
+PTR_bin_83	Sept_4A	iRep	 
+PTR_bin_83	Sept_4B	DEMIC	 
+PTR_bin_83	Sept_4B	GRiD	 
+PTR_bin_83	Sept_4B	iRep	 
+PTR_bin_83	Sept_4C	DEMIC	 
+PTR_bin_83	Sept_4C	GRiD	 
+PTR_bin_83	Sept_4C	iRep	 
+PTR_bin_84	May_0	DEMIC	 
+PTR_bin_84	May_1A	DEMIC	 
+PTR_bin_84	May_1B	DEMIC	 
+PTR_bin_84	May_2A	DEMIC	 
+PTR_bin_84	May_2B	DEMIC	 
+PTR_bin_84	May_3A	DEMIC	 
+PTR_bin_84	May_3B	DEMIC	 
+PTR_bin_84	Sept_0	DEMIC	1.4984
+PTR_bin_84	Sept_1A	DEMIC	1.5163
+PTR_bin_84	Sept_1B	DEMIC	1.2955
+PTR_bin_84	Sept_1C	DEMIC	1.2863
+PTR_bin_84	Sept_2A	DEMIC	1.6651
+PTR_bin_84	Sept_2B	DEMIC	1.7114
+PTR_bin_84	Sept_2C	DEMIC	1.3764
+PTR_bin_84	Sept_3A	DEMIC	1.4806
+PTR_bin_84	Sept_3B	DEMIC	1.6014
+PTR_bin_84	Sept_3C	DEMIC	1.1783
+PTR_bin_84	Sept_4A	DEMIC	1.7469
+PTR_bin_84	Sept_4B	DEMIC	2.0011
+PTR_bin_84	Sept_4C	DEMIC	1.808
+PTR_bin_85	May_0	DEMIC	1.3907
+PTR_bin_85	May_0	GRiD	1.42
+PTR_bin_85	May_0	iRep	 
+PTR_bin_85	May_1A	DEMIC	1.1494
+PTR_bin_85	May_1A	GRiD	1.38
+PTR_bin_85	May_1A	iRep	 
+PTR_bin_85	May_1B	DEMIC	1.3003
+PTR_bin_85	May_1B	GRiD	1.48
+PTR_bin_85	May_1B	iRep	 
+PTR_bin_85	May_2A	DEMIC	1.4142
+PTR_bin_85	May_2A	GRiD	1.32
+PTR_bin_85	May_2A	iRep	 
+PTR_bin_85	May_2B	DEMIC	1.0321
+PTR_bin_85	May_2B	GRiD	1.41
+PTR_bin_85	May_2B	iRep	 
+PTR_bin_85	May_3A	DEMIC	1.1518
+PTR_bin_85	May_3A	GRiD	1.25
+PTR_bin_85	May_3A	iRep	 
+PTR_bin_85	May_3B	DEMIC	1.3564
+PTR_bin_85	May_3B	GRiD	1.44
+PTR_bin_85	May_3B	iRep	 
+PTR_bin_85	Sept_0	DEMIC	1.1313
+PTR_bin_85	Sept_0	GRiD	1.32
+PTR_bin_85	Sept_0	iRep	 
+PTR_bin_85	Sept_1A	DEMIC	1.1611
+PTR_bin_85	Sept_1A	GRiD	1.41
+PTR_bin_85	Sept_1A	iRep	 
+PTR_bin_85	Sept_1B	DEMIC	1.0965
+PTR_bin_85	Sept_1B	GRiD	1.44
+PTR_bin_85	Sept_1B	iRep	 
+PTR_bin_85	Sept_1C	DEMIC	1.1343
+PTR_bin_85	Sept_1C	GRiD	1.27
+PTR_bin_85	Sept_1C	iRep	 
+PTR_bin_85	Sept_2A	DEMIC	1.27
+PTR_bin_85	Sept_2A	GRiD	1.33
+PTR_bin_85	Sept_2A	iRep	 
+PTR_bin_85	Sept_2B	DEMIC	1.1814
+PTR_bin_85	Sept_2B	GRiD	1.44
+PTR_bin_85	Sept_2B	iRep	 
+PTR_bin_85	Sept_2C	DEMIC	1.348
+PTR_bin_85	Sept_2C	GRiD	1.35
+PTR_bin_85	Sept_2C	iRep	 
+PTR_bin_85	Sept_3A	DEMIC	1.0428
+PTR_bin_85	Sept_3A	GRiD	1.39
+PTR_bin_85	Sept_3A	iRep	 
+PTR_bin_85	Sept_3B	DEMIC	1.0369
+PTR_bin_85	Sept_3B	GRiD	1.36
+PTR_bin_85	Sept_3B	iRep	 
+PTR_bin_85	Sept_3C	DEMIC	1.1063
+PTR_bin_85	Sept_3C	GRiD	1.28
+PTR_bin_85	Sept_3C	iRep	 
+PTR_bin_85	Sept_4A	DEMIC	 
+PTR_bin_85	Sept_4A	GRiD	1.7
+PTR_bin_85	Sept_4A	iRep	 
+PTR_bin_85	Sept_4B	DEMIC	 
+PTR_bin_85	Sept_4B	GRiD	1.48
+PTR_bin_85	Sept_4B	iRep	 
+PTR_bin_85	Sept_4C	DEMIC	1.4148
+PTR_bin_85	Sept_4C	GRiD	1.51
+PTR_bin_85	Sept_4C	iRep	 
+PTR_bin_86	May_0	DEMIC	1.5483
+PTR_bin_86	May_1A	DEMIC	1.6661
+PTR_bin_86	May_1B	DEMIC	1.7835
+PTR_bin_86	May_2A	DEMIC	1.6203
+PTR_bin_86	May_2B	DEMIC	1.831
+PTR_bin_86	May_3A	DEMIC	1.393
+PTR_bin_86	May_3B	DEMIC	2.2073
+PTR_bin_86	Sept_0	DEMIC	1.4774
+PTR_bin_86	Sept_1A	DEMIC	1.5797
+PTR_bin_86	Sept_1B	DEMIC	1.2621
+PTR_bin_86	Sept_1C	DEMIC	1.5469
+PTR_bin_86	Sept_2A	DEMIC	1.5961
+PTR_bin_86	Sept_2B	DEMIC	1.4354
+PTR_bin_86	Sept_2C	DEMIC	1.5917
+PTR_bin_86	Sept_3A	DEMIC	1.7931
+PTR_bin_86	Sept_3B	DEMIC	1.7111
+PTR_bin_86	Sept_3C	DEMIC	1.6037
+PTR_bin_86	Sept_4A	DEMIC	1.8195
+PTR_bin_86	Sept_4B	DEMIC	1.9502
+PTR_bin_86	Sept_4C	DEMIC	1.7168
+PTR_bin_87	May_0	DEMIC	 
+PTR_bin_87	May_0	GRiD	5.65
+PTR_bin_87	May_0	iRep	 
+PTR_bin_87	May_1A	DEMIC	 
+PTR_bin_87	May_1A	GRiD	3.64
+PTR_bin_87	May_1A	iRep	 
+PTR_bin_87	May_1B	DEMIC	 
+PTR_bin_87	May_1B	GRiD	2.29
+PTR_bin_87	May_1B	iRep	 
+PTR_bin_87	May_2A	DEMIC	 
+PTR_bin_87	May_2A	GRiD	1.74
+PTR_bin_87	May_2A	iRep	 
+PTR_bin_87	May_2B	DEMIC	 
+PTR_bin_87	May_2B	GRiD	1.64
+PTR_bin_87	May_2B	iRep	 
+PTR_bin_87	May_3A	DEMIC	 
+PTR_bin_87	May_3A	GRiD	1.56
+PTR_bin_87	May_3A	iRep	 
+PTR_bin_87	May_3B	DEMIC	 
+PTR_bin_87	May_3B	GRiD	1.58
+PTR_bin_87	May_3B	iRep	 
+PTR_bin_87	Sept_0	DEMIC	 
+PTR_bin_87	Sept_0	GRiD	 
+PTR_bin_87	Sept_0	iRep	 
+PTR_bin_87	Sept_1A	DEMIC	 
+PTR_bin_87	Sept_1A	GRiD	 
+PTR_bin_87	Sept_1A	iRep	 
+PTR_bin_87	Sept_1B	DEMIC	 
+PTR_bin_87	Sept_1B	GRiD	 
+PTR_bin_87	Sept_1B	iRep	 
+PTR_bin_87	Sept_1C	DEMIC	 
+PTR_bin_87	Sept_1C	GRiD	 
+PTR_bin_87	Sept_1C	iRep	 
+PTR_bin_87	Sept_2A	DEMIC	 
+PTR_bin_87	Sept_2A	GRiD	2.53
+PTR_bin_87	Sept_2A	iRep	 
+PTR_bin_87	Sept_2B	DEMIC	 
+PTR_bin_87	Sept_2B	GRiD	4.02
+PTR_bin_87	Sept_2B	iRep	 
+PTR_bin_87	Sept_2C	DEMIC	 
+PTR_bin_87	Sept_2C	GRiD	4.4
+PTR_bin_87	Sept_2C	iRep	 
+PTR_bin_87	Sept_3A	DEMIC	 
+PTR_bin_87	Sept_3A	GRiD	3.1
+PTR_bin_87	Sept_3A	iRep	 
+PTR_bin_87	Sept_3B	DEMIC	 
+PTR_bin_87	Sept_3B	GRiD	3.93
+PTR_bin_87	Sept_3B	iRep	 
+PTR_bin_87	Sept_3C	DEMIC	 
+PTR_bin_87	Sept_3C	GRiD	3.61
+PTR_bin_87	Sept_3C	iRep	 
+PTR_bin_87	Sept_4A	DEMIC	 
+PTR_bin_87	Sept_4A	GRiD	3.31
+PTR_bin_87	Sept_4A	iRep	 
+PTR_bin_87	Sept_4B	DEMIC	 
+PTR_bin_87	Sept_4B	GRiD	4.35
+PTR_bin_87	Sept_4B	iRep	 
+PTR_bin_87	Sept_4C	DEMIC	 
+PTR_bin_87	Sept_4C	GRiD	3.18
+PTR_bin_87	Sept_4C	iRep	 
+PTR_bin_88	May_0	DEMIC	1.9095
+PTR_bin_88	May_1A	DEMIC	2.0875
+PTR_bin_88	May_1B	DEMIC	1.9926
+PTR_bin_88	May_2A	DEMIC	1.8411
+PTR_bin_88	May_2B	DEMIC	1.6257
+PTR_bin_88	May_3A	DEMIC	1.7163
+PTR_bin_88	May_3B	DEMIC	1.6966
+PTR_bin_88	Sept_0	DEMIC	1.8901
+PTR_bin_88	Sept_1A	DEMIC	1.6742
+PTR_bin_88	Sept_1B	DEMIC	1.7004
+PTR_bin_88	Sept_1C	DEMIC	1.7625
+PTR_bin_88	Sept_2A	DEMIC	1.8354
+PTR_bin_88	Sept_2B	DEMIC	1.8119
+PTR_bin_88	Sept_2C	DEMIC	1.8345
+PTR_bin_88	Sept_3A	DEMIC	1.7261
+PTR_bin_88	Sept_3B	DEMIC	1.7446
+PTR_bin_88	Sept_3C	DEMIC	1.7157
+PTR_bin_88	Sept_4A	DEMIC	1.7209
+PTR_bin_88	Sept_4B	DEMIC	1.7861
+PTR_bin_88	Sept_4C	DEMIC	1.7353
+PTR_bin_89	May_0	DEMIC	 
+PTR_bin_89	May_1A	DEMIC	 
+PTR_bin_89	May_1B	DEMIC	 
+PTR_bin_89	May_2A	DEMIC	 
+PTR_bin_89	May_2B	DEMIC	 
+PTR_bin_89	May_3A	DEMIC	 
+PTR_bin_89	May_3B	DEMIC	 
+PTR_bin_89	Sept_0	DEMIC	1.8969
+PTR_bin_89	Sept_1A	DEMIC	1.2392
+PTR_bin_89	Sept_1B	DEMIC	1.3733
+PTR_bin_89	Sept_1C	DEMIC	1.108
+PTR_bin_89	Sept_2A	DEMIC	1.5916
+PTR_bin_89	Sept_2B	DEMIC	1.6273
+PTR_bin_89	Sept_2C	DEMIC	1.1403
+PTR_bin_89	Sept_3A	DEMIC	1.3945
+PTR_bin_89	Sept_3B	DEMIC	1.6345
+PTR_bin_89	Sept_3C	DEMIC	1.1279
+PTR_bin_89	Sept_4A	DEMIC	 
+PTR_bin_89	Sept_4B	DEMIC	 
+PTR_bin_89	Sept_4C	DEMIC	1.4181
+PTR_bin_90	May_0	DEMIC	1.4349
+PTR_bin_90	May_0	GRiD	1.29
+PTR_bin_90	May_0	iRep	 
+PTR_bin_90	May_1A	DEMIC	1.4447
+PTR_bin_90	May_1A	GRiD	1.33
+PTR_bin_90	May_1A	iRep	3.66205063829669
+PTR_bin_90	May_1B	DEMIC	1.4474
+PTR_bin_90	May_1B	GRiD	1.3
+PTR_bin_90	May_1B	iRep	3.39632655622998
+PTR_bin_90	May_2A	DEMIC	1.4558
+PTR_bin_90	May_2A	GRiD	1.29
+PTR_bin_90	May_2A	iRep	3.47989611662091
+PTR_bin_90	May_2B	DEMIC	1.4415
+PTR_bin_90	May_2B	GRiD	1.3
+PTR_bin_90	May_2B	iRep	3.75770481162924
+PTR_bin_90	May_3A	DEMIC	1.3487
+PTR_bin_90	May_3A	GRiD	1.2
+PTR_bin_90	May_3A	iRep	3.36226311727113
+PTR_bin_90	May_3B	DEMIC	1.3268
+PTR_bin_90	May_3B	GRiD	1.21
+PTR_bin_90	May_3B	iRep	3.45046320292026
+PTR_bin_90	Sept_0	DEMIC	 
+PTR_bin_90	Sept_0	GRiD	1.75
+PTR_bin_90	Sept_0	iRep	 
+PTR_bin_90	Sept_1A	DEMIC	 
+PTR_bin_90	Sept_1A	GRiD	1.57
+PTR_bin_90	Sept_1A	iRep	 
+PTR_bin_90	Sept_1B	DEMIC	 
+PTR_bin_90	Sept_1B	GRiD	1.91
+PTR_bin_90	Sept_1B	iRep	 
+PTR_bin_90	Sept_1C	DEMIC	 
+PTR_bin_90	Sept_1C	GRiD	1.85
+PTR_bin_90	Sept_1C	iRep	 
+PTR_bin_90	Sept_2A	DEMIC	 
+PTR_bin_90	Sept_2A	GRiD	1.4
+PTR_bin_90	Sept_2A	iRep	 
+PTR_bin_90	Sept_2B	DEMIC	 
+PTR_bin_90	Sept_2B	GRiD	1.52
+PTR_bin_90	Sept_2B	iRep	 
+PTR_bin_90	Sept_2C	DEMIC	 
+PTR_bin_90	Sept_2C	GRiD	1.54
+PTR_bin_90	Sept_2C	iRep	 
+PTR_bin_90	Sept_3A	DEMIC	1.9133
+PTR_bin_90	Sept_3A	GRiD	1.52
+PTR_bin_90	Sept_3A	iRep	 
+PTR_bin_90	Sept_3B	DEMIC	1.4011
+PTR_bin_90	Sept_3B	GRiD	1.47
+PTR_bin_90	Sept_3B	iRep	 
+PTR_bin_90	Sept_3C	DEMIC	1.4983
+PTR_bin_90	Sept_3C	GRiD	1.39
+PTR_bin_90	Sept_3C	iRep	 
+PTR_bin_90	Sept_4A	DEMIC	 
+PTR_bin_90	Sept_4A	GRiD	1.61
+PTR_bin_90	Sept_4A	iRep	 
+PTR_bin_90	Sept_4B	DEMIC	 
+PTR_bin_90	Sept_4B	GRiD	1.6
+PTR_bin_90	Sept_4B	iRep	 
+PTR_bin_90	Sept_4C	DEMIC	 
+PTR_bin_90	Sept_4C	GRiD	1.37
+PTR_bin_90	Sept_4C	iRep	 
+PTR_bin_91	May_0	DEMIC	1.9687
+PTR_bin_91	May_0	GRiD	1.49
+PTR_bin_91	May_0	iRep	3.33035810585446
+PTR_bin_91	May_1A	DEMIC	2.2609
+PTR_bin_91	May_1A	GRiD	1.59
+PTR_bin_91	May_1A	iRep	4.49977170391855
+PTR_bin_91	May_1B	DEMIC	2.4757
+PTR_bin_91	May_1B	GRiD	1.58
+PTR_bin_91	May_1B	iRep	4.2146641985325
+PTR_bin_91	May_2A	DEMIC	2.5184
+PTR_bin_91	May_2A	GRiD	1.62
+PTR_bin_91	May_2A	iRep	 
+PTR_bin_91	May_2B	DEMIC	2.5999
+PTR_bin_91	May_2B	GRiD	1.65
+PTR_bin_91	May_2B	iRep	 
+PTR_bin_91	May_3A	DEMIC	2.5129
+PTR_bin_91	May_3A	GRiD	1.56
+PTR_bin_91	May_3A	iRep	4.65286337424894
+PTR_bin_91	May_3B	DEMIC	2.5181
+PTR_bin_91	May_3B	GRiD	1.65
+PTR_bin_91	May_3B	iRep	4.92851570003492
+PTR_bin_91	Sept_0	DEMIC	 
+PTR_bin_91	Sept_0	GRiD	2.43
+PTR_bin_91	Sept_0	iRep	 
+PTR_bin_91	Sept_1A	DEMIC	 
+PTR_bin_91	Sept_1A	GRiD	2.44
+PTR_bin_91	Sept_1A	iRep	 
+PTR_bin_91	Sept_1B	DEMIC	 
+PTR_bin_91	Sept_1B	GRiD	2.43
+PTR_bin_91	Sept_1B	iRep	 
+PTR_bin_91	Sept_1C	DEMIC	 
+PTR_bin_91	Sept_1C	GRiD	2.39
+PTR_bin_91	Sept_1C	iRep	 
+PTR_bin_91	Sept_2A	DEMIC	 
+PTR_bin_91	Sept_2A	GRiD	2.38
+PTR_bin_91	Sept_2A	iRep	 
+PTR_bin_91	Sept_2B	DEMIC	 
+PTR_bin_91	Sept_2B	GRiD	2.58
+PTR_bin_91	Sept_2B	iRep	 
+PTR_bin_91	Sept_2C	DEMIC	 
+PTR_bin_91	Sept_2C	GRiD	2.78
+PTR_bin_91	Sept_2C	iRep	 
+PTR_bin_91	Sept_3A	DEMIC	 
+PTR_bin_91	Sept_3A	GRiD	2.19
+PTR_bin_91	Sept_3A	iRep	 
+PTR_bin_91	Sept_3B	DEMIC	 
+PTR_bin_91	Sept_3B	GRiD	1.92
+PTR_bin_91	Sept_3B	iRep	 
+PTR_bin_91	Sept_3C	DEMIC	 
+PTR_bin_91	Sept_3C	GRiD	2.23
+PTR_bin_91	Sept_3C	iRep	 
+PTR_bin_91	Sept_4A	DEMIC	 
+PTR_bin_91	Sept_4A	GRiD	2.1
+PTR_bin_91	Sept_4A	iRep	 
+PTR_bin_91	Sept_4B	DEMIC	 
+PTR_bin_91	Sept_4B	GRiD	2.32
+PTR_bin_91	Sept_4B	iRep	 
+PTR_bin_91	Sept_4C	DEMIC	 
+PTR_bin_91	Sept_4C	GRiD	2.2
+PTR_bin_91	Sept_4C	iRep	 
+PTR_bin_92	May_0	DEMIC	 
+PTR_bin_92	May_0	GRiD	2.28
+PTR_bin_92	May_0	iRep	 
+PTR_bin_92	May_1A	DEMIC	1.2838
+PTR_bin_92	May_1A	GRiD	2.02
+PTR_bin_92	May_1A	iRep	 
+PTR_bin_92	May_1B	DEMIC	1.3317
+PTR_bin_92	May_1B	GRiD	1.52
+PTR_bin_92	May_1B	iRep	 
+PTR_bin_92	May_2A	DEMIC	1.2931
+PTR_bin_92	May_2A	GRiD	1.29
+PTR_bin_92	May_2A	iRep	3.33753363576048
+PTR_bin_92	May_2B	DEMIC	1.2862
+PTR_bin_92	May_2B	GRiD	1.3
+PTR_bin_92	May_2B	iRep	3.25132565703251
+PTR_bin_92	May_3A	DEMIC	1.2093
+PTR_bin_92	May_3A	GRiD	1.25
+PTR_bin_92	May_3A	iRep	3.12372562168497
+PTR_bin_92	May_3B	DEMIC	1.1553
+PTR_bin_92	May_3B	GRiD	1.23
+PTR_bin_92	May_3B	iRep	3.20527882633868
+PTR_bin_92	Sept_0	DEMIC	 
+PTR_bin_92	Sept_0	GRiD	 
+PTR_bin_92	Sept_0	iRep	 
+PTR_bin_92	Sept_1A	DEMIC	 
+PTR_bin_92	Sept_1A	GRiD	2.59
+PTR_bin_92	Sept_1A	iRep	 
+PTR_bin_92	Sept_1B	DEMIC	 
+PTR_bin_92	Sept_1B	GRiD	2.21
+PTR_bin_92	Sept_1B	iRep	 
+PTR_bin_92	Sept_1C	DEMIC	 
+PTR_bin_92	Sept_1C	GRiD	2.64
+PTR_bin_92	Sept_1C	iRep	 
+PTR_bin_92	Sept_2A	DEMIC	 
+PTR_bin_92	Sept_2A	GRiD	2.34
+PTR_bin_92	Sept_2A	iRep	 
+PTR_bin_92	Sept_2B	DEMIC	 
+PTR_bin_92	Sept_2B	GRiD	2.6
+PTR_bin_92	Sept_2B	iRep	 
+PTR_bin_92	Sept_2C	DEMIC	 
+PTR_bin_92	Sept_2C	GRiD	2
+PTR_bin_92	Sept_2C	iRep	 
+PTR_bin_92	Sept_3A	DEMIC	1.5564
+PTR_bin_92	Sept_3A	GRiD	1.53
+PTR_bin_92	Sept_3A	iRep	 
+PTR_bin_92	Sept_3B	DEMIC	1.5183
+PTR_bin_92	Sept_3B	GRiD	1.55
+PTR_bin_92	Sept_3B	iRep	 
+PTR_bin_92	Sept_3C	DEMIC	1.5581
+PTR_bin_92	Sept_3C	GRiD	1.49
+PTR_bin_92	Sept_3C	iRep	 
+PTR_bin_92	Sept_4A	DEMIC	1.3495
+PTR_bin_92	Sept_4A	GRiD	1.33
+PTR_bin_92	Sept_4A	iRep	 
+PTR_bin_92	Sept_4B	DEMIC	1.1945
+PTR_bin_92	Sept_4B	GRiD	1.51
+PTR_bin_92	Sept_4B	iRep	 
+PTR_bin_92	Sept_4C	DEMIC	1.3838
+PTR_bin_92	Sept_4C	GRiD	1.3
+PTR_bin_92	Sept_4C	iRep	 
+PTR_bin_93	May_0	DEMIC	1.4537
+PTR_bin_93	May_0	GRiD	1.54
+PTR_bin_93	May_0	iRep	2.31863495778011
+PTR_bin_93	May_1A	DEMIC	1.3021
+PTR_bin_93	May_1A	GRiD	1.37
+PTR_bin_93	May_1A	iRep	2.8879524817767
+PTR_bin_93	May_1B	DEMIC	1.2528
+PTR_bin_93	May_1B	GRiD	1.43
+PTR_bin_93	May_1B	iRep	2.71530984794275
+PTR_bin_93	May_2A	DEMIC	1.261
+PTR_bin_93	May_2A	GRiD	1.31
+PTR_bin_93	May_2A	iRep	 
+PTR_bin_93	May_2B	DEMIC	1.3032
+PTR_bin_93	May_2B	GRiD	1.36
+PTR_bin_93	May_2B	iRep	 
+PTR_bin_93	May_3A	DEMIC	1.3146
+PTR_bin_93	May_3A	GRiD	1.38
+PTR_bin_93	May_3A	iRep	 
+PTR_bin_93	May_3B	DEMIC	1.3468
+PTR_bin_93	May_3B	GRiD	1.27
+PTR_bin_93	May_3B	iRep	 
+PTR_bin_93	Sept_0	DEMIC	 
+PTR_bin_93	Sept_0	GRiD	1.37
+PTR_bin_93	Sept_0	iRep	 
+PTR_bin_93	Sept_1A	DEMIC	 
+PTR_bin_93	Sept_1A	GRiD	1.49
+PTR_bin_93	Sept_1A	iRep	 
+PTR_bin_93	Sept_1B	DEMIC	 
+PTR_bin_93	Sept_1B	GRiD	1.37
+PTR_bin_93	Sept_1B	iRep	 
+PTR_bin_93	Sept_1C	DEMIC	1.476
+PTR_bin_93	Sept_1C	GRiD	1.41
+PTR_bin_93	Sept_1C	iRep	 
+PTR_bin_93	Sept_2A	DEMIC	1.4276
+PTR_bin_93	Sept_2A	GRiD	1.47
+PTR_bin_93	Sept_2A	iRep	 
+PTR_bin_93	Sept_2B	DEMIC	1.3607
+PTR_bin_93	Sept_2B	GRiD	1.49
+PTR_bin_93	Sept_2B	iRep	 
+PTR_bin_93	Sept_2C	DEMIC	1.4056
+PTR_bin_93	Sept_2C	GRiD	1.38
+PTR_bin_93	Sept_2C	iRep	 
+PTR_bin_93	Sept_3A	DEMIC	1.4904
+PTR_bin_93	Sept_3A	GRiD	1.38
+PTR_bin_93	Sept_3A	iRep	 
+PTR_bin_93	Sept_3B	DEMIC	1.3064
+PTR_bin_93	Sept_3B	GRiD	1.32
+PTR_bin_93	Sept_3B	iRep	 
+PTR_bin_93	Sept_3C	DEMIC	 
+PTR_bin_93	Sept_3C	GRiD	1.48
+PTR_bin_93	Sept_3C	iRep	 
+PTR_bin_93	Sept_4A	DEMIC	 
+PTR_bin_93	Sept_4A	GRiD	1.65
+PTR_bin_93	Sept_4A	iRep	 
+PTR_bin_93	Sept_4B	DEMIC	 
+PTR_bin_93	Sept_4B	GRiD	1.48
+PTR_bin_93	Sept_4B	iRep	 
+PTR_bin_93	Sept_4C	DEMIC	 
+PTR_bin_93	Sept_4C	GRiD	1.74
+PTR_bin_93	Sept_4C	iRep	 
+PTR_bin_94	May_0	DEMIC	1.5742
+PTR_bin_94	May_0	GRiD	1.51
+PTR_bin_94	May_0	iRep	2.24174488244953
+PTR_bin_94	May_1A	DEMIC	1.6984
+PTR_bin_94	May_1A	GRiD	1.34
+PTR_bin_94	May_1A	iRep	 
+PTR_bin_94	May_1B	DEMIC	1.9664
+PTR_bin_94	May_1B	GRiD	1.51
+PTR_bin_94	May_1B	iRep	 
+PTR_bin_94	May_2A	DEMIC	 
+PTR_bin_94	May_2A	GRiD	1.76
+PTR_bin_94	May_2A	iRep	 
+PTR_bin_94	May_2B	DEMIC	 
+PTR_bin_94	May_2B	GRiD	2.12
+PTR_bin_94	May_2B	iRep	 
+PTR_bin_94	May_3A	DEMIC	 
+PTR_bin_94	May_3A	GRiD	1.9
+PTR_bin_94	May_3A	iRep	 
+PTR_bin_94	May_3B	DEMIC	 
+PTR_bin_94	May_3B	GRiD	1.43
+PTR_bin_94	May_3B	iRep	 
+PTR_bin_94	Sept_0	DEMIC	1.3529
+PTR_bin_94	Sept_0	GRiD	1.34
+PTR_bin_94	Sept_0	iRep	 
+PTR_bin_94	Sept_1A	DEMIC	 
+PTR_bin_94	Sept_1A	GRiD	1.54
+PTR_bin_94	Sept_1A	iRep	 
+PTR_bin_94	Sept_1B	DEMIC	 
+PTR_bin_94	Sept_1B	GRiD	1.95
+PTR_bin_94	Sept_1B	iRep	 
+PTR_bin_94	Sept_1C	DEMIC	 
+PTR_bin_94	Sept_1C	GRiD	1.55
+PTR_bin_94	Sept_1C	iRep	 
+PTR_bin_94	Sept_2A	DEMIC	 
+PTR_bin_94	Sept_2A	GRiD	1.84
+PTR_bin_94	Sept_2A	iRep	 
+PTR_bin_94	Sept_2B	DEMIC	 
+PTR_bin_94	Sept_2B	GRiD	1.92
+PTR_bin_94	Sept_2B	iRep	 
+PTR_bin_94	Sept_2C	DEMIC	 
+PTR_bin_94	Sept_2C	GRiD	1.95
+PTR_bin_94	Sept_2C	iRep	 
+PTR_bin_94	Sept_3A	DEMIC	 
+PTR_bin_94	Sept_3A	GRiD	1.95
+PTR_bin_94	Sept_3A	iRep	 
+PTR_bin_94	Sept_3B	DEMIC	 
+PTR_bin_94	Sept_3B	GRiD	1.67
+PTR_bin_94	Sept_3B	iRep	 
+PTR_bin_94	Sept_3C	DEMIC	 
+PTR_bin_94	Sept_3C	GRiD	2.23
+PTR_bin_94	Sept_3C	iRep	 
+PTR_bin_94	Sept_4A	DEMIC	 
+PTR_bin_94	Sept_4A	GRiD	 
+PTR_bin_94	Sept_4A	iRep	 
+PTR_bin_94	Sept_4B	DEMIC	 
+PTR_bin_94	Sept_4B	GRiD	 
+PTR_bin_94	Sept_4B	iRep	 
+PTR_bin_94	Sept_4C	DEMIC	 
+PTR_bin_94	Sept_4C	GRiD	 
+PTR_bin_94	Sept_4C	iRep	 
+PTR_bin_95	May_0	DEMIC	1.6173
+PTR_bin_95	May_1A	DEMIC	1.292
+PTR_bin_95	May_1B	DEMIC	1.366
+PTR_bin_95	May_2A	DEMIC	1.5479
+PTR_bin_95	May_2B	DEMIC	1.3366
+PTR_bin_95	May_3A	DEMIC	1.2569
+PTR_bin_95	May_3B	DEMIC	1.3806
+PTR_bin_95	Sept_0	DEMIC	2.4151
+PTR_bin_95	Sept_1A	DEMIC	2.729
+PTR_bin_95	Sept_1B	DEMIC	1.7112
+PTR_bin_95	Sept_1C	DEMIC	2.5106
+PTR_bin_95	Sept_2A	DEMIC	2.2999
+PTR_bin_95	Sept_2B	DEMIC	2.7292
+PTR_bin_95	Sept_2C	DEMIC	2.4423
+PTR_bin_95	Sept_3A	DEMIC	2.0772
+PTR_bin_95	Sept_3B	DEMIC	2.7814
+PTR_bin_95	Sept_3C	DEMIC	2.3092
+PTR_bin_95	Sept_4A	DEMIC	2.9415
+PTR_bin_95	Sept_4B	DEMIC	2.2064
+PTR_bin_95	Sept_4C	DEMIC	2.1174
+PTR_bin_96	May_0	DEMIC	1.3338
+PTR_bin_96	May_0	GRiD	1.48
+PTR_bin_96	May_0	iRep	 
+PTR_bin_96	May_1A	DEMIC	1.3727
+PTR_bin_96	May_1A	GRiD	1.45
+PTR_bin_96	May_1A	iRep	 
+PTR_bin_96	May_1B	DEMIC	1.34
+PTR_bin_96	May_1B	GRiD	1.44
+PTR_bin_96	May_1B	iRep	 
+PTR_bin_96	May_2A	DEMIC	1.6055
+PTR_bin_96	May_2A	GRiD	1.57
+PTR_bin_96	May_2A	iRep	 
+PTR_bin_96	May_2B	DEMIC	1.3452
+PTR_bin_96	May_2B	GRiD	1.48
+PTR_bin_96	May_2B	iRep	 
+PTR_bin_96	May_3A	DEMIC	1.3979
+PTR_bin_96	May_3A	GRiD	1.46
+PTR_bin_96	May_3A	iRep	 
+PTR_bin_96	May_3B	DEMIC	1.3231
+PTR_bin_96	May_3B	GRiD	1.58
+PTR_bin_96	May_3B	iRep	 
+PTR_bin_96	Sept_0	DEMIC	1.569
+PTR_bin_96	Sept_0	GRiD	1.64
+PTR_bin_96	Sept_0	iRep	 
+PTR_bin_96	Sept_1A	DEMIC	1.3441
+PTR_bin_96	Sept_1A	GRiD	1.68
+PTR_bin_96	Sept_1A	iRep	 
+PTR_bin_96	Sept_1B	DEMIC	1.3703
+PTR_bin_96	Sept_1B	GRiD	1.63
+PTR_bin_96	Sept_1B	iRep	 
+PTR_bin_96	Sept_1C	DEMIC	1.5512
+PTR_bin_96	Sept_1C	GRiD	1.57
+PTR_bin_96	Sept_1C	iRep	 
+PTR_bin_96	Sept_2A	DEMIC	 
+PTR_bin_96	Sept_2A	GRiD	1.9
+PTR_bin_96	Sept_2A	iRep	 
+PTR_bin_96	Sept_2B	DEMIC	 
+PTR_bin_96	Sept_2B	GRiD	2.07
+PTR_bin_96	Sept_2B	iRep	 
+PTR_bin_96	Sept_2C	DEMIC	 
+PTR_bin_96	Sept_2C	GRiD	1.97
+PTR_bin_96	Sept_2C	iRep	 
+PTR_bin_96	Sept_3A	DEMIC	 
+PTR_bin_96	Sept_3A	GRiD	1.86
+PTR_bin_96	Sept_3A	iRep	 
+PTR_bin_96	Sept_3B	DEMIC	 
+PTR_bin_96	Sept_3B	GRiD	3.15
+PTR_bin_96	Sept_3B	iRep	 
+PTR_bin_96	Sept_3C	DEMIC	 
+PTR_bin_96	Sept_3C	GRiD	2.38
+PTR_bin_96	Sept_3C	iRep	 
+PTR_bin_96	Sept_4A	DEMIC	 
+PTR_bin_96	Sept_4A	GRiD	2.27
+PTR_bin_96	Sept_4A	iRep	 
+PTR_bin_96	Sept_4B	DEMIC	 
+PTR_bin_96	Sept_4B	GRiD	1.73
+PTR_bin_96	Sept_4B	iRep	 
+PTR_bin_96	Sept_4C	DEMIC	 
+PTR_bin_96	Sept_4C	GRiD	3.12
+PTR_bin_96	Sept_4C	iRep	 
+PTR_bin_97	May_0	DEMIC	1.7316
+PTR_bin_97	May_0	GRiD	1.34
+PTR_bin_97	May_0	iRep	3.54269909282197
+PTR_bin_97	May_1A	DEMIC	1.7976
+PTR_bin_97	May_1A	GRiD	1.41
+PTR_bin_97	May_1A	iRep	4.20973138698046
+PTR_bin_97	May_1B	DEMIC	1.8182
+PTR_bin_97	May_1B	GRiD	1.32
+PTR_bin_97	May_1B	iRep	4.10509635863353
+PTR_bin_97	May_2A	DEMIC	1.6561
+PTR_bin_97	May_2A	GRiD	1.3
+PTR_bin_97	May_2A	iRep	4.42108167780156
+PTR_bin_97	May_2B	DEMIC	1.6465
+PTR_bin_97	May_2B	GRiD	1.24
+PTR_bin_97	May_2B	iRep	4.42209163357274
+PTR_bin_97	May_3A	DEMIC	1.711
+PTR_bin_97	May_3A	GRiD	1.28
+PTR_bin_97	May_3A	iRep	4.2530473276689
+PTR_bin_97	May_3B	DEMIC	1.7393
+PTR_bin_97	May_3B	GRiD	1.24
+PTR_bin_97	May_3B	iRep	4.24018753987496
+PTR_bin_97	Sept_0	DEMIC	 
+PTR_bin_97	Sept_0	GRiD	1.46
+PTR_bin_97	Sept_0	iRep	 
+PTR_bin_97	Sept_1A	DEMIC	 
+PTR_bin_97	Sept_1A	GRiD	1.56
+PTR_bin_97	Sept_1A	iRep	 
+PTR_bin_97	Sept_1B	DEMIC	 
+PTR_bin_97	Sept_1B	GRiD	1.3
+PTR_bin_97	Sept_1B	iRep	 
+PTR_bin_97	Sept_1C	DEMIC	 
+PTR_bin_97	Sept_1C	GRiD	1.3
+PTR_bin_97	Sept_1C	iRep	 
+PTR_bin_97	Sept_2A	DEMIC	 
+PTR_bin_97	Sept_2A	GRiD	1.3
+PTR_bin_97	Sept_2A	iRep	 
+PTR_bin_97	Sept_2B	DEMIC	 
+PTR_bin_97	Sept_2B	GRiD	1.23
+PTR_bin_97	Sept_2B	iRep	 
+PTR_bin_97	Sept_2C	DEMIC	1.8871
+PTR_bin_97	Sept_2C	GRiD	1.25
+PTR_bin_97	Sept_2C	iRep	 
+PTR_bin_97	Sept_3A	DEMIC	 
+PTR_bin_97	Sept_3A	GRiD	1.48
+PTR_bin_97	Sept_3A	iRep	 
+PTR_bin_97	Sept_3B	DEMIC	 
+PTR_bin_97	Sept_3B	GRiD	1.42
+PTR_bin_97	Sept_3B	iRep	 
+PTR_bin_97	Sept_3C	DEMIC	 
+PTR_bin_97	Sept_3C	GRiD	1.36
+PTR_bin_97	Sept_3C	iRep	 
+PTR_bin_97	Sept_4A	DEMIC	 
+PTR_bin_97	Sept_4A	GRiD	1.26
+PTR_bin_97	Sept_4A	iRep	 
+PTR_bin_97	Sept_4B	DEMIC	 
+PTR_bin_97	Sept_4B	GRiD	1.63
+PTR_bin_97	Sept_4B	iRep	 
+PTR_bin_97	Sept_4C	DEMIC	 
+PTR_bin_97	Sept_4C	GRiD	1.37
+PTR_bin_97	Sept_4C	iRep	 
+PTR_bin_98	May_0	DEMIC	1.0487
+PTR_bin_98	May_0	GRiD	1.5
+PTR_bin_98	May_0	iRep	 
+PTR_bin_98	May_1A	DEMIC	1.4112
+PTR_bin_98	May_1A	GRiD	1.43
+PTR_bin_98	May_1A	iRep	 
+PTR_bin_98	May_1B	DEMIC	1.2719
+PTR_bin_98	May_1B	GRiD	1.65
+PTR_bin_98	May_1B	iRep	 
+PTR_bin_98	May_2A	DEMIC	1.3463
+PTR_bin_98	May_2A	GRiD	1.73
+PTR_bin_98	May_2A	iRep	 
+PTR_bin_98	May_2B	DEMIC	 
+PTR_bin_98	May_2B	GRiD	1.8
+PTR_bin_98	May_2B	iRep	 
+PTR_bin_98	May_3A	DEMIC	1.4286
+PTR_bin_98	May_3A	GRiD	1.8
+PTR_bin_98	May_3A	iRep	 
+PTR_bin_98	May_3B	DEMIC	1.4607
+PTR_bin_98	May_3B	GRiD	1.79
+PTR_bin_98	May_3B	iRep	 
+PTR_bin_98	Sept_0	DEMIC	1.0444
+PTR_bin_98	Sept_0	GRiD	1.45
+PTR_bin_98	Sept_0	iRep	 
+PTR_bin_98	Sept_1A	DEMIC	1.6424
+PTR_bin_98	Sept_1A	GRiD	1.46
+PTR_bin_98	Sept_1A	iRep	 
+PTR_bin_98	Sept_1B	DEMIC	1.1947
+PTR_bin_98	Sept_1B	GRiD	1.77
+PTR_bin_98	Sept_1B	iRep	 
+PTR_bin_98	Sept_1C	DEMIC	1.449
+PTR_bin_98	Sept_1C	GRiD	1.51
+PTR_bin_98	Sept_1C	iRep	 
+PTR_bin_98	Sept_2A	DEMIC	1.44
+PTR_bin_98	Sept_2A	GRiD	1.57
+PTR_bin_98	Sept_2A	iRep	 
+PTR_bin_98	Sept_2B	DEMIC	1.3866
+PTR_bin_98	Sept_2B	GRiD	1.63
+PTR_bin_98	Sept_2B	iRep	 
+PTR_bin_98	Sept_2C	DEMIC	1.4125
+PTR_bin_98	Sept_2C	GRiD	1.61
+PTR_bin_98	Sept_2C	iRep	 
+PTR_bin_98	Sept_3A	DEMIC	1.4694
+PTR_bin_98	Sept_3A	GRiD	1.56
+PTR_bin_98	Sept_3A	iRep	 
+PTR_bin_98	Sept_3B	DEMIC	1.7393
+PTR_bin_98	Sept_3B	GRiD	1.49
+PTR_bin_98	Sept_3B	iRep	 
+PTR_bin_98	Sept_3C	DEMIC	1.6971
+PTR_bin_98	Sept_3C	GRiD	1.78
+PTR_bin_98	Sept_3C	iRep	 
+PTR_bin_98	Sept_4A	DEMIC	1.81
+PTR_bin_98	Sept_4A	GRiD	1.73
+PTR_bin_98	Sept_4A	iRep	 
+PTR_bin_98	Sept_4B	DEMIC	 
+PTR_bin_98	Sept_4B	GRiD	1.73
+PTR_bin_98	Sept_4B	iRep	 
+PTR_bin_98	Sept_4C	DEMIC	1.2746
+PTR_bin_98	Sept_4C	GRiD	1.5
+PTR_bin_98	Sept_4C	iRep	 
+PTR_bin_99	May_0	DEMIC	1.1783
+PTR_bin_99	May_1A	DEMIC	1.3872
+PTR_bin_99	May_1B	DEMIC	1.4564
+PTR_bin_99	May_2A	DEMIC	 
+PTR_bin_99	May_2B	DEMIC	1.4175
+PTR_bin_99	May_3A	DEMIC	1.5077
+PTR_bin_99	May_3B	DEMIC	2.3072
+PTR_bin_99	Sept_0	DEMIC	 
+PTR_bin_99	Sept_1A	DEMIC	 
+PTR_bin_99	Sept_1B	DEMIC	1.6635
+PTR_bin_99	Sept_1C	DEMIC	 
+PTR_bin_99	Sept_2A	DEMIC	 
+PTR_bin_99	Sept_2B	DEMIC	 
+PTR_bin_99	Sept_2C	DEMIC	 
+PTR_bin_99	Sept_3A	DEMIC	 
+PTR_bin_99	Sept_3B	DEMIC	 
+PTR_bin_99	Sept_3C	DEMIC	 
+PTR_bin_99	Sept_4A	DEMIC	 
+PTR_bin_99	Sept_4B	DEMIC	 
+PTR_bin_99	Sept_4C	DEMIC	 
+PTR_bin_100	May_0	DEMIC	 
+PTR_bin_100	May_1A	DEMIC	1.7131
+PTR_bin_100	May_1B	DEMIC	1.6849
+PTR_bin_100	May_2A	DEMIC	 
+PTR_bin_100	May_2B	DEMIC	 
+PTR_bin_100	May_3A	DEMIC	 
+PTR_bin_100	May_3B	DEMIC	 
+PTR_bin_100	Sept_0	DEMIC	1.4937
+PTR_bin_100	Sept_1A	DEMIC	1.5182
+PTR_bin_100	Sept_1B	DEMIC	1.5957
+PTR_bin_100	Sept_1C	DEMIC	1.6099
+PTR_bin_100	Sept_2A	DEMIC	1.5713
+PTR_bin_100	Sept_2B	DEMIC	1.7821
+PTR_bin_100	Sept_2C	DEMIC	1.5801
+PTR_bin_100	Sept_3A	DEMIC	1.637
+PTR_bin_100	Sept_3B	DEMIC	1.6161
+PTR_bin_100	Sept_3C	DEMIC	1.5877
+PTR_bin_100	Sept_4A	DEMIC	1.9065
+PTR_bin_100	Sept_4B	DEMIC	1.7509
+PTR_bin_100	Sept_4C	DEMIC	1.7372
+PTR_bin_101	May_0	DEMIC	1.2071
+PTR_bin_101	May_0	GRiD	1.23
+PTR_bin_101	May_0	iRep	1.87002284136055
+PTR_bin_101	May_1A	DEMIC	1.4608
+PTR_bin_101	May_1A	GRiD	1.47
+PTR_bin_101	May_1A	iRep	 
+PTR_bin_101	May_1B	DEMIC	1.4591
+PTR_bin_101	May_1B	GRiD	1.48
+PTR_bin_101	May_1B	iRep	2.04449807082616
+PTR_bin_101	May_2A	DEMIC	1.472
+PTR_bin_101	May_2A	GRiD	1.4
+PTR_bin_101	May_2A	iRep	 
+PTR_bin_101	May_2B	DEMIC	1.449
+PTR_bin_101	May_2B	GRiD	1.47
+PTR_bin_101	May_2B	iRep	 
+PTR_bin_101	May_3A	DEMIC	1.3087
+PTR_bin_101	May_3A	GRiD	1.28
+PTR_bin_101	May_3A	iRep	 
+PTR_bin_101	May_3B	DEMIC	1.442
+PTR_bin_101	May_3B	GRiD	1.34
+PTR_bin_101	May_3B	iRep	 
+PTR_bin_101	Sept_0	DEMIC	 
+PTR_bin_101	Sept_0	GRiD	1.49
+PTR_bin_101	Sept_0	iRep	 
+PTR_bin_101	Sept_1A	DEMIC	 
+PTR_bin_101	Sept_1A	GRiD	1.46
+PTR_bin_101	Sept_1A	iRep	 
+PTR_bin_101	Sept_1B	DEMIC	 
+PTR_bin_101	Sept_1B	GRiD	1.62
+PTR_bin_101	Sept_1B	iRep	 
+PTR_bin_101	Sept_1C	DEMIC	1.5035
+PTR_bin_101	Sept_1C	GRiD	1.54
+PTR_bin_101	Sept_1C	iRep	 
+PTR_bin_101	Sept_2A	DEMIC	1.441
+PTR_bin_101	Sept_2A	GRiD	1.57
+PTR_bin_101	Sept_2A	iRep	 
+PTR_bin_101	Sept_2B	DEMIC	1.4613
+PTR_bin_101	Sept_2B	GRiD	1.56
+PTR_bin_101	Sept_2B	iRep	 
+PTR_bin_101	Sept_2C	DEMIC	 
+PTR_bin_101	Sept_2C	GRiD	1.47
+PTR_bin_101	Sept_2C	iRep	 
+PTR_bin_101	Sept_3A	DEMIC	1.3853
+PTR_bin_101	Sept_3A	GRiD	1.49
+PTR_bin_101	Sept_3A	iRep	 
+PTR_bin_101	Sept_3B	DEMIC	 
+PTR_bin_101	Sept_3B	GRiD	1.45
+PTR_bin_101	Sept_3B	iRep	 
+PTR_bin_101	Sept_3C	DEMIC	 
+PTR_bin_101	Sept_3C	GRiD	1.42
+PTR_bin_101	Sept_3C	iRep	 
+PTR_bin_101	Sept_4A	DEMIC	 
+PTR_bin_101	Sept_4A	GRiD	1.9
+PTR_bin_101	Sept_4A	iRep	 
+PTR_bin_101	Sept_4B	DEMIC	 
+PTR_bin_101	Sept_4B	GRiD	1.77
+PTR_bin_101	Sept_4B	iRep	 
+PTR_bin_101	Sept_4C	DEMIC	 
+PTR_bin_101	Sept_4C	GRiD	1.61
+PTR_bin_101	Sept_4C	iRep	 
+PTR_bin_102	May_0	DEMIC	1.8002
+PTR_bin_102	May_0	GRiD	1.49
+PTR_bin_102	May_0	iRep	 
+PTR_bin_102	May_1A	DEMIC	1.8992
+PTR_bin_102	May_1A	GRiD	1.5
+PTR_bin_102	May_1A	iRep	 
+PTR_bin_102	May_1B	DEMIC	1.8735
+PTR_bin_102	May_1B	GRiD	1.46
+PTR_bin_102	May_1B	iRep	2.49839147011184
+PTR_bin_102	May_2A	DEMIC	1.8653
+PTR_bin_102	May_2A	GRiD	1.45
+PTR_bin_102	May_2A	iRep	2.47514350058564
+PTR_bin_102	May_2B	DEMIC	1.856
+PTR_bin_102	May_2B	GRiD	1.43
+PTR_bin_102	May_2B	iRep	2.47537013110795
+PTR_bin_102	May_3A	DEMIC	1.8552
+PTR_bin_102	May_3A	GRiD	1.44
+PTR_bin_102	May_3A	iRep	2.37189419727415
+PTR_bin_102	May_3B	DEMIC	1.819
+PTR_bin_102	May_3B	GRiD	1.4
+PTR_bin_102	May_3B	iRep	2.38548359113357
+PTR_bin_102	Sept_0	DEMIC	 
+PTR_bin_102	Sept_0	GRiD	1.64
+PTR_bin_102	Sept_0	iRep	 
+PTR_bin_102	Sept_1A	DEMIC	 
+PTR_bin_102	Sept_1A	GRiD	1.74
+PTR_bin_102	Sept_1A	iRep	 
+PTR_bin_102	Sept_1B	DEMIC	 
+PTR_bin_102	Sept_1B	GRiD	1.81
+PTR_bin_102	Sept_1B	iRep	 
+PTR_bin_102	Sept_1C	DEMIC	 
+PTR_bin_102	Sept_1C	GRiD	1.92
+PTR_bin_102	Sept_1C	iRep	 
+PTR_bin_102	Sept_2A	DEMIC	 
+PTR_bin_102	Sept_2A	GRiD	1.85
+PTR_bin_102	Sept_2A	iRep	 
+PTR_bin_102	Sept_2B	DEMIC	 
+PTR_bin_102	Sept_2B	GRiD	1.97
+PTR_bin_102	Sept_2B	iRep	 
+PTR_bin_102	Sept_2C	DEMIC	 
+PTR_bin_102	Sept_2C	GRiD	1.67
+PTR_bin_102	Sept_2C	iRep	 
+PTR_bin_102	Sept_3A	DEMIC	 
+PTR_bin_102	Sept_3A	GRiD	1.59
+PTR_bin_102	Sept_3A	iRep	 
+PTR_bin_102	Sept_3B	DEMIC	 
+PTR_bin_102	Sept_3B	GRiD	1.53
+PTR_bin_102	Sept_3B	iRep	 
+PTR_bin_102	Sept_3C	DEMIC	 
+PTR_bin_102	Sept_3C	GRiD	1.55
+PTR_bin_102	Sept_3C	iRep	 
+PTR_bin_102	Sept_4A	DEMIC	 
+PTR_bin_102	Sept_4A	GRiD	1.53
+PTR_bin_102	Sept_4A	iRep	 
+PTR_bin_102	Sept_4B	DEMIC	 
+PTR_bin_102	Sept_4B	GRiD	1.51
+PTR_bin_102	Sept_4B	iRep	 
+PTR_bin_102	Sept_4C	DEMIC	 
+PTR_bin_102	Sept_4C	GRiD	1.61
+PTR_bin_102	Sept_4C	iRep	 

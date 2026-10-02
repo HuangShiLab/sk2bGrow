@@ -17,6 +17,9 @@ The final mixed-strain validation also records the current Git commit and the
 16 reference FASTA SHA256 hashes in
 `benches/mixedstrain_20261001/results/provenance.tsv`.
 
+Real-community results are separately labelled below. They were run before the
+current implementation refresh and are not described as current-code reruns.
+
 ## S2 Zheng benchmark design
 
 * BioProject: PRJNA615952.
@@ -104,9 +107,55 @@ Reported metrics:
 * bias: mean signed matched error;
 * spurious: reported genomes absent from truth.
 
-## S7 Data availability
+## S7 Real-community benchmarks
+
+### S7.1 C1b cross-species isolates
+
+* BioProject: PRJNA1280254.
+* Design: four wastewater isolate species (_Bacillus subtilis_,
+  _Klebsiella pneumoniae_, _Morganella morganii_ and _Pseudomonas putida_)
+  across five nutrient concentrations.
+* Subsampling: 0.5, 1, 2, 5 and 10x species-assembly coverage.
+* Protocols: sk2bGrow fixed coordinate estimator; Pilea v1.3.8 default;
+  Pilea gates-off (`-x 0 -z 0 -c 0`).
+* Truth: digitized from the source article's growth-rate figure and validated
+  against printed panel correlations to within 2e-4.
+* Caveat: RMSE against the paper's predicted log2 PTR is a same-reads
+  comparison, not independent absolute accuracy.
+
+### S7.2 C4 marine metagenomes
+
+* BioProject: PRJNA551656.
+* Design: 20 marine surface-water metagenomes and 101 marine MAGs.
+* Protocols: sk2bGrow and Pilea default; Pilea gates-off was recorded but had
+  16/20 sample crashes and no balanced protocol correlation set.
+* Interpretation: a MAG is protocol-comparable only when both protocols have
+  finite matched samples. Growth-rate truth from Long et al. was derived from
+  the same reads, so C4 is agreement analysis rather than absolute accuracy.
+
+### S7.3 C5 rotating biological contactor application
+
+* BioProject: PRJNA974210.
+* Design: nine metagenomes and 522 bacterial MAGs (4,698 expected MAG-sample
+  cells).
+* Outcomes: estimate recall, default-QC passes, suspicious absent-genome
+  confident estimates, cross-sample consistency and wall time.
+* Interpretation: C5 tests application-scale recall and workflow coverage. It
+  has no independent growth-rate truth and does not establish accuracy.
+
+### S7.4 Real-community provenance caveat
+
+The C1b, C4 and C5 runs used sk2bGrow commit
+`275778f350b87e10c6366bf90884d965fbab45a6` plus working-tree fixes to
+`python/sk2bgrow/fit.py` and `python/sk2bgrow/ztp.py`, with Pilea v1.3.8. They
+were not rerun at the current implementation commit.
+
+## S8 Data availability
 
 * Zheng 2020 reads: BioProject PRJNA615952.
+* C1b reads: BioProject PRJNA1280254.
+* C4 reads: BioProject PRJNA551656.
+* C5 reads: BioProject PRJNA974210.
 * Reference panel: 16 bacterial FASTA files included with benchmark scripts and
   checksummed in the mixed-strain provenance table.
 * Implementation: sk2bGrow repository.
@@ -118,13 +167,13 @@ Reported metrics:
 A citable archival DOI should be generated for the final source and result
 archives on Zenodo or another DOI-issuing repository before submission.
 
-## S8 Code availability
+## S9 Code availability
 
 The code is available under the repository LICENSE. The exact source archive
 hash and result archive hash are part of this supplement. The final commit hash
 should be recorded beside these hashes when the manuscript is submitted.
 
-## S9 Claim-consistency rules
+## S10 Claim-consistency rules
 
 1. Use "all finite" for estimator signal and "default QC passed" for deployment.
 2. Do not describe the three sequencing seeds as biological replicates.
@@ -132,8 +181,12 @@ should be recorded beside these hashes when the manuscript is submitted.
 4. Do not describe current PTR as EM-reassigned.
 5. Do not describe WCG as production QC.
 6. State Pilea v1.3.8, archive hashes and the exact benchmark arms.
+7. Do not infer real-community accuracy from C5 because C5 has no independent
+   growth-rate truth.
+8. Keep C1b and C4 negative or boundary comparisons visible in abstract,
+   results and conclusions.
 
-## S10 Supplementary tables
+## S11 Supplementary tables
 
 Machine-readable TSVs are preferred for analysis. Human-readable versions of
 the key result tables are in `docs/paper/supplementary_tables.md`.
