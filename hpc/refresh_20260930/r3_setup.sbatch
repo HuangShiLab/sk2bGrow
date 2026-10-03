@@ -8,8 +8,8 @@
 set -euo pipefail
 source /lustre1/g/aos_shihuang/sk2bgrow-hpc/refresh_20260930/env.sh
 R3="$WORK/r3"; mkdir -p "$R3/refs" "$R3/refsR" "$R3/refsRX" "$R3/reads" "$R3/readsR" "$R3/readsRX"
-cp "$SRC/benches/fragmentation/"*.py "$R3/"
-cp "$SRC/benches/simulate.py" "$R3/"
+cp "$PAPER/benches/fragmentation/"*.py "$R3/"
+cp "$PAPER/benches/simulate.py" "$R3/"
 cp "$ECOLI" "$R3/refs/complete.fna"
 cd "$R3"
 "$PY" r3_refs.py "$ECOLI" -o refs --counts "2 5 10 20 50 100" --ordered "10 100" --seed 0

@@ -1,4 +1,0 @@
-arm	n_samples_ok	n_samples_crashed	n_mags_any	n_mags_protocol	median_r_protocol	median_r_all	frac_positive_r_protocol	mean_recall_confident	median_n_confident_per_sample
-A_sk2bgrow	20	0	51	2	0.43787128128374303	-0.0523285928815627	1.0	0.08910891089108912	7.5
-C_pilea_default	20	0	64	18	0.5195508219679701	0.48250234144122917	0.8333333333333334	0.14603960396039603	6.0
-D_pilea_relaxed	4	16	98	0				0.8589108910891089	86.5

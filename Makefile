@@ -47,5 +47,5 @@ lint:
 
 clean:
 	$(CARGO) clean
-	rm -rf benches/work/* .pytest_cache
+	rm -rf .pytest_cache
 	find . -name __pycache__ -type d -prune -exec rm -rf {} +

@@ -18,7 +18,7 @@ if [ "$GCFLAG" = 0 ]; then
   sigma=0; sigma_args=()
   if [ "$ARM" = nb ]; then sigma=0.5; sigma_args=(--sigma-eff 0.5 --eff-out "$eff"); fi
   if [ ! -s "$out/$SAMPLE.counts.tsv" ]; then
-    [ -s "$fq" ] || "$PY" "$SRC/benches/windowrate/simulate_tent.py" --genome "$ECOLI" \
+    [ -s "$fq" ] || "$PY" "$PAPER/benches/windowrate/simulate_tent.py" --genome "$ECOLI" \
       --depth "$DEPTH" --log2ptr "$B" --seed "$SEED" "${sigma_args[@]}" --out "$fq"
     "$BIN" profile "$fq" -d "$ECOLI_DB" -o "$out" --threads 2 --no-stats --quiet \
       > "$out/count.log" 2> "$out/count.time.txt"

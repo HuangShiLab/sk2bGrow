@@ -22,6 +22,6 @@ The pseudo-random generators are seeded, so every fixture is reproducible.
 
 ## Real data
 
-For benchmarking against real references and reads, see
-[`../../benches/README.md`](../../benches/README.md). Those datasets are
-downloaded on demand into `benches/work/`, which is git-ignored.
+For benchmarking against real references and reads, see `benches/README.md`
+in the companion `sk2bGrow-paper` repository. Those datasets are downloaded on
+demand into that repository's `benches/work/`, which is git-ignored.

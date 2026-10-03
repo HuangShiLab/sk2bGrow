@@ -71,7 +71,7 @@ for di in "${!DEPTHS[@]}"; do
     ecdir="$WORK/zheng/$SEED/ecounts/$cell"
     mkdir -p "$e" "$ecdir"
     rm -f "$ecdir"/*.counts.tsv
-    "$PPILEA" "$SRC/benches/zheng2020/armE_counts.py" -r "$ECOLI" \
+    "$PPILEA" "$PAPER/benches/zheng2020/armE_counts.py" -r "$ECOLI" \
       --sample-name "$cell" -o "$ecdir" "$f1" "$f2" > "$e/armE.log" 2>&1
     raw=$(find "$ecdir" -maxdepth 1 -name '*.counts.tsv' | head -1)
     [ -n "$raw" ] || { echo "armE produced no counts: $cell"; exit 3; }

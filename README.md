@@ -36,14 +36,9 @@ choice — a random, position-less, unstratified sketch:
 
 The full argument, with the simulations behind it, is in
 [`docs/design/`](docs/design/).
-Claim-level wording rules and current limitations are in
-[`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md) and
-[`docs/PAPER_CLAIMS.md`](docs/PAPER_CLAIMS.md).
-The full draft is in [`docs/paper/manuscript.md`](docs/paper/manuscript.md);
-figures, supplement and pre-submission review are under
-[`docs/paper/`](docs/paper/).
-The current mixed-strain validation is in
-[`benches/mixedstrain_20261001/`](benches/mixedstrain_20261001/).
+Claim-level wording rules, current limitations, the manuscript, benchmark
+results and the submission package are kept in the companion
+`sk2bGrow-paper` repository.
 
 ## Install
 
@@ -97,7 +92,6 @@ crates/sk2bgrow-core/   digestion, TGT v2, anchor db, counting, EM, ori, scaffol
 crates/sk2bgrow-cli/    the `sk2bgrow` binary
 python/sk2bgrow/        ZTP/NB rates, GC correction, V-shape fit, fusion, dynamics
 docs/                   design notes, data formats, CLI reference
-benches/                A/B benchmark protocol against Pilea
 tests/                  Rust integration + Python pytest suites
 ```
 
@@ -141,8 +135,8 @@ refreshed with three sequencing subsamples on the current implementation. In
 the all-finite view, anchors + V-fit reach mean Pearson r=0.911 at 0.5× and
 0.960 at 1×; FracMinHash + V-fit reaches 0.852 and 0.923. Shipped default QC
 still passes 0/16 media for sk2bGrow at both depths, so these are estimator
-results, not deployed-QC results. See
-[`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md).
+results, not deployed-QC results. See `docs/PAPER_RESULTS.md` in the companion
+`sk2bGrow-paper` repository.
 
 ### Findings, and corrections to earlier ones
 

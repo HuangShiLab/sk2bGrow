@@ -8,8 +8,8 @@
 set -euo pipefail
 source /lustre1/g/aos_shihuang/sk2bgrow-hpc/refresh_20260930/env.sh
 A4="$WORK/a4"; mkdir -p "$A4/work/out" "$A4/work/out_gc" "$A4/work/fq" "$A4/work/eff"
-cp "$SRC/benches/windowrate/analyze.py" "$A4/"
-cp "$SRC/benches/windowrate/simulate_tent.py" "$A4/"
+cp "$PAPER/benches/windowrate/analyze.py" "$A4/"
+cp "$PAPER/benches/windowrate/simulate_tent.py" "$A4/"
 ln -snf "$ECOLI_DB" "$A4/work/db"
 python=python3
 "$python" - "$A4" <<'PY'

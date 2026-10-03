@@ -42,7 +42,7 @@ clear win at 1×.
 **This is the honest gate.** If sk2bGrow cannot beat the Pilea baseline at 1×
 subsampling, the premise needs rethinking rather than more engineering — the
 whole argument for a deterministic sketch is the low-coverage band. Protocol in
-[`../../benches/README.md`](../../benches/README.md).
+`benches/README.md` in the companion `sk2bGrow-paper` repository.
 
 ## M3 / P2 — the innovation layer, and the wet-lab calibration
 
@@ -64,9 +64,9 @@ et al. 2025 (PRJCA030517) both provide WGS and BcgI 2bRAD from the *same DNA
 extract*, so an in-silico digest of the WGS arm and the real 2bRAD arm differ only
 in where the cut happened. The per-anchor count ratio between them bounds σ_eff
 from above with no PTR machinery at all — see
-[`../../benches/HPC_TASKS_PAIRED_2BRAD.md`](../../benches/HPC_TASKS_PAIRED_2BRAD.md)
-task 1. M3 remains necessary for the multi-enzyme architecture, which single-enzyme
-libraries cannot test.
+`benches/HPC_TASKS_PAIRED_2BRAD.md`, task 1, in the companion
+`sk2bGrow-paper` repository. M3 remains necessary for the multi-enzyme
+architecture, which single-enzyme libraries cannot test.
 
 ## M4 / P3–P4 — scale and community data
 
@@ -84,7 +84,7 @@ single-sample four-dimensional profile (taxonomy + ANI + SV + PTR) demonstrated.
 
 | | question | resolution path |
 |---|---|---|
-| R1 | actual magnitude of per-site efficiency noise | **paired WGS+2bRAD, same extract** ([`../../benches/HPC_TASKS_PAIRED_2BRAD.md`](../../benches/HPC_TASKS_PAIRED_2BRAD.md) task 1); P2 technical replicates as confirmation |
+| R1 | actual magnitude of per-site efficiency noise | **paired WGS+2bRAD, same extract** (`benches/HPC_TASKS_PAIRED_2BRAD.md`, task 1, in the companion `sk2bGrow-paper` repository); P2 technical replicates as confirmation |
 | R2 | shared anchors across co-occurring strains | strain-specific anchors only; accept the sensitivity loss |
 | R3 | multi-fork profile non-linearity | segmented model exists; needs validation at PTR > 2 |
 | R4 | ori annotation coverage for MAGs | joint search + `ori_confidence`, cross-checked against Ori-Finder |

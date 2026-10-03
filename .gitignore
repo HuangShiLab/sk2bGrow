@@ -28,8 +28,6 @@ venv/
 /data/
 /out/
 /db/
-benches/work/
-benches/windowrate/work/
 !tests/data/*.fna
 !tests/data/*.fa
 
@@ -40,4 +38,3 @@ benches/windowrate/work/
 
 # design documents are kept outside the public repo
 *.docx
-!docs/paper/microbiome_submission/*.docx

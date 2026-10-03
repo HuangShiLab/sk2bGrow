@@ -4,7 +4,7 @@ source /lustre1/g/aos_shihuang/sk2bgrow-hpc/refresh_20260930/env.sh
 cd "$SRC"
 mkdir -p "$WORK/results" "$WORK/zheng" "$WORK/fq" "$WORK/a4" "$WORK/r3"
 # 17 selected media plus RUN_OUT; source picks.tsv columns are medium/run/url.
-awk 'BEGIN{FS=OFS="\t"}{print $1,$2}' "$SRC/benches/zheng2020/picks.tsv" | sort -k2,2 > "$WORK/selected_runs.tsv"
+awk 'BEGIN{FS=OFS="\t"}{print $1,$2}' "$PAPER/benches/zheng2020/picks.tsv" | sort -k2,2 > "$WORK/selected_runs.tsv"
 [ "$(wc -l < "$WORK/selected_runs.tsv")" = 17 ] || { echo 'expected 17 selected runs'; exit 1; }
 
 jz=$(sbatch --array=0-50%25 "$HPCDIR/zheng_worker.sbatch" | awk '{print $4}')

@@ -13,8 +13,8 @@ export MKL_NUM_THREADS=1
 for seed_dir in "$WORK"/zheng/s*; do
   seed=$(basename "$seed_dir")
   mkdir -p "$seed_dir"
-  cp "$SRC/benches/zheng2020/analyze.py" "$seed_dir/"
-  cp "$SRC/benches/zheng2020/growth_rates.tsv" "$seed_dir/"
+  cp "$PAPER/benches/zheng2020/analyze.py" "$seed_dir/"
+  cp "$PAPER/benches/zheng2020/growth_rates.tsv" "$seed_dir/"
   cp "$WORK/selected_runs.tsv" "$seed_dir/"
   cd "$seed_dir"
   "$PY" analyze.py > "analyze_$seed.log" 2>&1
